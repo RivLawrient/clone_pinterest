@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"pinterest_api/internal/config"
 )
 
 func main() {
-	fmt.Print("hello")
+	app := config.NewFiber()
+	app.Listen(":4000")
 }
