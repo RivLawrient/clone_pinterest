@@ -1,3 +1,4 @@
+import { transform } from "next/dist/build/swc/generated-native";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -12,6 +13,14 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+    },
+    fontFamily: {
+      roboto: "roboto",
+      roboto1: "roboto1",
+      roboto2: "roboto2",
+    },
+    animation: {
+      fade: "fade 5s infinite",
     },
   },
   plugins: [],
