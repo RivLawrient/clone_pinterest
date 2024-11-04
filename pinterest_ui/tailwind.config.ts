@@ -20,7 +20,7 @@ const config: Config = {
       roboto2: "roboto2",
     },
     animation: {
-      fade: "fade 5s infinite",
+      fade: "fade 5s",
     },
   },
   plugins: [],

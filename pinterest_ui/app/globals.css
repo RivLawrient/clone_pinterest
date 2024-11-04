@@ -20,20 +20,20 @@
 @keyframes fade {
 0% {
     opacity: 1; 
-    transform: translateY(5px);
+    transform: translateY(15px);
 }
 20% {
     opacity: 1;
     transform: translateY(0);
 }
-80% {
+85% {
   opacity: 1;
   transform: translateY(0);
 }
 
 100% {
     opacity: 0;
-    transform: translateY(-30px); /* Bergerak ke atas dan menghilang */
+    transform: translateY(-40px); /* Bergerak ke atas dan menghilang */
 }
 }
  
