@@ -36,4 +36,13 @@
     transform: translateY(-40px); /* Bergerak ke atas dan menghilang */
 }
 }
- 
+
+@keyframes before {
+  0% {
+    
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
+  } 
+}

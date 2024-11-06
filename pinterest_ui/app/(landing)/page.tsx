@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { kill } from "process";
 import { use, useEffect, useState } from "react";
 
 export default function Landing() {
@@ -157,7 +158,36 @@ export default function Landing() {
   const [step, setStep] = useState<number>(0);
   const [current, setCurrent] = useState<number[]>([-1, -1, -1, -1]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setStep((prevStep) => {
+  //       const nextStep = (prevStep + 1) % 4;
+  //       for (let i = 0; i <= 35; i++) {
+  //         setTimeout(() => {
+  //           setCurrent((prev) =>
+  //             prev.map((v, index) => (index === prevStep ? i - 1 : v))
+  //           );
+  //         }, 50 * i);
+  //       }
+  //       return nextStep;
+  //     });
+  //   }, 5000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
+    setStep((prevStep) => {
+      const nextStep = (prevStep + 1) % 4;
+      for (let i = 0; i <= 35; i++) {
+        setTimeout(() => {
+          setCurrent((prev) =>
+            prev.map((v, index) => (index === prevStep ? i - 1 : v))
+          );
+        }, 50 * i);
+      }
+      return nextStep;
+    });
     const interval = setInterval(() => {
       setStep((prevStep) => {
         const nextStep = (prevStep + 1) % 4;
@@ -180,21 +210,30 @@ export default function Landing() {
   }, [current]);
 
   return (
-    <div className="flex flex-col w-full items-center gap-4">
+    <div className="w-screen justify-center flex mt-[320px]">
       {images.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="grid grid-rows-5 gap-2 grid-flow-col top-6 absolute"
-        >
-          {row.map((imageUrl, colIndex) => (
-            <img
-              key={colIndex}
-              src={imageUrl}
-              className={`${
-                current[rowIndex] >= colIndex ? "animate-fade" : ""
-              } opacity-0 rounded-xl  object-cover min-w-[236px] max-w-[236px] h-[350px] 
+        <div key={rowIndex} className="columns-7 gap-3 w-fit absolute">
+          {row.map((imageUrl: string, indexs: number) => (
+            <div
+              key={indexs}
+              className={`min-w-[236px] max-w-[236px] mb-3 ${
+                indexs === 5 || indexs === 25
+                  ? "pt-[140px]"
+                  : indexs === 10 || indexs === 20
+                  ? "pt-[220px]"
+                  : indexs === 15
+                  ? "pt-[360px]"
+                  : ""
+              }`}
+            >
+              <img
+                src={imageUrl}
+                className={`${
+                  current[rowIndex] >= indexs ? "animate-fade z-20" : ""
+                } opacity-0 rounded-xl  object-cover  h-[350px] size-full
               `}
-            />
+              />
+            </div>
           ))}
         </div>
       ))}
