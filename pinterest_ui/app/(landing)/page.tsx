@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { use, useEffect, useState } from "react";
 
 export default function Landing() {
   const images = [
@@ -156,69 +157,48 @@ export default function Landing() {
   const [step, setStep] = useState<number>(0);
   const [current, setCurrent] = useState<number[]>([-1, -1, -1, -1]);
 
-  // useEffect(() => {
-  //   setCurrent((prev) =>
-  //     prev.map((value: number, index: number) => {
-  //       if (index === (step + 1) % 4) {
-  //         return -1;
-  //       } else {
-  //         return value;
-  //       }
-  //     })
-  //   );
-  //   for (let i = 0; i <= 35; i++) {
-  //     setTimeout(() => {
-  //       setCurrent((prev) =>
-  //         prev.map((value: number, index: number) => {
-  //           if (index === step) {
-  //             return value + 1;
-  //           } else {
-  //             return value;
-  //           }
-  //         })
-  //       );
-  //     }, 50 * i);
-  //   }
-  // }, [step]);
   useEffect(() => {
-    for (let index = 0; index < 24; index++) {
-      setTimeout(() => {
-        console.log("step", index);
-      }, 500);
-    }
-  });
+    const interval = setInterval(() => {
+      setStep((prevStep) => {
+        const nextStep = (prevStep + 1) % 4;
+        for (let i = 0; i <= 35; i++) {
+          setTimeout(() => {
+            setCurrent((prev) =>
+              prev.map((v, index) => (index === prevStep ? i - 1 : v))
+            );
+          }, 50 * i);
+        }
+        return nextStep;
+      });
+    }, 5000);
 
-  // useEffect(() => {
-  //   if (current[step] === 1) {
-  //     setTimeout(() => {
-  //       setStep((prev) => (prev + 1) % 4);
-  //     }, 5000);
-  //   }
-  // }, [current[step]]);
+    return () => clearInterval(interval);
+  }, []);
 
-  // useEffect(() => {
-  //   console.log(current, step);
-  // }, [current]);
+  useEffect(() => {
+    console.log(current);
+  }, [current]);
 
   return (
     <div className="flex flex-col w-full items-center gap-4">
-      {images.map((value: string[], index: number) => [
+      {images.map((row, rowIndex) => (
         <div
-          key={index}
-          className=" grid grid-rows-5 grid-flow-col gap-2 top-6 absolute "
+          key={rowIndex}
+          className="grid grid-rows-5 gap-2 grid-flow-col top-6 absolute"
         >
-          {value.map((values: string, indexs: number) => [
+          {row.map((imageUrl, colIndex) => (
             <img
-              key={indexs}
-              src={values}
+              key={colIndex}
+              src={imageUrl}
               width={100}
               className={`${
-                current[index] >= indexs ? "animate-fade" : ""
-              } opacity-0 rounded-xl`}
-            />,
-          ])}
-        </div>,
-      ])}
+                current[rowIndex] >= colIndex ? "animate-fade" : ""
+              } opacity-0 rounded-xl
+              `}
+            />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
