@@ -20,7 +20,7 @@
 @keyframes fade {
 0% {
     opacity: 1; 
-    transform: translateY(15px);
+    transform: translateY(40px);
 }
 20% {
     opacity: 1;
@@ -33,16 +33,29 @@
 
 100% {
     opacity: 0;
-    transform: translateY(-40px); /* Bergerak ke atas dan menghilang */
+    transform: translateY(-80px); /* Bergerak ke atas dan menghilang */
 }
 }
 
 @keyframes before {
-  0% {
-    
+  from {
+    opacity: 0;
+    transform: translateY(0);
   }
-  100% {
-    transform: translateY(40px);
+  to {
+    transform: translateY(-40px);
+    opacity: 1;
+  } 
+}
+
+@keyframes after {
+  from {
+    opacity: 1;
+    transform: translateY(-40px);
+  }
+  to {
+
+    transform: translateY(-80px);
     opacity: 0;
   } 
 }

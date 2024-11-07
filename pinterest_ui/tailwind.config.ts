@@ -1,5 +1,5 @@
 import { transform } from "next/dist/build/swc/generated-native";
-import { before } from "node:test";
+import { after, before } from "node:test";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -22,7 +22,7 @@ const config: Config = {
     },
     animation: {
       fade: "fade 5s",
-      before: "before",
+      img: "before 500ms forwards, after 500ms 5s forwards;",
     },
   },
   plugins: [],
