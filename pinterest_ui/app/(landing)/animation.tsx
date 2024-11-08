@@ -26,7 +26,9 @@ export function AnimateText({ step }: { step: number }) {
           key={index}
           className={` ${
             step === index ? "animate-img" : ""
-          } text-[60px] font-roboto2 opacity-0 absolute ${color[index]}`}
+          } text-[60px] font-roboto2 opacity-0 text-nowrap absolute ${
+            color[index]
+          }`}
         >
           {value}
         </div>
@@ -48,7 +50,7 @@ export function AnimateBtn({ step }: { step: number }) {
   return (
     <div
       onClick={() => route.push("#search")}
-      className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px]`}
+      className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px] cursor-pointer`}
     >
       <svg
         aria-label="Scroll down"
@@ -247,9 +249,9 @@ export function AnimateImg({
 
     // return () => clearTimeout(interval);
   }, [step]);
-  useEffect(() => {
-    console.log(current, step);
-  }, [current]);
+  // useEffect(() => {
+  //   console.log(current, step);
+  // }, [current]);
   return (
     <div className="flex justify-center w-full">
       {images.map((values: string[], indexs: number) => (
@@ -271,7 +273,7 @@ export function AnimateImg({
                 src={imageUrl}
                 className={`${
                   current[indexs] >= index ? "animate-img z-[1]" : "opacity-0"
-                } opacity-0 rounded-2xl object-cover h-[350px] size-full
+                } opacity-0 rounded-2xl z-[--1] object-cover h-[350px] size-full
                   `}
               />
             </div>

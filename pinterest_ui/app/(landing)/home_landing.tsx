@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { AnimateBtn, AnimateImg, AnimateText } from "./animation";
+import { useRouter } from "next/navigation";
 
 export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
 
   const [isPaused, setIsPaused] = useState(false);
   useEffect(() => {
-    const sections = document.querySelectorAll(".snap-start");
+    const sections = document.querySelectorAll(".snap-center");
     const observerCallback = (entries: any) => {
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
@@ -34,9 +35,9 @@ export default function HomeLanding() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        setIsPaused(true); // Set animasi ke mode 'paused'
+        setIsPaused(true);
       } else {
-        setIsPaused(false); // Lanjutkan animasi
+        setIsPaused(false);
       }
     };
 
@@ -47,6 +48,7 @@ export default function HomeLanding() {
     };
   }, []);
 
+  const route = useRouter();
   useEffect(() => {
     if (step === -1) {
       setStep((step + 1) % 4);
@@ -70,17 +72,22 @@ export default function HomeLanding() {
   return (
     <div
       id="home"
-      className="snap-start h-screen w-screen relative flex flex-col items-center"
+      className="snap-center h-screen w-screen relative flex flex-col items-center scroll-smooth"
     >
       <div className="h-[250px]"></div>
-      <span className="text-[60px] font-roboto">Get your next</span>
+      <span className="text-[60px] font-roboto2">Get your next</span>
       <br />
       <AnimateText step={step} />
       <AnimateImg step={step} setStep={setStep} />
       <div className="h-[200px] w-full bottom-0 absolute flex flex-col items-center justify-end bg-gradient-to-b from-transparent to-white">
         <AnimateBtn step={step} />
         <div className="h-[60px] w-full bg-[#FFFD92] flex justify-center items-center ">
-          <div className=" text-[16px] font-roboto flex cursor-pointer gap-2">
+          <div
+            onClick={() => {
+              route.push("#search");
+            }}
+            className=" text-[16px] font-roboto flex cursor-pointer gap-2"
+          >
             Here’s how it works
             <div className="justify-center flex items-center">
               <svg
