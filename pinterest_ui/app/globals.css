@@ -54,8 +54,13 @@
     transform: translateY(-40px);
   }
   to {
-
     transform: translateY(-80px);
     opacity: 0;
   } 
+}
+
+@keyframes bouncing{
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
 }

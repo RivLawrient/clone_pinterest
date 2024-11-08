@@ -2,7 +2,72 @@
 
 import { useEffect, useState } from "react";
 
-export function AnimateImg() {
+export function AnimateText({ step }: { step: number }) {
+  const texts = [
+    "weeknight dinner idea",
+    "home decor idea",
+    "new look outfit",
+    "green thumb idea",
+    "",
+  ];
+  const color: string[] = [
+    "text-[#C28B00]",
+    "text-[#618C7B]",
+    "text-[#0076D3]",
+    "text-[#618C7B]",
+    "",
+  ];
+
+  return (
+    <div className="flex justify-center w-full z-30">
+      {texts.map((value: string, index: number) => (
+        <div
+          key={index}
+          className={` ${
+            step === index ? "animate-img" : ""
+          } text-[60px] font-roboto2 opacity-0 absolute ${color[index]}`}
+        >
+          {value}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AnimateBtn({ step }: { step: number }) {
+  const color: string[] = [
+    "bg-[#C28B00]",
+    "bg-[#618C7B]",
+    "bg-[#0076D3]",
+    "bg-[#618C7B]",
+    "bg-[#618C7B]",
+  ];
+
+  return (
+    <div
+      className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px]`}
+    >
+      <svg
+        aria-label="Scroll down"
+        height="20"
+        role="img"
+        viewBox="0 0 24 24"
+        width="20"
+        className="fill-white"
+      >
+        <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
+      </svg>
+    </div>
+  );
+}
+
+export function AnimateImg({
+  step,
+  setStep,
+}: {
+  step: number;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const images = [
     [
       "https://i.pinimg.com/236x/e3/41/4b/e3414b2fcf00375a199ba6964be551af.jpg",
@@ -154,69 +219,69 @@ export function AnimateImg() {
     ],
   ];
 
-  const [step, setStep] = useState<number>(0);
   const [current, setCurrent] = useState<number[]>([-1, -1, -1, -1]);
+  const [stop, setStop] = useState<boolean>(false);
 
   useEffect(() => {
     for (let i = 0; i <= 35; i++) {
       setTimeout(() => {
-        setCurrent((prev) =>
-          prev.map((v, index) => (index === (step + 1) % 4 ? i - 1 : v))
+        setCurrent((prev: number[]) =>
+          prev.map((v: number, index: number) =>
+            index === step % 4 ? i - 1 : v
+          )
         );
       }, 50 * i);
     }
-    const interval = setTimeout(() => {
-      setStep((prevStep) => {
-        const nextStep = (prevStep + 1) % 4;
-        if (nextStep === 0) {
-          setTimeout(() => {
-            setStep(nextStep);
-          }, 2000);
-          return prevStep;
-        }
-        return nextStep;
-      });
-    }, 5400);
+    // const interval = setTimeout(() => {
+    //   setStep((prevStep: number) => {
+    //     const nextStep = (prevStep + 1) % 4;
+    //     if (nextStep === 3) {
+    //       setTimeout(() => {
+    //         setStep(nextStep);
+    //       }, 2000);
+    //       return prevStep;
+    //     }
+    //     return nextStep;
+    //   });
+    // }, 5400);
 
-    return () => clearTimeout(interval);
+    // return () => clearTimeout(interval);
   }, [step]);
-
   useEffect(() => {
     console.log(current, step);
   }, [current]);
-
   return (
-    <>
-      <div className="w-screen justify-center flex">
-        {images.map((values: string[], indexs: number) => (
-          <div key={indexs} className="columns-7 gap-3 w-fit absolute">
-            {values.map((imageUrl: string, index: number) => (
-              <div
-                key={index}
-                className={`min-w-[236px] max-w-[236px] relative bg-white mb-3 ${
-                  index === 5 || index === 25
-                    ? "pt-[140px]"
-                    : index === 10 || index === 20
-                    ? "pt-[220px]"
-                    : index === 15
-                    ? "pt-[360px]"
-                    : ""
-                }`}
-              >
-                <img
-                  src={imageUrl}
-                  className={`${
-                    current[indexs] >= index
-                      ? "animate-img z-20 relative"
-                      : "invisible "
-                  } opacity-0 rounded-2xl object-cover h-[350px] size-full
+    <div className="flex justify-center w-full">
+      {images.map((values: string[], indexs: number) => (
+        <div key={indexs} className="columns-7 gap-3 w-fit absolute">
+          {values.map((imageUrl: string, index: number) => (
+            <div
+              key={index}
+              className={`min-w-[236px] max-w-[236px]   mb-3 ${
+                index === 5 || index === 25
+                  ? "pt-[140px]"
+                  : index === 10 || index === 20
+                  ? "pt-[220px]"
+                  : index === 15
+                  ? "pt-[360px]"
+                  : ""
+              }`}
+            >
+              <img
+                src={imageUrl}
+                className={`${
+                  stop
+                    ? ""
+                    : current[indexs % 4] >= index
+                    ? "animate-img"
+                    : "opacity-0"
+                } opacity-0 rounded-2xl object-cover h-[350px] size-full
                   `}
-                />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </>
+              />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 }
