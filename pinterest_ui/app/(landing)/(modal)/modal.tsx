@@ -18,7 +18,7 @@ export default function Modal({
       onClick={(e: React.MouseEvent<HTMLDivElement>) =>
         e.target === ref.current ? setOpen(!open) : null
       }
-      className="w-screen h-screen flex justify-center items-center absolute bg-black bg-opacity-60 z-50"
+      className="w-screen h-screen flex justify-center items-center fixed  bg-black bg-opacity-60 z-50"
     >
       <div className="h-[634px] w-[484px] bg-white rounded-[32px]"></div>
     </div>
