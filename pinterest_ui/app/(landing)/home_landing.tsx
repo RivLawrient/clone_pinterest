@@ -7,6 +7,29 @@ export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
 
   const [isPaused, setIsPaused] = useState(false);
+  useEffect(() => {
+    const sections = document.querySelectorAll(".snap-start");
+    const observerCallback = (entries: any) => {
+      entries.forEach((entry: any) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          window.history.replaceState(null, "", `#${sectionId}`);
+        }
+      });
+    };
+    const observerOptions = {
+      root: null,
+      threshold: 0.5,
+    };
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -45,7 +68,10 @@ export default function HomeLanding() {
   }, [step]);
 
   return (
-    <div className="snap-start h-screen w-screen relative flex flex-col items-center">
+    <div
+      id="home"
+      className="snap-start h-screen w-screen relative flex flex-col items-center"
+    >
       <div className="h-[250px]"></div>
       <span className="text-[60px] font-roboto">Get your next</span>
       <br />

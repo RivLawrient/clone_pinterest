@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function AnimateText({ step }: { step: number }) {
@@ -35,6 +36,7 @@ export function AnimateText({ step }: { step: number }) {
 }
 
 export function AnimateBtn({ step }: { step: number }) {
+  const route = useRouter();
   const color: string[] = [
     "bg-[#C28B00]",
     "bg-[#618C7B]",
@@ -45,6 +47,7 @@ export function AnimateBtn({ step }: { step: number }) {
 
   return (
     <div
+      onClick={() => route.push("#search")}
       className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px]`}
     >
       <svg
@@ -220,15 +223,12 @@ export function AnimateImg({
   ];
 
   const [current, setCurrent] = useState<number[]>([-1, -1, -1, -1]);
-  const [stop, setStop] = useState<boolean>(false);
 
   useEffect(() => {
     for (let i = 0; i <= 35; i++) {
       setTimeout(() => {
         setCurrent((prev: number[]) =>
-          prev.map((v: number, index: number) =>
-            index === step % 4 ? i - 1 : v
-          )
+          prev.map((v: number, index: number) => (index === step ? i - 1 : v))
         );
       }, 50 * i);
     }
@@ -270,11 +270,7 @@ export function AnimateImg({
               <img
                 src={imageUrl}
                 className={`${
-                  stop
-                    ? ""
-                    : current[indexs % 4] >= index
-                    ? "animate-img"
-                    : "opacity-0"
+                  current[indexs] >= index ? "animate-img z-[1]" : "opacity-0"
                 } opacity-0 rounded-2xl object-cover h-[350px] size-full
                   `}
               />

@@ -1,4 +1,9 @@
+import BottomLanding from "./bottom_landing";
+import HolidayLanding from "./holiday_landing";
 import HomeLanding from "./home_landing";
+import SaveLandig from "./save_landing";
+import SearchLanding from "./search_landing";
+import ShopLanding from "./shop_landing";
 
 export default function Landing() {
   return (
@@ -6,8 +11,11 @@ export default function Landing() {
       <Headers />
       <div className="h-screen overflow-y-scroll scroll-smooth snap-y snap-mandatory overflow-x-hidden">
         <HomeLanding />
-        <div className="snap-start relative h-screen w-screen bg-black"></div>
-        <div className="snap-start h-screen w-screen bg-red-500"></div>
+        <SearchLanding />
+        <SaveLandig />
+        <ShopLanding />
+        <HolidayLanding />
+        <BottomLanding />
       </div>
     </>
   );
