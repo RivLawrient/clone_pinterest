@@ -1,13 +1,20 @@
+import { request } from "https";
 import "./globals.css";
+import { cookies } from "next/headers";
 
-export default function RootLayout({
+export default async function RootLayout({
+  landing,
   children,
 }: Readonly<{
+  landing: React.ReactNode;
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth");
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{token ? children : landing}</body>
     </html>
   );
 }

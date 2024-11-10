@@ -249,9 +249,7 @@ export function AnimateImg({
 
     // return () => clearTimeout(interval);
   }, [step]);
-  // useEffect(() => {
-  //   console.log(current, step);
-  // }, [current]);
+
   return (
     <div className="flex justify-center w-full">
       {images.map((values: string[], indexs: number) => (

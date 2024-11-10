@@ -28,16 +28,12 @@ export default function Modal({
       className="w-screen h-screen flex flex-col justify-center items-center fixed  bg-black bg-opacity-60 z-50"
     >
       <SingIn
-        pass={pass}
-        setPass={setPass}
         open={open}
         setOpen={setOpen}
         isSignin={isSignin}
         setIsSignin={setIsSignin}
       />
       <SingUp
-        pass={pass}
-        setPass={setPass}
         open={open}
         setOpen={setOpen}
         isSignin={isSignin}

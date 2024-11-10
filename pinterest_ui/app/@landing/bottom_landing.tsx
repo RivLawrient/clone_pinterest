@@ -99,8 +99,6 @@ export default function BottomLanding() {
         </div>
         <div className="w-full flex justify-center items-center">
           <SingIn
-            pass={pass}
-            setPass={setPass}
             open={open}
             setOpen={setOpen}
             isSignin={isSignin}

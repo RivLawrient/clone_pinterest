@@ -1,18 +1,19 @@
+import { useState } from "react";
+
 export default function SingUp({
   open,
   setOpen,
-  pass,
-  setPass,
+
   isSignin,
   setIsSignin,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  pass: string;
-  setPass: React.Dispatch<React.SetStateAction<string>>;
+
   isSignin: boolean;
   setIsSignin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [pass, setPass] = useState<string>("password");
   if (isSignin) return null;
   return (
     <>
