@@ -48,7 +48,7 @@ export function AnimateBtn({ step }: { step: number }) {
   ];
 
   return (
-    <div
+     <div
       onClick={() => route.push("#search")}
       className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px] cursor-pointer`}
     >
