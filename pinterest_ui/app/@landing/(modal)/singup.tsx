@@ -19,13 +19,13 @@ export default function SingUp({
     <>
       <div
         hidden={isSignin}
-        className="h-fit w-[484px] bg-white rounded-b-none rounded-[32px] relative flex flex-col justify-center items-center pt-[20px] px-[10px] pb-6"
+        className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] rounded-b-none bg-white px-[10px] pb-6 pt-[20px]"
       >
         <div
           onClick={() => {
             setOpen(!open);
           }}
-          className="size-[40px] m-4 absolute  top-0 right-0 flex justify-center items-center hover:bg-slate-100 cursor-pointer rounded-full"
+          className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
         >
           <svg
             aria-hidden="true"
@@ -52,27 +52,27 @@ export default function SingUp({
             <path d="M27.5 71c3.3 1 6.7 1.6 10.3 1.6C57 72.6 72.6 57 72.6 37.8 72.6 18.6 57 3 37.8 3 18.6 3 3 18.6 3 37.8c0 14.8 9.3 27.5 22.4 32.5-.3-2.7-.6-7.2 0-10.3l4-17.2s-1-2-1-5.2c0-4.8 3-8.4 6.4-8.4 3 0 4.4 2.2 4.4 5 0 3-2 7.3-3 11.4C35.6 49 38 52 41.5 52c6.2 0 11-6.6 11-16 0-8.3-6-14-14.6-14-9.8 0-15.6 7.3-15.6 15 0 3 1 6 2.6 8 .3.2.3.5.2 1l-1 3.8c0 .6-.4.8-1 .4-4.4-2-7-8.3-7-13.4 0-11 7.8-21 22.8-21 12 0 21.3 8.6 21.3 20 0 12-7.4 21.6-18 21.6-3.4 0-6.7-1.8-7.8-4L32 61.7c-.8 3-3 7-4.5 9.4z"></path>
           </svg>
         </div>
-        <div className="text-[32px] text-[#333333] font-semibold font-roboto1 tracking-[-1.2px]">
+        <div className="font-roboto1 text-[32px] font-semibold tracking-[-1.2px] text-[#333333]">
           Welcome to Pinterest
         </div>
         <div className="text-center text-[16px]">Find new ideas to try</div>
-        <div className="mx-[98px] w-[268px] mt-[20px]">
-          <div className="flex flex-col mb-[8px]">
-            <span className="text-[14px] ml-[8px]">Email</span>
+        <div className="mx-[98px] mt-[20px] w-[268px]">
+          <div className="mb-[8px] flex flex-col">
+            <span className="ml-[8px] text-[14px]">Email</span>
             <input
               type="email"
               placeholder="Email"
-              className=" px-4 py-3 text-[16px] rounded-2xl border-[#cdcdcd] border-[2px]"
+              className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
             />
           </div>
-          <div className="flex flex-col relative mb-[8px]">
-            <span className="text-[14px] ml-[8px]">Password</span>
+          <div className="relative mb-[8px] flex flex-col">
+            <span className="ml-[8px] text-[14px]">Password</span>
             <input
               type={pass}
               placeholder="Create a password"
-              className="px-4 py-3 text-[16px] rounded-2xl border-[#cdcdcd] border-[2px]"
+              className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
             />
-            <div className="absolute bottom-0 h-[48px] items-center flex right-0 mr-[10px]">
+            <div className="absolute bottom-0 right-0 mr-[10px] flex h-[48px] items-center">
               <svg
                 onClick={() => {
                   if (pass !== "text") {
@@ -81,7 +81,7 @@ export default function SingUp({
                 }}
                 aria-hidden="true"
                 aria-label=""
-                className="fill-black cursor-pointer"
+                className="cursor-pointer fill-black"
                 height="12"
                 role="img"
                 viewBox="0 0 24 24"
@@ -91,27 +91,27 @@ export default function SingUp({
               </svg>
             </div>
           </div>
-          <div className="flex flex-col mb-[12px]">
-            <span className="text-[14px] ml-[8px]">Birthdate</span>
+          <div className="mb-[12px] flex flex-col">
+            <span className="ml-[8px] text-[14px]">Birthdate</span>
             <input
               type="date"
               placeholder=""
-              className=" px-4 py-3 text-[16px] rounded-2xl border-[#cdcdcd] border-[2px]"
+              className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
             />
           </div>
           <div className="">
-            <div className="py-2 bg-[#e60023] text-center rounded-full text-white">
+            <div className="rounded-full bg-[#e60023] py-2 text-center text-white">
               Continue
             </div>
           </div>
-          <div className="text-center my-[8px]">OR</div>
+          <div className="my-[8px] text-center">OR</div>
           <div className="w-full">
-            <div className="border py-2 text-center rounded-full mt-[12px]">
+            <div className="mt-[12px] rounded-full border py-2 text-center">
               Continue with Google
             </div>
           </div>
         </div>
-        <div className="text-[12px] text-center w-[320px] text-wrap leading-4 mt-[24px] mb-[8px]">
+        <div className="mb-[8px] mt-[24px] w-[320px] text-wrap text-center text-[12px] leading-4">
           By continuing, you agree to Pinterest's{" "}
           <span className="font-bold">Terms of Service</span> and acknowledge
           you've read our
@@ -121,19 +121,19 @@ export default function SingUp({
           </span>
         </div>
 
-        <div className="text-[12px] text-center">
+        <div className="text-center text-[12px]">
           Already a member?{" "}
           <span
             onClick={() => {
               setIsSignin(true);
             }}
-            className="font-bold hover:underline cursor-pointer"
+            className="cursor-pointer font-bold hover:underline"
           >
             Log in
           </span>
         </div>
       </div>
-      <div className="bg-[#E9E9E9] h-[62px] w-[484px] rounded-b-[32px] flex justify-center items-center py-auto text-[16px] font-light">
+      <div className="py-auto flex h-[62px] w-[484px] items-center justify-center rounded-b-[32px] bg-[#E9E9E9] text-[16px] font-light">
         Create a free business account
       </div>
     </>

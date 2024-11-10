@@ -20,13 +20,13 @@ export function AnimateText({ step }: { step: number }) {
   ];
 
   return (
-    <div className="flex justify-center w-full z-30">
+    <div className="z-30 flex w-full justify-center">
       {texts.map((value: string, index: number) => (
         <div
           key={index}
           className={` ${
             step === index ? "animate-img" : ""
-          } text-[60px] font-roboto2 opacity-0 text-nowrap absolute ${
+          } absolute text-nowrap font-roboto2 text-[60px] opacity-0 ${
             color[index]
           }`}
         >
@@ -48,9 +48,9 @@ export function AnimateBtn({ step }: { step: number }) {
   ];
 
   return (
-     <div
+    <div
       onClick={() => route.push("#search")}
-      className={`size-[48px] animate-bounce ${color[step]} rounded-full z-20 flex justify-center items-center mb-[16px] cursor-pointer`}
+      className={`size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] flex cursor-pointer items-center justify-center rounded-full`}
     >
       <svg
         aria-label="Scroll down"
@@ -230,7 +230,7 @@ export function AnimateImg({
     for (let i = 0; i <= 35; i++) {
       setTimeout(() => {
         setCurrent((prev: number[]) =>
-          prev.map((v: number, index: number) => (index === step ? i - 1 : v))
+          prev.map((v: number, index: number) => (index === step ? i - 1 : v)),
         );
       }, 50 * i);
     }
@@ -251,28 +251,27 @@ export function AnimateImg({
   }, [step]);
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex w-full justify-center">
       {images.map((values: string[], indexs: number) => (
-        <div key={indexs} className="columns-7 gap-3 w-fit absolute">
+        <div key={indexs} className="absolute w-fit columns-7 gap-3">
           {values.map((imageUrl: string, index: number) => (
             <div
               key={index}
-              className={`min-w-[236px] max-w-[236px]   mb-3 ${
+              className={`mb-3 min-w-[236px] max-w-[236px] ${
                 index === 5 || index === 25
                   ? "pt-[140px]"
                   : index === 10 || index === 20
-                  ? "pt-[220px]"
-                  : index === 15
-                  ? "pt-[360px]"
-                  : ""
+                    ? "pt-[220px]"
+                    : index === 15
+                      ? "pt-[360px]"
+                      : ""
               }`}
             >
               <img
                 src={imageUrl}
                 className={`${
-                  current[indexs] >= index ? "animate-img z-[1]" : "opacity-0"
-                } opacity-0 rounded-2xl z-[--1] object-cover h-[350px] size-full
-                  `}
+                  current[indexs] >= index ? "z-[1] animate-img" : "opacity-0"
+                } z-[--1] size-full h-[350px] rounded-2xl object-cover opacity-0`}
               />
             </div>
           ))}

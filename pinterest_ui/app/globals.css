@@ -18,23 +18,23 @@
 }
 
 @keyframes fade {
-0% {
-    opacity: 1; 
+  0% {
+    opacity: 1;
     transform: translateY(40px);
-}
-20% {
+  }
+  20% {
     opacity: 1;
     transform: translateY(0);
-}
-85% {
-  opacity: 1;
-  transform: translateY(0);
-}
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-100% {
+  100% {
     opacity: 0;
     transform: translateY(-80px); /* Bergerak ke atas dan menghilang */
-}
+  }
 }
 
 @keyframes before {
@@ -45,7 +45,7 @@
   to {
     transform: translateY(-40px);
     opacity: 1;
-  } 
+  }
 }
 
 @keyframes after {
@@ -56,11 +56,17 @@
   to {
     transform: translateY(-80px);
     opacity: 0;
-  } 
+  }
 }
 
-@keyframes bouncing{
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
+@keyframes bouncing {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }

@@ -10,7 +10,7 @@ export default function Landing() {
   return (
     <>
       <HeaderLanding />
-      <div className="h-screen overflow-y-scroll scroll-smooth snap-y snap-mandatory overflow-x-hidden">
+      <div className="h-screen snap-y snap-mandatory overflow-x-hidden overflow-y-scroll scroll-smooth break-keep">
         <HomeLanding />
         <SearchLanding />
         <SaveLandig />

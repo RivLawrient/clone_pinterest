@@ -18,13 +18,13 @@ export default function SingIn({
   return (
     <div
       hidden={!isSignin}
-      className="h-fit w-[484px] bg-white rounded-[32px] relative flex flex-col justify-center items-center pt-[20px] px-[10px] pb-6"
+      className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] bg-white px-[10px] pb-6 pt-[20px]"
     >
       <div
         onClick={() => {
           setOpen(!open);
         }}
-        className="size-[40px] m-4 absolute  top-0 right-0 flex justify-center items-center hover:bg-slate-100 cursor-pointer rounded-full"
+        className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
       >
         <svg
           aria-hidden="true"
@@ -54,26 +54,26 @@ export default function SingIn({
           ></path>
         </svg>
       </div>
-      <div className="text-[32px] text-[#333333] font-semibold font-roboto1 tracking-[-1.2px]">
+      <div className="font-roboto1 text-[32px] font-semibold tracking-[-1.2px] text-[#333333]">
         Welcome to Pinterest
       </div>
-      <div className="mx-[98px] w-[268px] mt-[20px]">
-        <div className="flex flex-col mb-[12px]">
-          <span className="text-[14px] ml-[8px]">Email</span>
+      <div className="mx-[98px] mt-[20px] w-[268px]">
+        <div className="mb-[12px] flex flex-col">
+          <span className="ml-[8px] text-[14px]">Email</span>
           <input
             type="email"
             placeholder="Email"
-            className=" px-4 py-3 text-[16px] rounded-2xl border-[#cdcdcd] border-[2px]"
+            className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
           />
         </div>
-        <div className="flex flex-col relative">
-          <span className="text-[14px] ml-[8px]">Password</span>
+        <div className="relative flex flex-col">
+          <span className="ml-[8px] text-[14px]">Password</span>
           <input
             type={pass}
             placeholder="Password"
-            className="px-4 py-3 text-[16px] rounded-2xl border-[#cdcdcd] border-[2px]"
+            className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
           />
-          <div className="absolute bottom-0 h-[48px] items-center flex right-0 mr-[10px]">
+          <div className="absolute bottom-0 right-0 mr-[10px] flex h-[48px] items-center">
             <svg
               onClick={() => {
                 if (pass !== "text") {
@@ -82,7 +82,7 @@ export default function SingIn({
               }}
               aria-hidden="true"
               aria-label=""
-              className="fill-black cursor-pointer"
+              className="cursor-pointer fill-black"
               height="12"
               role="img"
               viewBox="0 0 24 24"
@@ -92,27 +92,27 @@ export default function SingIn({
             </svg>
           </div>
         </div>
-        <div className="hover:underline cursor-pointer my-[8px] text-[14px]">
+        <div className="my-[8px] cursor-pointer text-[14px] hover:underline">
           Forgot your password?
         </div>
         <div className="">
-          <div className="py-2 bg-[#e60023] text-center rounded-full text-white">
+          <div className="rounded-full bg-[#e60023] py-2 text-center text-white">
             Log in
           </div>
         </div>
-        <div className="text-center my-[8px]">OR</div>
+        <div className="my-[8px] text-center">OR</div>
         <div className="w-full">
-          <div className="bg-[#1877f2] py-2 text-center rounded-full text-white">
+          <div className="rounded-full bg-[#1877f2] py-2 text-center text-white">
             Continue with Facebook
           </div>
         </div>
         <div className="w-full">
-          <div className="border py-2 text-center rounded-full mt-[12px]">
+          <div className="mt-[12px] rounded-full border py-2 text-center">
             Continue with Google
           </div>
         </div>
       </div>
-      <div className="text-[12px] text-center w-[320px] text-wrap leading-4 mt-[24px]">
+      <div className="mt-[24px] w-[320px] text-wrap text-center text-[12px] leading-4">
         By continuing, you agree to Pinterest's{" "}
         <span className="font-bold">Terms of Service</span> and acknowledge
         you've read our
@@ -121,21 +121,21 @@ export default function SingIn({
           Privacy Policy . Notice at collection .
         </span>
       </div>
-      <hr className="w-[110px] my-[12px] mx-auto" />
-      <div className="text-[12px] text-center">
+      <hr className="mx-auto my-[12px] w-[110px]" />
+      <div className="text-center text-[12px]">
         Not on Pinterest yet?{" "}
         <span
           onClick={() => {
             setIsSignin(false);
           }}
-          className="font-bold hover:underline cursor-pointer"
+          className="cursor-pointer font-bold hover:underline"
         >
           Sign up
         </span>
       </div>
-      <div className="text-[12px] text-center">
+      <div className="text-center text-[12px]">
         Are you a business?
-        <span className="font-bold hover:underline cursor-pointer">
+        <span className="cursor-pointer font-bold hover:underline">
           {" "}
           Get started here!
         </span>

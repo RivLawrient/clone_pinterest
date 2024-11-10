@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
 
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   useEffect(() => {
     const sections = document.querySelectorAll(".snap-center");
     const observerCallback = (entries: any) => {
@@ -24,7 +24,7 @@ export default function HomeLanding() {
     };
     const observer = new IntersectionObserver(
       observerCallback,
-      observerOptions
+      observerOptions,
     );
     sections.forEach((section) => observer.observe(section));
     return () => {
@@ -72,24 +72,24 @@ export default function HomeLanding() {
   return (
     <div
       id="home"
-      className="snap-center h-screen w-screen relative flex flex-col items-center scroll-smooth"
+      className="relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline"
     >
       <div className="h-[250px]"></div>
-      <span className="text-[60px] font-roboto2">Get your next</span>
+      <span className="font-roboto2 text-[60px]">Get your next</span>
       <br />
       <AnimateText step={step} />
       <AnimateImg step={step} setStep={setStep} />
-      <div className="h-[200px] w-full bottom-0 absolute flex flex-col items-center justify-end bg-gradient-to-b from-transparent to-white">
+      <div className="absolute bottom-0 flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent to-white">
         <AnimateBtn step={step} />
-        <div className="h-[60px] w-full bg-[#FFFD92] flex justify-center items-center ">
+        <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">
           <div
             onClick={() => {
               route.push("#search");
             }}
-            className=" text-[16px] font-roboto flex cursor-pointer gap-2"
+            className="flex cursor-pointer gap-2 font-roboto text-[16px]"
           >
             Here’s how it works
-            <div className="justify-center flex items-center">
+            <div className="flex items-center justify-center">
               <svg
                 aria-label="arrow down icon"
                 className="fill-black"

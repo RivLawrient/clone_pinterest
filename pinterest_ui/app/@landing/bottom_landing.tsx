@@ -75,10 +75,10 @@ export default function BottomLanding() {
                 (index >= 5 && index <= 9) || (index >= 25 && index <= 29)
                   ? "mt-[-160px]"
                   : (index >= 10 && index <= 14) || (index >= 20 && index <= 24)
-                  ? "mt-[-240px]"
-                  : index >= 15 && index <= 19
-                  ? "mt-[-400px]"
-                  : ""
+                    ? "mt-[-240px]"
+                    : index >= 15 && index <= 19
+                      ? "mt-[-400px]"
+                      : ""
               }`}
             >
               <img
