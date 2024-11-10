@@ -1,8 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import SingIn from "./(modal)/signin";
 
 export default function BottomLanding() {
+  const [pass, setPass] = useState<string>("password");
+  const [open, setOpen] = useState<boolean>(true);
+  const [isSignin, setIsSignin] = useState<boolean>(true);
   const images: string[] = [
     "https://i.pinimg.com/236x/e3/41/4b/e3414b2fcf00375a199ba6964be551af.jpg",
     "https://i.pinimg.com/236x/78/6e/00/786e00eab219eca59803d118fbe0feb3.jpg",
@@ -92,7 +97,16 @@ export default function BottomLanding() {
             Sign up to get your ideas
           </div>
         </div>
-        <div className="w-full"></div>
+        <div className="w-full flex justify-center items-center">
+          <SingIn
+            pass={pass}
+            setPass={setPass}
+            open={open}
+            setOpen={setOpen}
+            isSignin={isSignin}
+            setIsSignin={setIsSignin}
+          />
+        </div>
       </div>
 
       <div className="w-full absolute top-[85px] flex justify-center">

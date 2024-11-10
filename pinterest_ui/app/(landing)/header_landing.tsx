@@ -4,7 +4,7 @@ import Modal from "./(modal)/modal";
 
 export default function HeaderLanding() {
   const [open, setOpen] = useState<boolean>(false);
-
+  const [isSignin, setIsSignin] = useState<boolean>(false);
   return (
     <>
       <div className="h-[80px] w-screen fixed top-0 z-50 p-4 bg-white flex items-center justify-between ">
@@ -41,17 +41,31 @@ export default function HeaderLanding() {
             <div className="m-4 font-roboto text-[16px]">Blog</div>
           </div>
           <div
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              setIsSignin(true);
+              setOpen(true);
+            }}
             className="mr-2 bg-[#E60023] cursor-pointer px-3 py-2 rounded-full text-nowrap font-roboto text-[16px] text-white"
           >
             Log in
           </div>
-          <div className="mr-2 bg-[#E9E9E9] px-3 py-2 rounded-full text-nowrap font-roboto text-[16px] text-black">
+          <div
+            onClick={() => {
+              setIsSignin(false);
+              setOpen(true);
+            }}
+            className="mr-2 bg-[#E9E9E9] cursor-pointer px-3 py-2 rounded-full text-nowrap font-roboto text-[16px] text-black"
+          >
             Sign up
           </div>
         </div>
       </div>
-      <Modal open={open} setOpen={setOpen} />
+      <Modal
+        open={open}
+        setOpen={setOpen}
+        isSignin={isSignin}
+        setIsSignin={setIsSignin}
+      />
     </>
   );
 }
