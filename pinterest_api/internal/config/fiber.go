@@ -1,9 +1,15 @@
 package config
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/viper"
+)
 
-func NewFiber() *fiber.App {
-	var app = fiber.New()
+func NewFiber(config *viper.Viper) *fiber.App {
+	var app = fiber.New(fiber.Config{
+		AppName: config.GetString("app.name"),
+		Prefork: config.GetBool("web.prefork"),
+	})
 
 	return app
 }
