@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import SingIn from "./(modal)/signin";
+import SignUp from "./(modal)/signup";
 
 export default function BottomLanding() {
   const [pass, setPass] = useState<string>("password");
   const [open, setOpen] = useState<boolean>(true);
-  const [isSignin, setIsSignin] = useState<boolean>(true);
+  const [isSignin, setIsSignin] = useState<string>("signup");
   const images: string[] = [
     "https://i.pinimg.com/236x/e3/41/4b/e3414b2fcf00375a199ba6964be551af.jpg",
     "https://i.pinimg.com/236x/78/6e/00/786e00eab219eca59803d118fbe0feb3.jpg",
@@ -64,14 +65,14 @@ export default function BottomLanding() {
   return (
     <div
       id="bottom"
-      className="snap-center relative h-screen w-screen overflow-hidden"
+      className="relative h-screen w-screen snap-center overflow-hidden"
     >
-      <div className="flex justify-center w-full absolute -z-[1]">
-        <div className="grid grid-rows-5 grid-flow-col gap-3 w-fit h-fit">
+      <div className="absolute -z-[1] flex w-full justify-center">
+        <div className="grid h-fit w-fit grid-flow-col grid-rows-5 gap-3">
           {images.map((value: string, index: number) => (
             <div
               key={index}
-              className={` min-w-[236px] max-w-[236px] ${
+              className={`min-w-[236px] max-w-[236px] ${
                 (index >= 5 && index <= 9) || (index >= 25 && index <= 29)
                   ? "mt-[-160px]"
                   : (index >= 10 && index <= 14) || (index >= 20 && index <= 24)
@@ -84,22 +85,26 @@ export default function BottomLanding() {
               <img
                 src={value}
                 alt=""
-                className="rounded-2xl  object-cover h-[350px] size-full"
+                className="size-full h-[350px] rounded-2xl object-cover"
               />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative w-screen h-screen bg-black bg-opacity-60 flex flex-row">
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="text-white text-[70px] w-[450px] font-semibold font-roboto1 leading-tight">
+      <div className="relative flex h-screen w-screen flex-row bg-black bg-opacity-60">
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="w-[450px] font-roboto1 text-[70px] font-semibold leading-tight text-white">
             Sign up to get your ideas
           </div>
         </div>
-        <div className="w-full flex justify-center items-center">
+        <div className="flex w-full flex-col items-center justify-center">
           <SingIn
-            open={open}
+            setOpen={setOpen}
+            isSignin={isSignin}
+            setIsSignin={setIsSignin}
+          />
+          <SignUp
             setOpen={setOpen}
             isSignin={isSignin}
             setIsSignin={setIsSignin}
@@ -107,10 +112,10 @@ export default function BottomLanding() {
         </div>
       </div>
 
-      <div className="w-full absolute top-[85px] flex justify-center">
+      <div className="absolute top-[85px] flex w-full justify-center">
         <div
           onClick={() => route.push("#home")}
-          className={`size-[48px]   bg-[#940343] rounded-full z-20 flex justify-center items-center mb-[16px] cursor-pointer`}
+          className={`z-20 mb-[16px] flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-[#940343]`}
         >
           <svg
             aria-label="Scroll down"
@@ -118,18 +123,18 @@ export default function BottomLanding() {
             role="img"
             viewBox="0 0 24 24"
             width="20"
-            className="fill-white rotate-180"
+            className="rotate-180 fill-white"
           >
             <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
           </svg>
         </div>
       </div>
 
-      <div className="h-[5vh] absolute bottom-0 bg-white w-screen flex flex-row items-center justify-center">
+      <div className="absolute bottom-0 flex h-[5vh] w-screen flex-row items-center justify-center bg-white">
         {text.map((value: string, index: number) => (
           <div
             key={index}
-            className="text-[12px] text-nowrap hover:underline mr-2 roboto2 font-semibold"
+            className="roboto2 mr-2 text-nowrap text-[12px] font-semibold hover:underline"
           >
             {value}
           </div>

@@ -1,29 +1,24 @@
 import { useState } from "react";
 
-export default function SingUp({
-  open,
+export default function SignUp({
   setOpen,
 
   isSignin,
   setIsSignin,
 }: {
-  open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  isSignin: boolean;
-  setIsSignin: React.Dispatch<React.SetStateAction<boolean>>;
+  isSignin: string;
+  setIsSignin: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [pass, setPass] = useState<string>("password");
-  if (isSignin) return null;
+  if (isSignin != "signup") return null;
   return (
     <>
-      <div
-        hidden={isSignin}
-        className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] rounded-b-none bg-white px-[10px] pb-6 pt-[20px]"
-      >
+      <div className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] rounded-b-none bg-white px-[10px] pb-6 pt-[20px]">
         <div
           onClick={() => {
-            setOpen(!open);
+            setOpen(false);
           }}
           className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
         >
@@ -100,7 +95,7 @@ export default function SingUp({
             />
           </div>
           <div className="">
-            <div className="rounded-full bg-[#e60023] py-2 text-center text-white">
+            <div className="rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]">
               Continue
             </div>
           </div>
@@ -125,7 +120,7 @@ export default function SingUp({
           Already a member?{" "}
           <span
             onClick={() => {
-              setIsSignin(true);
+              setIsSignin("signin");
             }}
             className="cursor-pointer font-bold hover:underline"
           >

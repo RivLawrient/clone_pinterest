@@ -1,19 +1,16 @@
 import { SetStateAction, useRef, useState } from "react";
 import SingIn from "./signin";
-import SingUp from "./singup";
+import SingUp from "./signup";
 
 export default function Modal({
   open,
   setOpen,
-  isSignin,
-  setIsSignin,
+  children,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isSignin: boolean;
-  setIsSignin: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
 }) {
-  const [pass, setPass] = useState<string>("password");
   const ref = useRef(null);
 
   if (!open) return null;
@@ -25,20 +22,9 @@ export default function Modal({
       onClick={(e: React.MouseEvent<HTMLDivElement>) =>
         e.target === ref.current ? setOpen(!open) : null
       }
-      className="w-screen h-screen flex flex-col justify-center items-center fixed  bg-black bg-opacity-60 z-50"
+      className="fixed z-50 flex h-screen w-screen flex-col items-center justify-center bg-black bg-opacity-60"
     >
-      <SingIn
-        open={open}
-        setOpen={setOpen}
-        isSignin={isSignin}
-        setIsSignin={setIsSignin}
-      />
-      <SingUp
-        open={open}
-        setOpen={setOpen}
-        isSignin={isSignin}
-        setIsSignin={setIsSignin}
-      />
+      {children}
     </div>
   );
 }

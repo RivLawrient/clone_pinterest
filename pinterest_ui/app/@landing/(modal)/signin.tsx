@@ -1,28 +1,24 @@
 import React, { useState } from "react";
 
 export default function SingIn({
-  open,
-  setOpen,
-
   isSignin,
   setIsSignin,
+  setOpen,
 }: {
-  open: boolean;
+  isSignin: string;
+  setIsSignin: React.Dispatch<React.SetStateAction<string>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
-  isSignin: boolean;
-  setIsSignin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [pass, setPass] = useState<string>("password");
-  if (!isSignin) return null;
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  if (isSignin != "signin") return null;
   return (
-    <div
-      hidden={!isSignin}
-      className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] bg-white px-[10px] pb-6 pt-[20px]"
-    >
+    <div className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] bg-white px-[10px] pb-6 pt-[20px]">
       <div
         onClick={() => {
-          setOpen(!open);
+          setOpen(false);
         }}
         className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
       >
@@ -61,6 +57,9 @@ export default function SingIn({
         <div className="mb-[12px] flex flex-col">
           <span className="ml-[8px] text-[14px]">Email</span>
           <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEmail(e.target.value);
+            }}
             type="email"
             placeholder="Email"
             className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
@@ -69,6 +68,9 @@ export default function SingIn({
         <div className="relative flex flex-col">
           <span className="ml-[8px] text-[14px]">Password</span>
           <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEmail(e.target.value);
+            }}
             type={pass}
             placeholder="Password"
             className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
@@ -96,7 +98,12 @@ export default function SingIn({
           Forgot your password?
         </div>
         <div className="">
-          <div className="rounded-full bg-[#e60023] py-2 text-center text-white">
+          <div
+            onClick={() => {
+              console.log(email, password);
+            }}
+            className="cursor-pointer rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]"
+          >
             Log in
           </div>
         </div>
@@ -126,7 +133,7 @@ export default function SingIn({
         Not on Pinterest yet?{" "}
         <span
           onClick={() => {
-            setIsSignin(false);
+            setIsSignin("signup");
           }}
           className="cursor-pointer font-bold hover:underline"
         >
