@@ -12,6 +12,7 @@ export default function SignUp({
   setIsSignin: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [pass, setPass] = useState<string>("password");
+  const [birt, setBirth] = useState<Date>(new Date());
   if (isSignin != "signup") return null;
   return (
     <>
@@ -89,13 +90,21 @@ export default function SignUp({
           <div className="mb-[12px] flex flex-col">
             <span className="ml-[8px] text-[14px]">Birthdate</span>
             <input
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setBirth(new Date(e.target.value));
+              }}
               type="date"
               placeholder=""
               className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
             />
           </div>
           <div className="">
-            <div className="rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]">
+            <div
+              onClick={() => {
+                console.log(birt);
+              }}
+              className="rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]"
+            >
               Continue
             </div>
           </div>
