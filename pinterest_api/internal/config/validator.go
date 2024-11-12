@@ -8,34 +8,31 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	validate *validator.Validate
+type Validator struct {
+	Validate *validator.Validate
 	trans    ut.Translator
-)
-
-func NewValidator(viper *viper.Viper) *validator.Validate {
-	validate = validator.New()
-
-	eng := en.New()
-	uni := ut.New(eng, eng)
-	trans, _ = uni.GetTranslator("en")
-
-	enTranslations.RegisterDefaultTranslations(validate, trans)
-
-	return validate
 }
 
-func ValidateStruct(s interface{}) []string {
+func NewValidator(viper *viper.Viper) *Validator {
+	validate := validator.New()
+	eng := en.New()
+	uni := ut.New(eng, eng)
+	trans, _ := uni.GetTranslator("en")
+	enTranslations.RegisterDefaultTranslations(validate, trans)
+
+	return &Validator{Validate: validate, trans: trans}
+}
+
+func (v *Validator) ValidateStruct(s interface{}) []string {
 	var translatedErrors []string
 
-	err := validate.Struct(s)
+	err := v.Validate.Struct(s)
 	if err != nil {
 		if valErr, ok := err.(validator.ValidationErrors); ok {
 			for _, e := range valErr {
-				translatedErrors = append(translatedErrors, e.Translate(trans))
+				translatedErrors = append(translatedErrors, e.Translate(v.trans))
 			}
 		}
 	}
-
 	return translatedErrors
 }
