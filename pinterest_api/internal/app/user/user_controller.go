@@ -1,7 +1,7 @@
 package user
 
 import (
-	"pinterest_api/internal/app/model"
+	"pinterest_api/internal/model"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
