@@ -51,7 +51,6 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	username := baseUsername
 	counter := 1
 
-	// Loop sampai menemukan username yang belum ada
 	for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
 		username = fmt.Sprintf("%s%d", baseUsername, counter)
 		counter++
