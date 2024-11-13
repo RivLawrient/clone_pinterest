@@ -2,6 +2,7 @@ package route
 
 import (
 	"pinterest_api/internal/app/user"
+	"pinterest_api/internal/model"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,6 +19,12 @@ func (c *RouteConfig) Setup() {
 	// 	AllowHeaders:     "Content-Type, Authorization, Origin, Accept",
 	// 	AllowCredentials: true,
 	// }))
+	c.App.Use(func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.StatusNotFound).JSON(model.WebResponse[string]{
+			StatusCode: fiber.StatusNotFound,
+			Errors:     "Route is not found",
+		})
+	})
 	c.SetupGuestRoute()
 	c.SetupAuthRoute()
 }

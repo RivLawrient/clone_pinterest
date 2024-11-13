@@ -19,6 +19,7 @@ func NewUserController(userUsecase *UserUsecase) *UserController {
 
 func (c *UserController) RegisterByEmail(ctx *fiber.Ctx) error {
 	request := new(RegisterUserByEmailRequest)
+
 	err := ctx.BodyParser(request)
 	if err != nil {
 		error := fiber.ErrBadRequest
