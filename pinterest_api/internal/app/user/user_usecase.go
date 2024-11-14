@@ -50,7 +50,6 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	baseUsername := strings.Split(request.Email, "@")[0]
 	username := baseUsername
 	counter := 1
-
 	for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
 		username = fmt.Sprintf("%s%d", baseUsername, counter)
 		counter++
@@ -92,4 +91,25 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		Token:      user.Token,
 		CreatedAt:  time.UnixMilli(user.CreatedAt),
 	}, nil
+}
+
+func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmailRequest) (*LoginUserResponse, *fiber.Error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	err := u.Validate.ValidateStruct(request)
+	if err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
+	}
+	user := new(User)
+	if err := u.UserRepository.FindByEmail(tx, user, request.Email); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email is Password is invalid")
+	}
+	fmt.Println(user)
+	if err := bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(request.Password)); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email or Password is invalid")
+	}
+	fmt.Println(user)
+	return nil, nil
+
 }

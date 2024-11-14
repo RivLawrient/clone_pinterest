@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"pinterest_api/internal/model"
 	"time"
 
@@ -43,11 +44,32 @@ func (c *UserController) RegisterByEmail(ctx *fiber.Ctx) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
 	cookie.Secure = true
-
 	ctx.Cookie(cookie)
 
 	return ctx.JSON(model.WebResponse[*RegisterUserResponse]{
 		StatusCode: ctx.Response().StatusCode(),
 		Data:       response,
 	})
+}
+func (c *UserController) LoginByEmail(ctx *fiber.Ctx) error {
+	request := new(LoginUserByEmailRequest)
+
+	err := ctx.BodyParser(request)
+	if err != nil {
+		error := fiber.ErrBadRequest
+		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+			StatusCode: error.Code,
+			Errors:     "invalid request body",
+		})
+	}
+
+	response, error := c.UserUsecase.LoginByEmail(ctx.UserContext(), request)
+	if error != nil {
+		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+			StatusCode: error.Code,
+			Errors:     error.Message,
+		})
+	}
+	fmt.Println(response)
+	return ctx.SendString("success")
 }

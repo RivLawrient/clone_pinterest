@@ -21,3 +21,13 @@ type RegisterUserResponse struct {
 	Token      string    `json:"token,omitempty"`
 	CreatedAt  time.Time `json:"created_at,omitempty"`
 }
+
+type LoginUserByEmailRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8,max=100"`
+}
+
+type LoginUserResponse struct {
+	Email string `json:"email,omitempty"`
+	Token string `json:"token,omitempty"`
+}
