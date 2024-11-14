@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"pinterest_api/internal/model"
 	"time"
 
@@ -70,6 +69,17 @@ func (c *UserController) LoginByEmail(ctx *fiber.Ctx) error {
 			Errors:     error.Message,
 		})
 	}
-	fmt.Println(response)
-	return ctx.SendString("success")
+
+	cookie := new(fiber.Cookie)
+	cookie.Name = "auth-token"
+	cookie.Value = response.Token
+	cookie.Expires = time.Now().Add(24 * time.Hour)
+	cookie.HTTPOnly = true
+	cookie.Secure = true
+	ctx.Cookie(cookie)
+
+	return ctx.JSON(model.WebResponse[*LoginUserResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       response,
+	})
 }

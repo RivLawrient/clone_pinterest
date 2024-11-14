@@ -74,7 +74,6 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	}
 
 	if err := tx.Commit().Error; err != nil {
-		fmt.Printf("Failed commit transaction : %+v", err)
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Something wrong")
 	}
 
@@ -101,15 +100,28 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 	if err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
 	}
+
 	user := new(User)
 	if err := u.UserRepository.FindByEmail(tx, user, request.Email); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email is Password is invalid")
 	}
-	fmt.Println(user)
+
 	if err := bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(request.Password)); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email or Password is invalid")
 	}
-	fmt.Println(user)
-	return nil, nil
 
+	user.Token = uuid.New().String()
+
+	if err := u.UserRepository.Update(tx, user); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, strings.Split(err.Error(), ": ")[1])
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Something wrong")
+	}
+
+	return &LoginUserResponse{
+		Email: user.Email,
+		Token: *user.Password,
+	}, nil
 }
