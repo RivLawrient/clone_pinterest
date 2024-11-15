@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -165,12 +166,8 @@ func (u *UserUsecase) RegisterGoogleCallback(code string) (any, *fiber.Error) {
 	if err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Failed to read response body: "+err.Error())
 	}
-	// var apiResponse GoogleUser
-	// json.Unmarshal(body, &apiResponse)
+	var apiResponse GoogleUser
+	json.Unmarshal(body, &apiResponse)
 
-	return body, nil
+	return apiResponse, nil
 }
-
-// func (u *UserUsecase) RegisterByGoogle(request *RegisterUserGoogle) (*UserResponse, *fiber.Error){
-
-// }

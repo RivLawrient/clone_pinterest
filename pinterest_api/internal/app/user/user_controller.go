@@ -17,7 +17,7 @@ func NewUserController(userUsecase *UserUsecase) *UserController {
 	}
 }
 
-func (c *UserController) RegisterByEmail(ctx *fiber.Ctx) error {
+func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 	request := new(RegisterUserByEmailRequest)
 
 	err := ctx.BodyParser(request)
@@ -50,7 +50,7 @@ func (c *UserController) RegisterByEmail(ctx *fiber.Ctx) error {
 		Data:       response,
 	})
 }
-func (c *UserController) LoginByEmail(ctx *fiber.Ctx) error {
+func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	request := new(LoginUserByEmailRequest)
 
 	err := ctx.BodyParser(request)
@@ -82,4 +82,25 @@ func (c *UserController) LoginByEmail(ctx *fiber.Ctx) error {
 		StatusCode: ctx.Response().StatusCode(),
 		Data:       response,
 	})
+}
+
+func (c *UserController) HandleRegisterGoogleRedirect(ctx *fiber.Ctx) error {
+	url := c.UserUsecase.RegisterGoogleHandle()
+
+	return ctx.Redirect(url)
+}
+
+func (c *UserController) HandleRegisterGoogleCallback(ctx *fiber.Ctx) error {
+	code := ctx.FormValue("code")
+
+	hasil, err := c.UserUsecase.RegisterGoogleCallback(code)
+	if err != nil {
+		error := err
+		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
+			StatusCode: error.Code,
+			Data:       nil,
+			Errors:     error.Error(),
+		})
+	}
+	return ctx.JSON(hasil)
 }
