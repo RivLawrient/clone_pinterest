@@ -19,7 +19,7 @@ type BootstrapConfig struct {
 
 func Bootstrap(config *BootstrapConfig) {
 	userRepository := user.NewUserRepository()
-	userUsecase := user.NewUserUsecase(config.DB, config.Validate, userRepository)
+	userUsecase := user.NewUserUsecase(config.DB, config.Validate, userRepository, config.Config)
 	userController := user.NewUserController(userUsecase)
 
 	routeConfig := route.RouteConfig{

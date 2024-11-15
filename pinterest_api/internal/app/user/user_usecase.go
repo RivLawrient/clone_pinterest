@@ -3,13 +3,18 @@ package user
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"pinterest_api/internal/config"
 	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 	"gorm.io/gorm"
 )
 
@@ -17,13 +22,15 @@ type UserUsecase struct {
 	DB             *gorm.DB
 	Validate       *config.Validator
 	UserRepository *UserRepository
+	Viper          *viper.Viper
 }
 
-func NewUserUsecase(db *gorm.DB, validate *config.Validator, userRepository *UserRepository) *UserUsecase {
+func NewUserUsecase(db *gorm.DB, validate *config.Validator, userRepository *UserRepository, viper *viper.Viper) *UserUsecase {
 	return &UserUsecase{
 		DB:             db,
 		Validate:       validate,
 		UserRepository: userRepository,
+		Viper:          viper,
 	}
 }
 
@@ -125,3 +132,45 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 		Token: *user.Password,
 	}, nil
 }
+
+var (
+	googleOauthConfig = &oauth2.Config{
+		RedirectURL:  "http://127.0.0.1:4000/auth/google/callback",
+		ClientID:     "",
+		ClientSecret: "",
+		Scopes: []string{"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile"},
+		Endpoint: google.Endpoint,
+	}
+)
+
+func (u *UserUsecase) RegisterGoogleHandle() string {
+	googleOauthConfig.ClientID = u.Viper.GetString("google.clientId")
+	googleOauthConfig.ClientSecret = u.Viper.GetString("google.clientSecret")
+	return googleOauthConfig.AuthCodeURL("state")
+}
+
+func (u *UserUsecase) RegisterGoogleCallback(code string) (any, *fiber.Error) {
+	token, err := googleOauthConfig.Exchange(context.Background(), code)
+	if err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "")
+	}
+
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	if err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err.Error())
+	}
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Failed to read response body: "+err.Error())
+	}
+	// var apiResponse GoogleUser
+	// json.Unmarshal(body, &apiResponse)
+
+	return body, nil
+}
+
+// func (u *UserUsecase) RegisterByGoogle(request *RegisterUserGoogle) (*UserResponse, *fiber.Error){
+
+// }
