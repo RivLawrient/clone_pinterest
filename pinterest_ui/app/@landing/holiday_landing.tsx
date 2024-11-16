@@ -2,19 +2,19 @@
 export default function HolidayLanding() {
   return (
     <div
-      id="holiday"
-      className="snap-center relative h-screen w-screen bg-[#FFE4C1] flex flex-col md:flex-row"
+      // id="holiday"
+      className="relative flex h-screen w-screen snap-center flex-col bg-[#FFE4C1] md:flex-row"
     >
-      <div className="w-full  flex flex-col justify-center items-center  mt-[80px]">
-        <div className="text-[#C32F00] w-[534px] text-center font-roboto2 font-bold  text-[60px] leading-[71px] break-words">
+      <div className="mt-[80px] flex w-full flex-col items-center justify-center">
+        <div className="w-[534px] break-words text-center font-roboto2 text-[60px] font-bold leading-[71px] text-[#C32F00]">
           Get ready for Thanksgiving
         </div>
-        <div className="break-words mt-4  max-w-[534px] leading-7  text-center text-[24px] text-[#C32F00]">
+        <div className="mt-4 max-w-[534px] break-words text-center text-[24px] leading-7 text-[#C32F00]">
           Find everything from recipes to crafts you can do with the whole
           family.
         </div>
         <div>
-          <div className="mt-6 mb-12 bg-[#E60032] px-4 py-3 text-[16px] text-white font-roboto1 rounded-full">
+          <div className="mb-12 mt-6 rounded-full bg-[#E60032] px-4 py-3 font-roboto1 text-[16px] text-white">
             Explore
           </div>
         </div>

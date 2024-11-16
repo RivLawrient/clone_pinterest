@@ -1,3 +1,9 @@
+import ProfileImg from "./profileImg";
+
 export default function Home() {
-  return <div>aku home</div>;
+  return (
+    <>
+      <div className="mt-[80px] h-screen w-screen"></div>
+    </>
+  );
 }

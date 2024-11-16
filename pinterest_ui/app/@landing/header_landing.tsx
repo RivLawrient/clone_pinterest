@@ -49,7 +49,7 @@ export default function HeaderLanding() {
               setIsSignin("signin");
               setOpen(true);
             }}
-            className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E60023] px-3 py-2 font-roboto text-[16px] text-white"
+            className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E60023] px-3 py-2 font-roboto text-[16px] text-white hover:bg-[#c9001e]"
           >
             Log in
           </div>
@@ -58,7 +58,7 @@ export default function HeaderLanding() {
               setIsSignin("signup");
               setOpen(true);
             }}
-            className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E9E9E9] px-3 py-2 font-roboto text-[16px] text-black"
+            className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E9E9E9] px-3 py-2 font-roboto text-[16px] text-black hover:bg-[#d7d7d7]"
           >
             Sign up
           </div>

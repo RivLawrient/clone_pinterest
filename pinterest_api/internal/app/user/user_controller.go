@@ -50,6 +50,7 @@ func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 		Data:       response,
 	})
 }
+
 func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	request := new(LoginUserByEmailRequest)
 
@@ -84,23 +85,52 @@ func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	})
 }
 
-func (c *UserController) HandleRegisterGoogleRedirect(ctx *fiber.Ctx) error {
-	url := c.UserUsecase.RegisterGoogleHandle()
+func (c *UserController) HandleGoogleRedirect(ctx *fiber.Ctx) error {
+	url := c.UserUsecase.GoogleHandle()
 
 	return ctx.Redirect(url)
 }
 
-func (c *UserController) HandleRegisterGoogleCallback(ctx *fiber.Ctx) error {
+func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 	code := ctx.FormValue("code")
 
-	hasil, err := c.UserUsecase.RegisterGoogleCallback(code)
+	hasil, err := c.UserUsecase.GoogleCallback(ctx.UserContext(), code)
+	if err != nil {
+		return ctx.Redirect("http://127.0.0.1:3000")
+	}
+
+	cookie := new(fiber.Cookie)
+	cookie.Name = "auth-token"
+	cookie.Value = hasil.Token
+	cookie.Expires = time.Now().Add(24 * time.Hour)
+	cookie.HTTPOnly = true
+	cookie.Secure = true
+	ctx.Cookie(cookie)
+
+	return ctx.Redirect("http://127.0.0.1:3000")
+}
+
+func (c *UserController) GetUser(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+
+	response, err := c.UserUsecase.Verify(ctx.UserContext(), auth)
 	if err != nil {
 		error := err
 		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
 			StatusCode: error.Code,
 			Data:       nil,
-			Errors:     error.Error(),
+			Errors:     error.Message,
 		})
 	}
-	return ctx.JSON(hasil)
+
+	return ctx.JSON(model.WebResponse[UserResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}
+
+func (c *UserController) Logout(ctx *fiber.Ctx) error {
+	ctx.ClearCookie("auth-token")
+
+	return nil
 }

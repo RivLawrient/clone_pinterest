@@ -37,7 +37,13 @@ export function AnimateText({ step }: { step: number }) {
   );
 }
 
-export function AnimateBtn({ step }: { step: number }) {
+export function AnimateBtn({
+  step,
+  scroll,
+}: {
+  step: number;
+  scroll: () => void;
+}) {
   const route = useRouter();
   const color: string[] = [
     "bg-[#C28B00]",
@@ -49,7 +55,7 @@ export function AnimateBtn({ step }: { step: number }) {
 
   return (
     <div
-      onClick={() => route.push("#search")}
+      onClick={scroll}
       className={`size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] flex cursor-pointer items-center justify-center rounded-full`}
     >
       <svg

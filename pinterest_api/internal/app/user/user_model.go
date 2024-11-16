@@ -41,3 +41,15 @@ type GoogleUser struct {
 	GivenName     string `json:"given_name"`
 	Picture       string `json:"picture"`
 }
+
+type UserResponse struct {
+	Username   string    `json:"username,"`
+	FirstName  string    `json:"first_name,"`
+	LastName   string    `json:"last_name,"`
+	Email      string    `json:"email,"`
+	IsGoogle   bool      `json:"is_google,"`
+	IsFacebook bool      `json:"is_facebook,"`
+	BirthDate  time.Time `json:"birth_date,"`
+	ProfileImg string    `json:"profile_img,"`
+	CreatedAt  time.Time `json:"created_at,"`
+}

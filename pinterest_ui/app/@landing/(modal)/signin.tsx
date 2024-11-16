@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GoogleLogin from "./googleLogin";
 
 export default function SingIn({
   isSignin,
@@ -108,13 +109,13 @@ export default function SingIn({
           </div>
         </div>
         <div className="my-[8px] text-center">OR</div>
-        <div className="w-full">
+        {/* <div className="w-full">
           <div className="rounded-full bg-[#1877f2] py-2 text-center text-white">
             Continue with Facebook
           </div>
-        </div>
-        <div className="w-full">
-          <div className="mt-[12px] rounded-full border py-2 text-center">
+        </div> */}
+        <div onClick={GoogleLogin} className="w-full">
+          <div className="mt-[12px] cursor-pointer rounded-full border py-2 text-center hover:bg-slate-100">
             Continue with Google
           </div>
         </div>

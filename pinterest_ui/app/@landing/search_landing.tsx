@@ -1,40 +1,40 @@
 export default function SearchLanding() {
   return (
     <div
-      id="search"
-      className="snap-center relative h-screen w-screen scroll-smooth bg-[#FFFD92] flex flex-col md:flex-row"
+      // id="search"
+      className="relative flex h-screen w-screen snap-center flex-col scroll-smooth bg-[#FFFD92] md:flex-row"
     >
-      <div className="w-full h-full">
-        <div className=" flex justify-center items-center h-full w-full">
-          <div className="h-[611px] w-[537px] relative">
+      <div className="h-full w-full">
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="relative h-[611px] w-[537px]">
             <img
               src="https://s.pinimg.com/webapp/topRight-6902088a.png"
               alt=""
               width={178}
-              className="object-cover absolute top-0 right-[15px]"
+              className="absolute right-[15px] top-0 object-cover"
             />
             <img
               src="https://s.pinimg.com/webapp/left-ccce7532.png"
               alt=""
               width={204}
-              className="object-cover absolute top-[150px] left-0"
+              className="absolute left-0 top-[150px] object-cover"
             />
             <img
               src="https://s.pinimg.com/webapp/right-2bd1edfc.png"
               alt=""
               width={164}
-              className="object-cover absolute right-0 bottom-0"
+              className="absolute bottom-0 right-0 object-cover"
             />
             <img
               src="https://s.pinimg.com/webapp/center-2d76a691.png"
               alt=""
               width={298}
-              className="object-cover absolute top-[88px] left-[148px]"
+              className="absolute left-[148px] top-[88px] object-cover"
             />
-            <div className="absolute flex h-[100px] justify-center bg-white items-center w-[316px] rounded-full top-[231px] left-[103px]">
+            <div className="absolute left-[103px] top-[231px] flex h-[100px] w-[316px] items-center justify-center rounded-full bg-white">
               <svg
                 aria-label="search"
-                className="fill-black ml-2"
+                className="ml-2 fill-black"
                 height="24"
                 role="img"
                 viewBox="0 0 24 24"
@@ -42,23 +42,23 @@ export default function SearchLanding() {
               >
                 <path d="M10 16a6 6 0 1 1 .01-12.01A6 6 0 0 1 10 16m13.12 2.88-4.26-4.26a10 10 0 1 0-4.24 4.24l4.26 4.26a3 3 0 1 0 4.24-4.24"></path>
               </svg>
-              <div className="text-[24px] mx-2 text-[#6E0F3C] font-bold font-roboto">
+              <div className="mx-2 font-roboto text-[24px] font-bold text-[#6E0F3C]">
                 easy chicken dinner
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="w-full  flex flex-col justify-center items-center  mt-[80px]">
-        <div className="text-[#C31952] font-roboto2 font-bold  text-[60px] leading-[71px]">
+      <div className="mt-[80px] flex w-full flex-col items-center justify-center">
+        <div className="font-roboto2 text-[60px] font-bold leading-[71px] text-[#C31952]">
           Search for an idea
         </div>
-        <div className="break-words mt-4  max-w-[400px] leading-7  text-center text-[24px] text-[#C31952]">
+        <div className="mt-4 max-w-[400px] break-words text-center text-[24px] leading-7 text-[#C31952]">
           What do you want to try next? Think of something you’re into—like
           “easy chicken dinner”—and see what you find.
         </div>
         <div>
-          <div className="mt-6 mb-12 bg-[#E60032] px-4 py-3 text-[16px] text-white font-roboto1 rounded-full">
+          <div className="mb-12 mt-6 rounded-full bg-[#E60032] px-4 py-3 font-roboto1 text-[16px] text-white">
             Explore
           </div>
         </div>

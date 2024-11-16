@@ -15,7 +15,7 @@ type RouteConfig struct {
 
 func (c *RouteConfig) Setup() {
 	c.App.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://127.0.0.1:3000",
+		AllowOrigins:     "http://127.0.0.1:3000, http://127.0.0.1:4000",
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Content-Type, Authorization, Origin, Accept",
 		AllowCredentials: true,
@@ -33,8 +33,11 @@ func (c *RouteConfig) Setup() {
 func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/auth/register", c.UserController.HandleRegisterByEmail)
 	c.App.Post("/auth/login", c.UserController.HandleLoginByEmail)
-	c.App.Get("/auth/google", c.UserController.HandleRegisterGoogleRedirect)
-	c.App.Get("/auth/google/callback", c.UserController.HandleRegisterGoogleCallback)
+	c.App.Get("/auth/google", c.UserController.HandleGoogleRedirect)
+	c.App.Get("/auth/google/callback", c.UserController.HandleGoogleCallback)
+	c.App.Get("/bye", c.UserController.Logout)
+
+	c.App.Get("/user", c.UserController.GetUser)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

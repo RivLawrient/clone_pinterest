@@ -45,7 +45,7 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	}
 
 	if err := u.UserRepository.FindByEmail(tx, new(User), request.Email); err == nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email is already used")
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "email is already used")
 	}
 
 	password := new(string)
@@ -82,7 +82,7 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	}
 
 	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Something wrong")
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	return &RegisterUserResponse{
@@ -111,11 +111,11 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 
 	user := new(User)
 	if err := u.UserRepository.FindByEmail(tx, user, request.Email); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email is Password is invalid")
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "email is password is invalid")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(request.Password)); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "Email or Password is invalid")
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "email or password is invalid")
 	}
 
 	user.Token = uuid.New().String()
@@ -130,7 +130,7 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 
 	return &LoginUserResponse{
 		Email: user.Email,
-		Token: *user.Password,
+		Token: user.Token,
 	}, nil
 }
 
@@ -145,13 +145,13 @@ var (
 	}
 )
 
-func (u *UserUsecase) RegisterGoogleHandle() string {
+func (u *UserUsecase) GoogleHandle() string {
 	googleOauthConfig.ClientID = u.Viper.GetString("google.clientId")
 	googleOauthConfig.ClientSecret = u.Viper.GetString("google.clientSecret")
 	return googleOauthConfig.AuthCodeURL("state")
 }
 
-func (u *UserUsecase) RegisterGoogleCallback(code string) (any, *fiber.Error) {
+func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUserResponse, *fiber.Error) {
 	token, err := googleOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "")
@@ -164,10 +164,87 @@ func (u *UserUsecase) RegisterGoogleCallback(code string) (any, *fiber.Error) {
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "Failed to read response body: "+err.Error())
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "failed to read response body: "+err.Error())
 	}
-	var apiResponse GoogleUser
-	json.Unmarshal(body, &apiResponse)
+	var googleUser GoogleUser
+	json.Unmarshal(body, &googleUser)
 
-	return apiResponse, nil
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	user := new(User)
+	if err := u.UserRepository.FindByEmail(tx, user, googleUser.Email); err != nil { //kalau gada di db
+
+		baseUsername := strings.Split(googleUser.Email, "@")[0]
+		username := baseUsername
+		counter := 1
+
+		for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
+			username = fmt.Sprintf("%s%d", baseUsername, counter)
+			counter++
+		}
+
+		user.ID = uuid.New().String()
+		user.Username = username
+		user.FirstName = googleUser.FamilyName
+		user.LastName = &googleUser.GivenName
+		user.Email = googleUser.Email
+		user.IsGoogle = true
+		user.IsFacebook = false
+		user.BirthDate = 0
+		user.ProfileImg = googleUser.Picture
+		user.Token = uuid.New().String()
+
+		if err := u.UserRepository.Create(tx, user); err != nil {
+			return nil, fiber.NewError(fiber.ErrBadRequest.Code, strings.Split(err.Error(), ": ")[1])
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+		}
+
+		return &LoginUserResponse{
+			Email: user.Email,
+			Token: user.Token,
+		}, nil
+	}
+
+	user.Token = uuid.New().String()
+
+	if err := u.UserRepository.Update(tx, user); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, strings.Split(err.Error(), ": ")[1])
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &LoginUserResponse{
+		Email: user.Email,
+		Token: user.Token,
+	}, nil
+}
+
+func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, *fiber.Error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	user := new(User)
+	if err := u.UserRepository.FindyByToken(tx, user, token); err != nil {
+		fmt.Println(user)
+		return nil, fiber.ErrInternalServerError
+	}
+
+	return &UserResponse{
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   *user.LastName,
+		Email:      user.Email,
+		IsGoogle:   user.IsGoogle,
+		IsFacebook: user.IsFacebook,
+		BirthDate:  time.UnixMilli(user.BirthDate),
+		ProfileImg: user.ProfileImg,
+		CreatedAt:  time.UnixMilli(user.CreatedAt),
+	}, nil
+
 }

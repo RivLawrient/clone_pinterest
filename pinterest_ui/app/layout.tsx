@@ -1,6 +1,7 @@
 import { request } from "https";
 import "./globals.css";
 import { cookies } from "next/headers";
+import { usePathname } from "next/navigation";
 
 export default async function RootLayout({
   landing,
@@ -10,7 +11,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const token = cookieStore.get("auth");
+  const token = cookieStore.get("auth-token");
 
   return (
     <html lang="en">
