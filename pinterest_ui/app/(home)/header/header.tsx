@@ -13,7 +13,7 @@ export default function HeaderHome() {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   return (
-    <div className="fixed top-0 flex h-[80px] w-screen items-center px-4 py-1">
+    <div className="fixed top-0 flex h-[80px] w-screen items-center px-4 py-1 bg-white z-10">
       <Link
         href={"/"}
         className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"

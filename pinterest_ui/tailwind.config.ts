@@ -1,5 +1,3 @@
-import { transform } from "next/dist/build/swc/generated-native";
-import { after, before } from "node:test";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
