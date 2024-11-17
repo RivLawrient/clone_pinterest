@@ -3,7 +3,7 @@ import ProfileImg from "./profileImg";
 export default function Home() {
   return (
     <>
-      <div className="mt-[80px] h-screen w-screen"></div>
+      <div className="mt-[80px] w-screen"></div>
     </>
   );
 }
