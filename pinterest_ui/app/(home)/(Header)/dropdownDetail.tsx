@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import ProfileImg from "../profileImg";
+import ProfileImg from "./profileImg";
 import { useUser } from "@/app/(userContext)/User";
-import Logout from "../logout";
+import Logout from "./logout";
 
 export default function DropdownDetail({
   isVisible,
@@ -26,7 +26,6 @@ export default function DropdownDetail({
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Cleanup event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -37,7 +36,7 @@ export default function DropdownDetail({
     <>
       <div
         ref={ref}
-        className="absolute right-5 top-14 rounded-2xl bg-white p-2 shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px]"
+        className="fixed right-0 top-14 z-20 mr-2 rounded-2xl bg-white p-2 shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px]"
       >
         <div>
           <div className="p-2 text-[12px]">Currently in</div>

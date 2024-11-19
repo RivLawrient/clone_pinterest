@@ -1,5 +1,5 @@
 import { UserProvider } from "../(userContext)/User";
-import HeaderHome from "./header/header";
+import HeaderHome from "./(Header)/header";
 
 export default function LayoutHome({
   children,

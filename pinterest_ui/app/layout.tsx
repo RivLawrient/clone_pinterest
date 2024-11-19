@@ -1,7 +1,5 @@
-import { request } from "https";
 import "./globals.css";
 import { cookies } from "next/headers";
-import { usePathname } from "next/navigation";
 
 export default async function RootLayout({
   landing,

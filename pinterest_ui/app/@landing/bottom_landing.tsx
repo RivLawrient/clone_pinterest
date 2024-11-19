@@ -5,7 +5,7 @@ import { useState } from "react";
 import SingIn from "./(modal)/signin";
 import SignUp from "./(modal)/signup";
 
-export default function BottomLanding({ scroll }: { scroll: () => void }) {
+export default function BottomLanding() {
   const [pass, setPass] = useState<string>("password");
   const [open, setOpen] = useState<boolean>(true);
   const [isSignin, setIsSignin] = useState<string>("signup");
@@ -63,10 +63,7 @@ export default function BottomLanding({ scroll }: { scroll: () => void }) {
   ];
   const route = useRouter();
   return (
-    <div
-      // id="bottom"
-      className="relative h-screen w-screen snap-center overflow-hidden"
-    >
+    <div className="relative h-screen w-screen snap-center overflow-hidden">
       <div className="absolute -z-[1] flex w-full justify-center">
         <div className="grid h-fit w-fit grid-flow-col grid-rows-5 gap-3">
           {images.map((value: string, index: number) => (
@@ -114,7 +111,11 @@ export default function BottomLanding({ scroll }: { scroll: () => void }) {
 
       <div className="absolute top-[85px] flex w-full justify-center">
         <div
-          onClick={scroll}
+          onClick={() =>
+            document
+              .querySelector(".home-section")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
           className={`z-20 mb-[16px] flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-[#940343]`}
         >
           <svg

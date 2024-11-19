@@ -20,7 +20,7 @@ export default function Masonry({ images }: { images: string[] }) {
   useEffect(() => {
     const updateColumns = () => {
       if (ref.current) {
-        setLeng(Math.max(2, Math.floor(ref.current.clientWidth / 250)));
+        setLeng(Math.max(2, Math.floor(ref.current.clientWidth / 253)));
       }
     };
 
@@ -40,7 +40,7 @@ export default function Masonry({ images }: { images: string[] }) {
               key={index}
               className="flex flex-col gap-4"
               style={{
-                width: `${236}px`,
+                width: `${238}px`,
               }}
             >
               {value.map((val, ind) => (

@@ -1,9 +1,6 @@
 export default function SearchLanding() {
   return (
-    <div
-      // id="search"
-      className="relative flex h-screen w-screen snap-center flex-col scroll-smooth bg-[#FFFD92] md:flex-row"
-    >
+    <div className="search-section relative flex h-screen w-screen snap-center flex-col scroll-smooth bg-[#FFFD92] md:flex-row">
       <div className="h-full w-full">
         <div className="flex h-full w-full items-center justify-center">
           <div className="relative h-[611px] w-[537px]">

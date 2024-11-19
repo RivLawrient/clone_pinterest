@@ -1,6 +1,4 @@
-import { SetStateAction, useRef, useState } from "react";
-import SingIn from "./signin";
-import SingUp from "./signup";
+import { useRef } from "react";
 
 export default function Modal({
   open,

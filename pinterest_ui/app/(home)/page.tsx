@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Masonry from "./Masonry/masonry";
+import { useRef } from "react";
+import Masonry from "./(Masonry)/masonry";
 
 export default function Home() {
   const images: string[] = [
@@ -34,6 +34,14 @@ export default function Home() {
     "https://i.pinimg.com/736x/2a/ed/72/2aed72761ac6352c38cc96d162c044b9.jpg",
     "https://i.pinimg.com/236x/7a/2a/82/7a2a82976fff09ebc9690fa5886be255.jpg",
     "https://i.pinimg.com/236x/c7/20/8c/c7208cf48beb2c253b11ecee199b8103.jpg",
+    "https://i.pinimg.com/236x/43/29/5e/43295e295dca08980b032734537ba1f3.jpg",
+    "https://i.pinimg.com/236x/0c/20/54/0c205415a23c3f490e05c52efb0baada.jpg",
+    "https://i.pinimg.com/236x/21/50/a8/2150a823bf2ffa2024d931633311d9bc.jpg",
+    "https://i.pinimg.com/236x/ee/7a/63/ee7a63615f6d219e5af64f9e249dc01d.jpg",
+    "https://i.pinimg.com/474x/4b/5f/b6/4b5fb6ac1210546a1d5836438b6cfe1a.jpg",
+    "https://i.pinimg.com/236x/d4/60/18/d46018b5dcd5105a158cfa9b24e2f329.jpg",
+    "https://i.pinimg.com/236x/ce/24/30/ce24300f7eec823cd9a2278ffb40a3a6.jpg",
+    "https://i.pinimg.com/236x/bc/61/35/bc61356eb64b6aa114dabca6550950d0.jpg",
   ];
   const ref = useRef<HTMLDivElement>(null);
 

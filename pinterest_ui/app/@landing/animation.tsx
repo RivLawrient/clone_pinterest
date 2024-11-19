@@ -37,13 +37,7 @@ export function AnimateText({ step }: { step: number }) {
   );
 }
 
-export function AnimateBtn({
-  step,
-  scroll,
-}: {
-  step: number;
-  scroll: () => void;
-}) {
+export function AnimateBtn({ step }: { step: number }) {
   const route = useRouter();
   const color: string[] = [
     "bg-[#C28B00]",
@@ -55,7 +49,11 @@ export function AnimateBtn({
 
   return (
     <div
-      onClick={scroll}
+      onClick={() =>
+        document
+          .querySelector(".search-section")
+          ?.scrollIntoView({ behavior: "smooth" })
+      }
       className={`size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] flex cursor-pointer items-center justify-center rounded-full`}
     >
       <svg
@@ -240,20 +238,6 @@ export function AnimateImg({
         );
       }, 50 * i);
     }
-    // const interval = setTimeout(() => {
-    //   setStep((prevStep: number) => {
-    //     const nextStep = (prevStep + 1) % 4;
-    //     if (nextStep === 3) {
-    //       setTimeout(() => {
-    //         setStep(nextStep);
-    //       }, 2000);
-    //       return prevStep;
-    //     }
-    //     return nextStep;
-    //   });
-    // }, 5400);
-
-    // return () => clearTimeout(interval);
   }, [step]);
 
   return (

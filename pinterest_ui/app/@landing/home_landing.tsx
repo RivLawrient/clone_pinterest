@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import { AnimateBtn, AnimateImg, AnimateText } from "./animation";
 import { useRouter } from "next/navigation";
-import { buffer } from "stream/consumers";
 
-export default function HomeLanding({ scroll }: { scroll: () => void }) {
+export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
 
   const [isPaused, setIsPaused] = useState<boolean>(false);
@@ -69,22 +68,22 @@ export default function HomeLanding({ scroll }: { scroll: () => void }) {
       return () => clearTimeout(timer);
     }
   }, [step]);
-
   return (
-    <div
-      // id="home"
-      className="relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline"
-    >
+    <div className="home-section relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline">
       <div className="h-[250px]"></div>
       <span className="font-roboto2 text-[60px]">Get your next</span>
       <br />
       <AnimateText step={step} />
       <AnimateImg step={step} setStep={setStep} />
       <div className="absolute bottom-0 flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent to-white">
-        <AnimateBtn step={step} scroll={scroll} />
+        <AnimateBtn step={step} />
         <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">
           <div
-            onClick={scroll}
+            onClick={() =>
+              document
+                .querySelector(".search-section")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
             className="flex cursor-pointer gap-2 font-roboto text-[16px]"
           >
             Here’s how it works

@@ -1,9 +1,6 @@
 export default function ShopLanding() {
   return (
-    <div
-      // id="shop"
-      className="relative flex h-screen w-screen snap-center flex-col bg-[#FFE2EB] md:flex-row"
-    >
+    <div className="relative flex h-screen w-screen snap-center flex-col bg-[#FFE2EB] md:flex-row">
       <div className="relative h-full w-full">
         <img
           src="https://s.pinimg.com/webapp/shop-de8ddf10.png"

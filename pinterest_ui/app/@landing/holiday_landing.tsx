@@ -1,10 +1,6 @@
-/* eslint-disable react/react-in-jsx-scope */
 export default function HolidayLanding() {
   return (
-    <div
-      // id="holiday"
-      className="relative flex h-screen w-screen snap-center flex-col bg-[#FFE4C1] md:flex-row"
-    >
+    <div className="relative flex h-screen w-screen snap-center flex-col bg-[#FFE4C1] md:flex-row">
       <div className="mt-[80px] flex w-full flex-col items-center justify-center">
         <div className="w-[534px] break-words text-center font-roboto2 text-[60px] font-bold leading-[71px] text-[#C32F00]">
           Get ready for Thanksgiving
