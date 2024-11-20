@@ -8,15 +8,6 @@ export default function Masonry({ images }: { images: string[] }) {
   );
   const ref = useRef<HTMLDivElement>(null);
 
-  const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
-
   useEffect(() => {
     const updateColumns = () => {
       if (ref.current) {

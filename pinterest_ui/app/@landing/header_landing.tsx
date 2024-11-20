@@ -2,9 +2,7 @@
 import { useState } from "react";
 import Modal from "./(modal)/modal";
 import SingIn from "./(modal)/signin";
-import SingUp from "./(modal)/signup";
 import SignUp from "./(modal)/signup";
-import { usePathname } from "next/navigation";
 
 export default function HeaderLanding() {
   const [open, setOpen] = useState<boolean>(false);

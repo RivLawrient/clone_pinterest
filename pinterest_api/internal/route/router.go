@@ -1,6 +1,7 @@
 package route
 
 import (
+	picture "pinterest_api/internal/app/Picture"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
 
@@ -9,8 +10,9 @@ import (
 )
 
 type RouteConfig struct {
-	App            *fiber.App
-	UserController *user.UserController
+	App               *fiber.App
+	UserController    *user.UserController
+	PictureController *picture.PictureController
 }
 
 func (c *RouteConfig) Setup() {
@@ -31,6 +33,7 @@ func (c *RouteConfig) Setup() {
 }
 
 func (c *RouteConfig) SetupGuestRoute() {
+
 	c.App.Post("/auth/register", c.UserController.HandleRegisterByEmail)
 	c.App.Post("/auth/login", c.UserController.HandleLoginByEmail)
 	c.App.Get("/auth/google", c.UserController.HandleGoogleRedirect)
@@ -38,6 +41,9 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/bye", c.UserController.Logout)
 
 	c.App.Get("/user", c.UserController.GetUser)
+
+	c.App.Get("/img/:filename", c.PictureController.GetPicture)
+	c.App.Post("/img", c.PictureController.UploadPicture)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {
