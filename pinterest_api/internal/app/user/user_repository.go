@@ -21,6 +21,10 @@ func (r *UserRepository) UpdateTokenByEmail(db *gorm.DB, user *User, email strin
 	return db.Model(user).Where("email = ? ", email).Update("token", token).Error
 }
 
+func (r *UserRepository) FindById(db *gorm.DB, user *User, id string) error {
+	return db.First(user, "id = ?", id).Error
+}
+
 func (r *UserRepository) FindByEmail(db *gorm.DB, user *User, email string) error {
 	return db.Where("email = ?", email).First(user).Error
 }

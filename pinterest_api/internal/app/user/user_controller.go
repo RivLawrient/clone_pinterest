@@ -122,6 +122,7 @@ func (c *UserController) GetUser(ctx *fiber.Ctx) error {
 			Errors:     error.Message,
 		})
 	}
+	response.Id = ""
 
 	return ctx.JSON(model.WebResponse[UserResponse]{
 		StatusCode: ctx.Response().StatusCode(),

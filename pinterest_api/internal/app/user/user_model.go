@@ -43,13 +43,14 @@ type GoogleUser struct {
 }
 
 type UserResponse struct {
+	Id         string    `json:"id,omitempty"`
 	Username   string    `json:"username,"`
-	FirstName  string    `json:"first_name,"`
-	LastName   string    `json:"last_name,"`
-	Email      string    `json:"email,"`
-	IsGoogle   bool      `json:"is_google,"`
-	IsFacebook bool      `json:"is_facebook,"`
-	BirthDate  time.Time `json:"birth_date,"`
+	FirstName  string    `json:"first_name,omitempty"`
+	LastName   string    `json:"last_name,omitempty"`
+	Email      string    `json:"email,omitempty"`
+	IsGoogle   bool      `json:"is_google,omitempty"`
+	IsFacebook bool      `json:"is_facebook,omitempty"`
+	BirthDate  time.Time `json:"birth_date,omitempty"`
 	ProfileImg string    `json:"profile_img,"`
-	CreatedAt  time.Time `json:"created_at,"`
+	CreatedAt  time.Time `json:"created_at,omitempty"`
 }

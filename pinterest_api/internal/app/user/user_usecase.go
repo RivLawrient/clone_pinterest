@@ -232,10 +232,15 @@ func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, 
 	user := new(User)
 	if err := u.UserRepository.FindyByToken(tx, user, token); err != nil {
 		fmt.Println(user)
-		return nil, fiber.ErrInternalServerError
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "your token is invalid")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	return &UserResponse{
+		Id:         user.ID,
 		Username:   user.Username,
 		FirstName:  user.FirstName,
 		LastName:   *user.LastName,
