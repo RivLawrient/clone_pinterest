@@ -54,3 +54,10 @@ type UserResponse struct {
 	ProfileImg string    `json:"profile_img,"`
 	CreatedAt  time.Time `json:"created_at,omitempty"`
 }
+
+type UserOtherResponse struct {
+	Username   string `json:"username,"`
+	FirstName  string `json:"first_name,omitempty"`
+	LastName   string `json:"last_name,omitempty"`
+	ProfileImg string `json:"profile_img,"`
+}

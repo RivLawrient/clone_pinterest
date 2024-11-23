@@ -12,12 +12,12 @@ type UploadPostRequest struct {
 }
 
 type PostResponse struct {
-	Id          string            `json:"id"`
-	Title       string            `json:"title"`
-	User        user.UserResponse `json:"user"`
-	Description string            `json:"description"`
-	Image       string            `json:"image"`
-	CreatedAt   time.Time         `json:"created_at"`
+	Id          string                 `json:"id"`
+	Title       string                 `json:"title"`
+	User        user.UserOtherResponse `json:"user"`
+	Description string                 `json:"description"`
+	Image       string                 `json:"image"`
+	CreatedAt   time.Time              `json:"created_at"`
 }
 
 type ShowPostRequest struct {

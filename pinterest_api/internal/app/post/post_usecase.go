@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+	"fmt"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
 	"time"
@@ -95,9 +96,9 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
 	}
 
-	user := new(user.User)
-	if err := p.UserRepository.FindById(tx, user, post.UserId); err != nil {
-
+	userOther := new(user.User)
+	if err := p.UserRepository.FindById(tx, userOther, post.UserId); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	if err := tx.Commit().Error; err != nil {
@@ -107,9 +108,59 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 	return &PostResponse{
 		Id:    post.ID,
 		Title: post.Title,
-
+		User: user.UserOtherResponse{
+			Username:   userOther.Username,
+			FirstName:  userOther.FirstName,
+			LastName:   *userOther.LastName,
+			ProfileImg: userOther.ProfileImg,
+		},
 		Description: post.Description,
 		Image:       post.Image,
 		CreatedAt:   time.UnixMilli(post.CreatedAt),
 	}, nil
+}
+
+func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostResponse, *fiber.Error) {
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	me, err := p.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+	post := []Post{}
+	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.Id); err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
+	}
+	fmt.Println(post)
+
+	postResponses := []PostResponse{}
+	for _, posts := range post {
+
+		userOther := new(user.User)
+		if err := p.UserRepository.FindById(tx, userOther, posts.UserId); err != nil {
+			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+		}
+
+		postResponse := PostResponse{
+			Id:          posts.ID,
+			Title:       posts.Title,
+			Description: posts.Description,
+			Image:       posts.Image,
+			User: user.UserOtherResponse{
+				Username:   userOther.Username,
+				FirstName:  userOther.FirstName,
+				LastName:   *userOther.LastName,
+				ProfileImg: userOther.ProfileImg,
+			},
+			CreatedAt: time.UnixMilli(posts.CreatedAt),
+		}
+		postResponses = append(postResponses, postResponse)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &postResponses, nil
 }

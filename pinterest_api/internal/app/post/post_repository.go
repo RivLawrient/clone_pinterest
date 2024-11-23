@@ -22,3 +22,7 @@ func (r *PostRepository) FindByImage(db *gorm.DB, post *Post, image string) erro
 func (r *PostRepository) FindById(db *gorm.DB, post *Post, id string) error {
 	return db.First(post, "id = ? ", id).Error
 }
+
+func (r *PostRepository) ListRandomExcept(db *gorm.DB, post *Post, posts *[]Post, id string) error {
+	return db.Where("user_id != ?", id).Model(post).Limit(25).Order("RAND()").Find(posts).Error
+}
