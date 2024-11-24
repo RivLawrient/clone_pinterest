@@ -215,3 +215,39 @@ func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token st
 		Post:       &postResponses,
 	}, nil
 }
+
+func (p *PostUsecase) DetailPost(ctx context.Context, id string, token string) (*PostResponse, *fiber.Error) {
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	_, err := p.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+	post := new(Post)
+	if err := p.PostRepository.FindById(tx, post, id); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "post is not found")
+	}
+	users := new(user.User)
+	if err := p.UserRepository.FindById(tx, users, post.UserId); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "user is not found")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &PostResponse{
+		Id:          post.ID,
+		Title:       post.Title,
+		Description: post.Description,
+		User: &user.UserOtherResponse{
+			Username:   users.Username,
+			FirstName:  users.FirstName,
+			LastName:   *users.LastName,
+			ProfileImg: users.ProfileImg,
+		},
+		Image:     post.Image,
+		CreatedAt: time.UnixMilli(post.CreatedAt),
+	}, nil
+}

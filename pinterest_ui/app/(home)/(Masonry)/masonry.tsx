@@ -37,7 +37,7 @@ export default function Masonry({ post }: { post: Post[] | null }) {
               }}
             >
               {value?.map((val, ind) => (
-                <MasonryItem src={val.image} key={ind} />
+                <MasonryItem src={val.image} id={val.id} key={ind} />
               ))}
             </div>
           ))}

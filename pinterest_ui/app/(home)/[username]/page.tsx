@@ -13,7 +13,7 @@ export default function UsernamePage() {
   const { user } = useUser();
   const path = usePathname();
 
-  console.log();
+  console.log(users);
 
   useEffect(() => {
     fetch(`http://127.0.0.1:4000/user/${path.slice(1)}`, {
@@ -26,21 +26,21 @@ export default function UsernamePage() {
         setUsers(data.data);
       }
     });
-  }, [users]);
+  }, []);
   return (
     <>
-      <div className="mt-20 flex w-screen flex-col items-center justify-center">
+      <div className="mt-20 flex w-screen select-none flex-col items-center justify-center">
         {users && (
           <>
             {users?.profile_img ? (
               <img
-                src={user?.profile_img}
+                src={users.profile_img}
                 alt=""
                 width="120"
                 className="rounded-full"
               />
             ) : (
-              <ProfileImg alp={users?.username} width={120} />
+              <ProfileImg alp={users.username} width={120} />
             )}
             <div className="text-[36px]">
               {users?.first_name} {users?.last_name}
@@ -89,23 +89,31 @@ export default function UsernamePage() {
           <div className="mt-8 flex w-screen items-center justify-center gap-4 text-[16px] font-semibold">
             <div
               onClick={() => setTab("created")}
-              className={`${tab == "created" ? "ml-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:scale-90 active:bg-[#e1e1e1]"} cursor-pointer py-2`}
+              className={`${tab == "created" ? "ml-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:bg-[#e1e1e1]"} cursor-pointer py-2`}
             >
               Created
             </div>
             <div
               onClick={() => setTab("saved")}
-              className={`${tab == "saved" ? "mr-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:scale-90 active:bg-[#e1e1e1]"} cursor-pointer py-2`}
+              className={`${tab == "saved" ? "mr-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:bg-[#e1e1e1]"} cursor-pointer py-2`}
             >
               Saved
             </div>
           </div>
           {tab == "created" ? (
             <div className="mt-5 flex w-screen justify-center">
-              {post ? <Masonry post={post} /> : <div>gada post coy</div>}
+              {post && post.length > 0 ? (
+                <Masonry post={post} />
+              ) : (
+                <div className="text-[16px]">
+                  No Pins yet, but there's tons of potential
+                </div>
+              )}
             </div>
           ) : (
-            <div>saved</div>
+            <div className="mt-5 w-full text-center">
+              someone d hasn't saved any Pins yet
+            </div>
           )}
         </>
       )}

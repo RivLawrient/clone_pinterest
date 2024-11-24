@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { useState } from "react";
 
-export default function MasonryItem({ src }: { src: string }) {
+export default function MasonryItem({ src, id }: { src: string; id: string }) {
   const getSoftColor = () => {
     const r = Math.floor(Math.random() * 56) + 200;
     const g = Math.floor(Math.random() * 56) + 200;
@@ -9,7 +10,8 @@ export default function MasonryItem({ src }: { src: string }) {
   };
   const [show, setShow] = useState<boolean>(true);
   return (
-    <div
+    <Link
+      href={`/pin/${id}`}
       className="group relative cursor-pointer overflow-hidden rounded-2xl"
       style={{ backgroundColor: getSoftColor() }}
       onMouseEnter={() => setShow(false)}
@@ -76,6 +78,6 @@ export default function MasonryItem({ src }: { src: string }) {
         alt=""
         className="w-full"
       />
-    </div>
+    </Link>
   );
 }

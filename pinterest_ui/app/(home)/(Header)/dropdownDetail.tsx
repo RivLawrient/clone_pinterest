@@ -68,7 +68,7 @@ export default function DropdownDetail({
           <div className="p-2 text-[12px]">More options</div>
           <div
             onClick={Logout}
-            className="flex cursor-pointer rounded-lg p-2 text-[16px] font-semibold leading-none hover:bg-slate-200"
+            className="flex cursor-pointer rounded-lg p-2 text-[16px] font-semibold hover:bg-slate-200"
           >
             Log out
           </div>

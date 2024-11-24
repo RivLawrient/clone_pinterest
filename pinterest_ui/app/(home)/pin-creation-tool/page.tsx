@@ -102,7 +102,7 @@ export default function Create() {
         </div>
       </div>
 
-      <div className="my-6 flex flex-row gap-10">
+      <div className="my-6 flex flex-col gap-10 lg:flex-row">
         <div>
           <Image image={image} setImage={setImage} />
         </div>
