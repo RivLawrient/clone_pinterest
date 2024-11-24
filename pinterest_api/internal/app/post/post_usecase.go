@@ -2,7 +2,6 @@ package post
 
 import (
 	"context"
-	"fmt"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
 	"time"
@@ -100,20 +99,20 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 	if err := p.UserRepository.FindById(tx, userOther, post.UserId); err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
-
+	postUser := user.UserOtherResponse{
+		Username:   userOther.Username,
+		FirstName:  userOther.FirstName,
+		LastName:   *userOther.LastName,
+		ProfileImg: userOther.ProfileImg,
+	}
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	return &PostResponse{
-		Id:    post.ID,
-		Title: post.Title,
-		User: user.UserOtherResponse{
-			Username:   userOther.Username,
-			FirstName:  userOther.FirstName,
-			LastName:   *userOther.LastName,
-			ProfileImg: userOther.ProfileImg,
-		},
+		Id:          post.ID,
+		Title:       post.Title,
+		User:        &postUser,
 		Description: post.Description,
 		Image:       post.Image,
 		CreatedAt:   time.UnixMilli(post.CreatedAt),
@@ -132,7 +131,6 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.Id); err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
 	}
-	fmt.Println(post)
 
 	postResponses := []PostResponse{}
 	for _, posts := range post {
@@ -142,18 +140,19 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 		}
 
+		postUser := user.UserOtherResponse{
+			Username:   userOther.Username,
+			FirstName:  userOther.FirstName,
+			LastName:   *userOther.LastName,
+			ProfileImg: userOther.ProfileImg,
+		}
 		postResponse := PostResponse{
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
 			Image:       posts.Image,
-			User: user.UserOtherResponse{
-				Username:   userOther.Username,
-				FirstName:  userOther.FirstName,
-				LastName:   *userOther.LastName,
-				ProfileImg: userOther.ProfileImg,
-			},
-			CreatedAt: time.UnixMilli(posts.CreatedAt),
+			User:        &postUser,
+			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
 		postResponses = append(postResponses, postResponse)
 	}
@@ -163,4 +162,56 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 	}
 
 	return &postResponses, nil
+}
+
+func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token string) (*ShowProfileResponse, *fiber.Error) {
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	_, err := p.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	user := new(user.User)
+	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	}
+
+	post := []Post{}
+	if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
+		// return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
+		return &ShowProfileResponse{
+			Username:   user.Username,
+			FirstName:  user.FirstName,
+			LastName:   *user.LastName,
+			ProfileImg: user.ProfileImg,
+			Post:       nil,
+		}, nil
+	}
+
+	postResponses := []PostResponse{}
+	for _, posts := range post {
+
+		postResponse := PostResponse{
+			Id:          posts.ID,
+			Title:       posts.Title,
+			Description: posts.Description,
+			Image:       posts.Image,
+			CreatedAt:   time.UnixMilli(posts.CreatedAt),
+		}
+		postResponses = append(postResponses, postResponse)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &ShowProfileResponse{
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   *user.LastName,
+		ProfileImg: user.ProfileImg,
+		Post:       &postResponses,
+	}, nil
 }

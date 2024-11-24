@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import MasonryItem from "./masonryItem";
+import { Post, usePost } from "../(postContext)/Post";
 
-export default function Masonry({ images }: { images: string[] }) {
+export default function Masonry({ post }: { post: Post[] | null }) {
+  // const { post } = usePost();
   const [leng, setLeng] = useState(0);
   const result = Array.from({ length: leng }, (_, i) =>
-    images.filter((_, index) => index % leng === i),
+    post?.filter((_, index) => index % leng === i),
   );
   const ref = useRef<HTMLDivElement>(null);
 
@@ -34,8 +36,8 @@ export default function Masonry({ images }: { images: string[] }) {
                 width: `${238}px`,
               }}
             >
-              {value.map((val, ind) => (
-                <MasonryItem src={val} key={ind} />
+              {value?.map((val, ind) => (
+                <MasonryItem src={val.image} key={ind} />
               ))}
             </div>
           ))}

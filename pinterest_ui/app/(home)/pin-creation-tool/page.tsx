@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 
-function Image() {
-  const [image, seImage] = useState<string>("");
+function Image({
+  image,
+  setImage,
+}: {
+  image: string;
+  setImage: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  // const [image, seImage] = useState<string>("");
   return (
     <>
       {image != "" ? (
@@ -21,9 +27,9 @@ function Image() {
                 body: file,
               }).then(async (response) => {
                 const data = await response.json();
-                console.log(data);
+
                 if (response.ok) {
-                  seImage(data.link);
+                  setImage(data.link);
                 }
               });
             }}
@@ -70,14 +76,35 @@ export default function Create() {
         <span className="text-[20px] font-semibold">Create pin</span>
         <div
           hidden={!image}
+          onClick={() => {
+            fetch("http://127.0.0.1:4000/post", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                title: title,
+                descripion: desc,
+                image: image,
+              }),
+            }).then(async (response) => {
+              if (response.ok) {
+                setImage("");
+                setTitle("");
+                setDesc("");
+              }
+            });
+          }}
           className="cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90"
         >
           Publish
         </div>
       </div>
+
       <div className="my-6 flex flex-row gap-10">
         <div>
-          <Image />
+          <Image image={image} setImage={setImage} />
         </div>
         <div className="relative flex w-[584px] flex-col">
           <div
@@ -88,6 +115,7 @@ export default function Create() {
             <div className="pb-2 text-[12px]">Title</div>
             <input
               type="text"
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={100}
               placeholder="Add a title"
@@ -97,6 +125,7 @@ export default function Create() {
           <div className="flex flex-col">
             <div className="pb-2 text-[12px]">Description</div>
             <textarea
+              value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Add a detailed description"
               maxLength={300}

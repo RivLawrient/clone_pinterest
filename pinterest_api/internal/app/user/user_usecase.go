@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"pinterest_api/internal/config"
+	"regexp"
 	"strings"
 	"time"
 
@@ -176,7 +177,8 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUs
 	if err := u.UserRepository.FindByEmail(tx, user, googleUser.Email); err != nil { //kalau gada di db
 
 		baseUsername := strings.Split(googleUser.Email, "@")[0]
-		username := baseUsername
+		re := regexp.MustCompile(`[^a-zA-Z0-9]+`)
+		username := re.ReplaceAllString(baseUsername, "")
 		counter := 1
 
 		for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
@@ -186,8 +188,8 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUs
 
 		user.ID = uuid.New().String()
 		user.Username = username
-		user.FirstName = googleUser.FamilyName
-		user.LastName = &googleUser.GivenName
+		user.FirstName = googleUser.GivenName
+		user.LastName = &googleUser.FamilyName
 		user.Email = googleUser.Email
 		user.IsGoogle = true
 		user.IsFacebook = false

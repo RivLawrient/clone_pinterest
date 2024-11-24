@@ -100,12 +100,7 @@ export default function SignUp({
             />
           </div>
           <div className="">
-            <div
-              onClick={() => {
-                console.log(birt);
-              }}
-              className="rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]"
-            >
+            <div className="rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]">
               Continue
             </div>
           </div>

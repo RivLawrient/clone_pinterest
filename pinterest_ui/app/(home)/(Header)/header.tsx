@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUser } from "../../(userContext)/User";
 import ProfileImg from "./profileImg";
@@ -15,6 +15,7 @@ function PageButton({
   name: string;
 }) {
   const path = usePathname();
+
   return (
     <Link
       href={`/${destination}`}
@@ -34,6 +35,7 @@ export default function HeaderHome() {
   const path = usePathname();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [showNotif, setShowNotif] = useState<boolean>(false);
+  const route = useRouter();
 
   return (
     <>
@@ -108,7 +110,10 @@ export default function HeaderHome() {
             <path d="M18 12.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-6-3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3M12 0a11 11 0 0 0-8.52 17.95l-1.46 5.43a.5.5 0 0 0 .73.55l5.08-2.75A10.98 10.98 0 0 0 23 11 11 11 0 0 0 12 0"></path>
           </svg>
         </div>
-        <div className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-[#f1f1f1]">
+        <div
+          onClick={() => route.push("/" + user?.username)}
+          className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-[#f1f1f1]"
+        >
           {user?.profile_img ? (
             <img
               src={user?.profile_img}

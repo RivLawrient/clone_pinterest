@@ -2,8 +2,10 @@
 
 import { useRef } from "react";
 import Masonry from "./(Masonry)/masonry";
+import { usePost } from "./(postContext)/Post";
 
 export default function Home() {
+  const { post } = usePost();
   const images: string[] = [
     "https://i.pinimg.com/236x/14/22/4a/14224ae74db6b2da4db71d707509d073.jpg",
     "https://i.pinimg.com/236x/75/8e/ff/758effaac3ee5a7980ea9195c791756c.jpg",
@@ -48,7 +50,7 @@ export default function Home() {
   return (
     <>
       <div ref={ref} className="mt-[80px]">
-        <Masonry images={images} />
+        <Masonry post={post} />
       </div>
     </>
   );

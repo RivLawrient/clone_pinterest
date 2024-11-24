@@ -50,6 +50,7 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/post", c.PostController.HandleUploadImage)
 	c.App.Get("/post", c.PostController.HandleShowImage)
 	c.App.Get("/post/list", c.PostController.HandleShowList)
+	c.App.Get("/user/:username", c.PostController.HandleShowProfile)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

@@ -26,3 +26,7 @@ func (r *PostRepository) FindById(db *gorm.DB, post *Post, id string) error {
 func (r *PostRepository) ListRandomExcept(db *gorm.DB, post *Post, posts *[]Post, id string) error {
 	return db.Where("user_id != ?", id).Model(post).Limit(25).Order("RAND()").Find(posts).Error
 }
+
+func (r *PostRepository) ListByUser(db *gorm.DB, post *Post, posts *[]Post, user_id string) error {
+	return db.Where("user_id = ? ", user_id).Model(post).Find(posts).Error
+}

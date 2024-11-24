@@ -121,3 +121,23 @@ func (c *PostController) HandleShowList(ctx *fiber.Ctx) error {
 		Data:       *response,
 	})
 }
+
+func (c *PostController) HandleShowProfile(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	username := ctx.Params("username")
+
+	response, err := c.PostUsecase.ShowProfile(ctx.UserContext(), username, auth)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+
+	}
+
+	return ctx.JSON(model.WebResponse[ShowProfileResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}

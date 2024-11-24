@@ -1,5 +1,6 @@
 import { UserProvider } from "../(userContext)/User";
 import HeaderHome from "./(Header)/header";
+import { PostProvider } from "./(postContext)/Post";
 
 export default function LayoutHome({
   children,
@@ -9,8 +10,10 @@ export default function LayoutHome({
   return (
     <div>
       <UserProvider>
-        <HeaderHome />
-        {children}
+        <PostProvider>
+          <HeaderHome />
+          {children}
+        </PostProvider>
       </UserProvider>
     </div>
   );
