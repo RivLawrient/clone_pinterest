@@ -69,13 +69,29 @@ export default function Create() {
   const [image, setImage] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+  const [publishing, setPublishing] = useState<boolean>(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showFail, setShowfail] = useState(false);
 
+  // Function to trigger the success message
+  const triggerMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000); //
+  };
+
+  const triggerFali = () => {
+    setShowfail(true);
+    setTimeout(() => {
+      setShowfail(false);
+    }, 5000); //
+  };
   return (
     <div className="mt-[80px] flex w-screen flex-col items-center justify-center">
       <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
         <span className="text-[20px] font-semibold">Create pin</span>
-        <div
-          hidden={!image}
+        {/* <div
           onClick={() => {
             fetch("http://127.0.0.1:4000/post", {
               method: "POST",
@@ -100,6 +116,53 @@ export default function Create() {
         >
           Publish
         </div>
+        <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20 hover:bg-[#c9001e]">
+          Publishing
+        </div> */}
+        {image ? (
+          publishing ? (
+            <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20">
+              Publishing...
+            </div>
+          ) : (
+            <div
+              onClick={async () => {
+                setPublishing(true);
+                try {
+                  await fetch("http://127.0.0.1:4000/post", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                      title: title,
+                      descripion: desc,
+                      image: image,
+                    }),
+                  }).then(async (response) => {
+                    if (response.ok) {
+                      setImage("");
+                      setTitle("");
+                      setDesc("");
+                    } else {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                  });
+                  // alert("Post published successfully!");
+                  triggerMessage();
+                } catch (err) {
+                  triggerFali();
+                } finally {
+                  setPublishing(false);
+                }
+              }}
+              className="cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90"
+            >
+              Publish
+            </div>
+          )
+        ) : null}
       </div>
 
       <div className="my-6 flex flex-col gap-10 lg:flex-row">
@@ -134,6 +197,16 @@ export default function Create() {
           </div>
         </div>
       </div>
+      {showMessage && (
+        <div className="absolute bottom-0 mb-5 rounded-xl bg-black p-3 text-[16px] text-white">
+          Your pin has been published
+        </div>
+      )}
+      {showFail && (
+        <div className="absolute bottom-0 mb-5 rounded-xl bg-red-600 p-3 text-[16px] text-white">
+          Failed to publish. Please try again.
+        </div>
+      )}
     </div>
   );
 }
