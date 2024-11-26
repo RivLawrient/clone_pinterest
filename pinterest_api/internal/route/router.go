@@ -2,6 +2,7 @@ package route
 
 import (
 	picture "pinterest_api/internal/app/Picture"
+	"pinterest_api/internal/app/follow"
 	"pinterest_api/internal/app/post"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
@@ -14,6 +15,7 @@ type RouteConfig struct {
 	App               *fiber.App
 	UserController    *user.UserController
 	PostController    *post.PostController
+	FollowController  *follow.FollowController
 	PictureController *picture.PictureController
 }
 
@@ -52,6 +54,10 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/post/list", c.PostController.HandleShowList)
 	c.App.Get("/user/:username", c.PostController.HandleShowProfile)
 	c.App.Get("/post/:post", c.PostController.HandleDetailPost)
+
+	c.App.Post("/follow/:username", c.FollowController.HandleFollowUser)
+	c.App.Get("/follower", c.FollowController.HandleCountController)
+	c.App.Get("/follower/:username", c.FollowController.HandleCountFollowerByUsername)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {
