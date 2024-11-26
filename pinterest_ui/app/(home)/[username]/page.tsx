@@ -45,8 +45,8 @@ export default function UsernamePage() {
         const data = await respons.json();
         if (respons.ok) {
           setUsers((prevUsers) => {
-            if (!prevUsers) return null; // Jika `users` null, tidak melakukan apa-apa
-            return { ...prevUsers, follow_status: true }; // Hanya ubah `name`
+            if (!prevUsers) return null;
+            return { ...prevUsers, follow_status: true };
           });
         } else {
           return new Error(data.errors);
