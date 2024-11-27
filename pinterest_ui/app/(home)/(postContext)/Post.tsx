@@ -6,6 +6,9 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_img: string;
+  follower: number;
+  following: number;
+  follow_status: boolean;
 }
 
 export interface Post {
