@@ -5,7 +5,6 @@ import Masonry from "../(Masonry)/masonry";
 import { Post, User } from "../(postContext)/Post";
 import ProfileImg from "../(Header)/profileImg";
 import { useUser } from "@/app/(userContext)/User";
-import { tree } from "next/dist/build/templates/app-page";
 
 export default function UsernamePage() {
   const [post, setPost] = useState<Post[] | null>(null);

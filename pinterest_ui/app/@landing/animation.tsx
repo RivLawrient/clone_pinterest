@@ -70,13 +70,7 @@ export function AnimateBtn({ step }: { step: number }) {
   );
 }
 
-export function AnimateImg({
-  step,
-  setStep,
-}: {
-  step: number;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-}) {
+export function AnimateImg({ step }: { step: number }) {
   const link = "http://127.0.0.1:4000/img/";
   const images = [
     [
