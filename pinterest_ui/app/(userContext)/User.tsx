@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 type User = {
   username: string;
@@ -19,19 +19,21 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     if (!user) {
-      fetch("http://127.0.0.1:4000/user", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => setUser(data.data))
-        .catch((err) => console.error(err));
+      try {
+        fetch("http://127.0.0.1:4000/user", {
+          credentials: "include",
+        })
+          .then((res) => res.json())
+          .then((data) => setUser(data.data))
+          .catch((err) => new Error(err));
+      } catch (err) {
+        console.error(err);
+      }
     }
   }, [user]);
 

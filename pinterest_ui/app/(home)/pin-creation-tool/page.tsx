@@ -149,7 +149,6 @@ export default function Create() {
                       throw new Error(`HTTP error! status: ${response.status}`);
                     }
                   });
-                  // alert("Post published successfully!");
                   triggerMessage();
                 } catch (err) {
                   triggerFali();

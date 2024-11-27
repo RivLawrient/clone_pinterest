@@ -1,5 +1,6 @@
 "use client";
-import { createContext, useState, useContext, useEffect } from "react";
+
+import { createContext, useContext, useEffect, useState } from "react";
 
 export interface User {
   username: string;
@@ -23,24 +24,44 @@ export interface Post {
 type PostContextType = {
   post: Post[] | null;
   setPost: (post: Post[]) => void;
+  postLoading: boolean;
+  setPostLoading: (postLoading: boolean) => void;
+  loadMorePosts: () => Promise<void>;
 };
+
 const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [post, setPost] = useState<Post[] | null>(null);
+  const [postLoading, setPostLoading] = useState<boolean>(false);
+
+  const loadMorePosts = async () => {
+    if (postLoading) return;
+
+    setPostLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:4000/post/list", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      setPost((prevPost) =>
+        prevPost ? [...prevPost, ...data.data] : data.data,
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setPostLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!post) {
-      fetch("http://127.0.0.1:4000/post/list", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => setPost(data.data))
-        .catch((err) => console.error(err));
-    }
-  }, [post]);
+    loadMorePosts();
+  }, []);
+
   return (
-    <PostContext.Provider value={{ post, setPost }}>
+    <PostContext.Provider
+      value={{ post, setPost, postLoading, setPostLoading, loadMorePosts }}
+    >
       {children}
     </PostContext.Provider>
   );
@@ -49,7 +70,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 export const usePost = () => {
   const context = useContext(PostContext);
   if (context === undefined) {
-    throw new Error("Something error post context");
+    throw new Error("usePost must be used within a PostProvider");
   }
   return context;
 };

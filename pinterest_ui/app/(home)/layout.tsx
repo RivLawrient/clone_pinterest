@@ -11,8 +11,10 @@ export default function LayoutHome({
     <div>
       <UserProvider>
         <PostProvider>
+          {/* <DetailProvider> */}
           <HeaderHome />
           {children}
+          {/* </DetailProvider> */}
         </PostProvider>
       </UserProvider>
     </div>
