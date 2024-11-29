@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
 	"time"
@@ -18,16 +19,20 @@ type PostUsecase struct {
 	PostRepository *PostRepository
 	UserUsecase    *user.UserUsecase
 	UserRepository *user.UserRepository
+	SaveUsecase    *save.SaveUsecase
 	Viper          *viper.Viper
 }
 
-func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *PostRepository, userUsecase *user.UserUsecase, userRepository *user.UserRepository, viper *viper.Viper) *PostUsecase {
+func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *PostRepository,
+	userUsecase *user.UserUsecase, userRepository *user.UserRepository, viper *viper.Viper,
+	saveUsecase *save.SaveUsecase) *PostUsecase {
 	return &PostUsecase{
 		DB:             db,
 		Validate:       validate,
 		PostRepository: postRepository,
 		UserUsecase:    userUsecase,
 		UserRepository: userRepository,
+		SaveUsecase:    saveUsecase,
 		Viper:          viper,
 	}
 }
@@ -105,6 +110,7 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 		LastName:   *userOther.LastName,
 		ProfileImg: userOther.ProfileImg,
 	}
+
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
@@ -115,6 +121,7 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 		User:        &postUser,
 		Description: post.Description,
 		Image:       post.Image,
+		SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, post.ID),
 		CreatedAt:   time.UnixMilli(post.CreatedAt),
 	}, nil
 }
@@ -151,6 +158,7 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 			Title:       posts.Title,
 			Description: posts.Description,
 			Image:       posts.Image,
+			SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, posts.ID),
 			User:        &postUser,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
@@ -197,6 +205,7 @@ func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token st
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
+			SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, posts.ID),
 			Image:       posts.Image,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
@@ -247,7 +256,8 @@ func (p *PostUsecase) DetailPost(ctx context.Context, id string, token string) (
 			LastName:   *users.LastName,
 			ProfileImg: users.ProfileImg,
 		},
-		Image:     post.Image,
-		CreatedAt: time.UnixMilli(post.CreatedAt),
+		Image:      post.Image,
+		SaveStatus: p.SaveUsecase.StatusSave(ctx, token, post.ID),
+		CreatedAt:  time.UnixMilli(post.CreatedAt),
 	}, nil
 }

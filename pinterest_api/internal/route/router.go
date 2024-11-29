@@ -4,6 +4,7 @@ import (
 	picture "pinterest_api/internal/app/Picture"
 	"pinterest_api/internal/app/follow"
 	"pinterest_api/internal/app/post"
+	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
 
@@ -17,6 +18,7 @@ type RouteConfig struct {
 	PostController    *post.PostController
 	FollowController  *follow.FollowController
 	PictureController *picture.PictureController
+	SaveController    *save.SaveController
 }
 
 func (c *RouteConfig) Setup() {
@@ -56,8 +58,12 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/post/:post", c.PostController.HandleDetailPost)
 
 	c.App.Post("/follow/:username", c.FollowController.HandleFollowUser)
+	c.App.Post("/unfollow/:username", c.FollowController.HandleUnFollowUser)
 	c.App.Get("/follower", c.FollowController.HandleCountController)
 	c.App.Get("/follower/:username", c.FollowController.HandleCountFollowerByUsername)
+
+	c.App.Post("/save_post/:postid", c.SaveController.HandleSavePost)
+	c.App.Delete("/unsave_post/:postid", c.SaveController.HandleUnSavePost)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

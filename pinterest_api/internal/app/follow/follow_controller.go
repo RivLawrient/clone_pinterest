@@ -35,6 +35,25 @@ func (c *FollowController) HandleFollowUser(ctx *fiber.Ctx) error {
 	})
 }
 
+func (c *FollowController) HandleUnFollowUser(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	username := ctx.Params("username")
+
+	response, err := c.FollowUsecase.UnFollowUser(ctx.UserContext(), auth, username)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[UnFollowResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}
+
 func (c *FollowController) HandleCountController(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 
@@ -67,6 +86,25 @@ func (c *FollowController) HandleCountFollowerByUsername(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(model.WebResponse[FollowerCountResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}
+
+func (c *FollowController) HandleCountFollowingByUsername(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	username := ctx.Params("username")
+
+	response, err := c.FollowUsecase.CountFollowingByUsername(ctx.UserContext(), auth, username)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[FollowingCountResponse]{
 		StatusCode: ctx.Response().StatusCode(),
 		Data:       *response,
 	})

@@ -63,8 +63,41 @@ func (f *FollowUsecase) FollowUser(ctx context.Context, token string, username s
 	}
 
 	return &FollowResponse{
-		FollowerId:  follow.FollowerId,
+		Username:    username,
 		FollowingId: follow.FollowingId,
+	}, nil
+}
+
+func (f *FollowUsecase) UnFollowUser(ctx context.Context, token string, username string) (*UnFollowResponse, *fiber.Error) {
+	tx := f.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	me, err := f.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	user := new(user.User)
+	if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	follow := new(Follow)
+	if err := f.FollowRepository.FindFollow(tx, follow, user.ID, me.Id); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user not following")
+	}
+
+	if err := f.FollowRepository.Remove(tx, follow); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "something error")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &UnFollowResponse{
+		Username:      username,
+		UnFollowingId: me.Id,
 	}, nil
 }
 
@@ -118,5 +151,71 @@ func (f *FollowUsecase) CountFollowerByUsername(ctx context.Context, token strin
 	return &FollowerCountResponse{
 		Username:      user.Username,
 		FollowerCount: length,
+	}, nil
+}
+
+func (f *FollowUsecase) CountFollowingByUsername(ctx context.Context, token string, username string) (*FollowingCountResponse, *fiber.Error) {
+	tx := f.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	_, err := f.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	user := new(user.User)
+	if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	follows := new([]Follow)
+	if err := f.FollowRepository.FindFollowing(tx, new(Follow), follows, user.ID); err != nil {
+		return nil, fiber.NewError(fiber.ErrNotFound.Code, "not found")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	length := len(*follows)
+
+	return &FollowingCountResponse{
+		Username:       user.Username,
+		FollowingCount: length,
+	}, err
+}
+
+func (f *FollowUsecase) StatusFollow(ctx context.Context, token string, username string) (*FollowStatusResponse, *fiber.Error) {
+	tx := f.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	me, err := f.UserUsecase.Verify(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	user := new(user.User)
+	if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	if err := f.FollowRepository.FindFollow(tx, new(Follow), user.ID, me.Id); err != nil {
+		if err := tx.Commit().Error; err != nil {
+			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+		}
+
+		return &FollowStatusResponse{
+			Username:     user.Username,
+			FollowStatus: false,
+		}, nil
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &FollowStatusResponse{
+		Username:     user.Username,
+		FollowStatus: true,
 	}, nil
 }

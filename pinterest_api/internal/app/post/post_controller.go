@@ -3,6 +3,7 @@ package post
 import (
 	"fmt"
 	"net/http"
+	"pinterest_api/internal/app/follow"
 	"pinterest_api/internal/model"
 	"strings"
 
@@ -10,12 +11,14 @@ import (
 )
 
 type PostController struct {
-	PostUsecase *PostUsecase
+	PostUsecase   *PostUsecase
+	FollowUsecase *follow.FollowUsecase
 }
 
-func NewPostController(postUsecase *PostUsecase) *PostController {
+func NewPostController(postUsecase *PostUsecase, followUsecase *follow.FollowUsecase) *PostController {
 	return &PostController{
-		PostUsecase: postUsecase,
+		FollowUsecase: followUsecase,
+		PostUsecase:   postUsecase,
 	}
 }
 
@@ -136,9 +139,45 @@ func (c *PostController) HandleShowProfile(ctx *fiber.Ctx) error {
 
 	}
 
-	return ctx.JSON(model.WebResponse[ShowProfileResponse]{
+	responseFollower, err := c.FollowUsecase.CountFollowerByUsername(ctx.UserContext(), auth, username)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	responseFollowing, err := c.FollowUsecase.CountFollowingByUsername(ctx.UserContext(), auth, username)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	responseStatus, err := c.FollowUsecase.StatusFollow(ctx.UserContext(), auth, username)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[ProfileResponse]{
 		StatusCode: ctx.Response().StatusCode(),
-		Data:       *response,
+		Data: ProfileResponse{
+			Username:     response.Username,
+			FirstName:    response.FirstName,
+			LastName:     response.LastName,
+			ProfileImg:   response.ProfileImg,
+			Follower:     responseFollower.FollowerCount,
+			Following:    responseFollowing.FollowingCount,
+			FollowStatus: responseStatus.FollowStatus,
+			Post:         response.Post,
+		},
 	})
 }
 

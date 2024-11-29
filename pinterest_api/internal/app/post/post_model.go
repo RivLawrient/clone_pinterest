@@ -17,6 +17,7 @@ type PostResponse struct {
 	User        *user.UserOtherResponse `json:"user,omitempty"`
 	Description string                  `json:"description"`
 	Image       string                  `json:"image"`
+	SaveStatus  bool                    `json:"save_status"`
 	CreatedAt   time.Time               `json:"created_at"`
 }
 
@@ -30,4 +31,15 @@ type ShowProfileResponse struct {
 	LastName   string          `json:"last_name"`
 	ProfileImg string          `json:"profile_img"`
 	Post       *[]PostResponse `json:"post"`
+}
+
+type ProfileResponse struct {
+	Username     string          `json:"username"`
+	FirstName    string          `json:"first_name"`
+	LastName     string          `json:"last_name"`
+	ProfileImg   string          `json:"profile_img"`
+	Follower     int             `json:"follower"`
+	Following    int             `json:"following"`
+	FollowStatus bool            `json:"follow_status"`
+	Post         *[]PostResponse `json:"post"`
 }
