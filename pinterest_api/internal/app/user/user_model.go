@@ -1,6 +1,8 @@
 package user
 
-import "time"
+import (
+	"time"
+)
 
 type RegisterUserByEmailRequest struct {
 	Email     string `json:"email" validate:"required,email"`
@@ -57,7 +59,10 @@ type UserResponse struct {
 
 type UserOtherResponse struct {
 	Username   string `json:"username,"`
-	FirstName  string `json:"first_name,omitempty"`
-	LastName   string `json:"last_name,omitempty"`
+	FirstName  string `json:"first_name"`
+	LastName   string `json:"last_name"`
 	ProfileImg string `json:"profile_img,"`
+	Follow     any    `json:"follow,omitempty"`
+	Post       any    `json:"post,omitempty"`
+	Saved      any    `json:"saved,omitempty"`
 }

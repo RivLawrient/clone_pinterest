@@ -37,7 +37,7 @@ func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *Pos
 	}
 }
 
-func (p *PostUsecase) UploadImage(ctx context.Context, token string, request UploadPostRequest) (*PostResponse, *fiber.Error) {
+func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPostRequest) (*PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -82,21 +82,12 @@ func (p *PostUsecase) UploadImage(ctx context.Context, token string, request Upl
 	}, nil
 }
 
-func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, token string) (*PostResponse, *fiber.Error) {
+func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token string) (*PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	if err := p.Validate.ValidateStruct(request); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
-	}
-
-	_, err := p.UserUsecase.Verify(ctx, token)
-	if err != nil {
-		return nil, err
-	}
-
 	post := new(Post)
-	if err := p.PostRepository.FindById(tx, post, request.Id); err != nil {
+	if err := p.PostRepository.FindById(tx, post, postId); err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
 	}
 
@@ -111,6 +102,8 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 		ProfileImg: userOther.ProfileImg,
 	}
 
+	save := p.SaveUsecase.StatusSave(ctx, token, post.ID)
+
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
@@ -118,15 +111,15 @@ func (p *PostUsecase) ShowImage(ctx context.Context, request *ShowPostRequest, t
 	return &PostResponse{
 		Id:          post.ID,
 		Title:       post.Title,
-		User:        &postUser,
+		User:        postUser,
 		Description: post.Description,
 		Image:       post.Image,
-		SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, post.ID),
+		SaveStatus:  &save,
 		CreatedAt:   time.UnixMilli(post.CreatedAt),
 	}, nil
 }
 
-func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostResponse, *fiber.Error) {
+func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -153,13 +146,14 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 			LastName:   *userOther.LastName,
 			ProfileImg: userOther.ProfileImg,
 		}
+		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
 		postResponse := PostResponse{
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
 			Image:       posts.Image,
-			SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, posts.ID),
-			User:        &postUser,
+			SaveStatus:  &save,
+			User:        postUser,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
 		postResponses = append(postResponses, postResponse)
@@ -172,7 +166,7 @@ func (p *PostUsecase) ShowList(ctx context.Context, token string) (*[]PostRespon
 	return &postResponses, nil
 }
 
-func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token string) (*ShowProfileResponse, *fiber.Error) {
+func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -188,24 +182,18 @@ func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token st
 
 	post := []Post{}
 	if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
-		// return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
-		return &ShowProfileResponse{
-			Username:   user.Username,
-			FirstName:  user.FirstName,
-			LastName:   *user.LastName,
-			ProfileImg: user.ProfileImg,
-			Post:       nil,
-		}, nil
+		return &[]PostResponse{}, nil
 	}
 
 	postResponses := []PostResponse{}
 	for _, posts := range post {
 
+		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
 		postResponse := PostResponse{
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
-			SaveStatus:  p.SaveUsecase.StatusSave(ctx, token, posts.ID),
+			SaveStatus:  &save,
 			Image:       posts.Image,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
@@ -216,16 +204,10 @@ func (p *PostUsecase) ShowProfile(ctx context.Context, username string, token st
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &ShowProfileResponse{
-		Username:   user.Username,
-		FirstName:  user.FirstName,
-		LastName:   *user.LastName,
-		ProfileImg: user.ProfileImg,
-		Post:       &postResponses,
-	}, nil
+	return &postResponses, nil
 }
 
-func (p *PostUsecase) DetailPost(ctx context.Context, id string, token string) (*PostResponse, *fiber.Error) {
+func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -233,31 +215,39 @@ func (p *PostUsecase) DetailPost(ctx context.Context, id string, token string) (
 	if err != nil {
 		return nil, err
 	}
-	post := new(Post)
-	if err := p.PostRepository.FindById(tx, post, id); err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "post is not found")
+
+	user := new(user.User)
+	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
 	}
-	users := new(user.User)
-	if err := p.UserRepository.FindById(tx, users, post.UserId); err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "user is not found")
+
+	post := []Post{}
+	if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
+		return &[]PostResponse{}, nil
+	}
+
+	saveList := p.SaveUsecase.ShowSaveByUser(ctx, user.ID)
+
+	saveResponses := []PostResponse{}
+	for _, save := range *saveList {
+		postSave := new(Post)
+		p.PostRepository.FindById(tx, postSave, save.PostId)
+
+		saveStatus := p.SaveUsecase.StatusSave(ctx, token, save.PostId)
+		saveResponse := PostResponse{
+			Id:          save.PostId,
+			Title:       postSave.Title,
+			Description: postSave.Description,
+			Image:       postSave.Image,
+			SaveStatus:  &saveStatus,
+			CreatedAt:   time.UnixMilli(postSave.CreatedAt),
+		}
+		saveResponses = append(saveResponses, saveResponse)
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &PostResponse{
-		Id:          post.ID,
-		Title:       post.Title,
-		Description: post.Description,
-		User: &user.UserOtherResponse{
-			Username:   users.Username,
-			FirstName:  users.FirstName,
-			LastName:   *users.LastName,
-			ProfileImg: users.ProfileImg,
-		},
-		Image:      post.Image,
-		SaveStatus: p.SaveUsecase.StatusSave(ctx, token, post.ID),
-		CreatedAt:  time.UnixMilli(post.CreatedAt),
-	}, nil
+	return &saveResponses, nil
 }

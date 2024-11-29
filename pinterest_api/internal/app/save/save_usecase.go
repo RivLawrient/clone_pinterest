@@ -114,3 +114,29 @@ func (s *SaveUsecase) StatusSave(ctx context.Context, token string, postId strin
 
 	return true
 }
+
+func (s *SaveUsecase) ShowSaveByUser(ctx context.Context, userId string) *[]SaveResponse {
+	tx := s.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	save := []Save{}
+	if err := s.SaveRepository.FindByUserId(tx, new(Save), &save, userId); err != nil {
+		return &[]SaveResponse{}
+	}
+
+	saveResponeses := []SaveResponse{}
+	for _, saves := range save {
+		saveResponse := SaveResponse{
+			ID:        saves.ID,
+			PostId:    saves.PostId,
+			CreatedAt: time.UnixMilli(saves.CreatedAt),
+		}
+		saveResponeses = append(saveResponeses, saveResponse)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return &[]SaveResponse{}
+	}
+
+	return &saveResponeses
+}

@@ -27,7 +27,7 @@ func Bootstrap(config *BootstrapConfig) {
 
 	followRepository := follow.NewFollowRepository()
 	followUsecase := follow.NewFollowUsecase(config.DB, config.Validate, followRepository, userUsecase, userRepository, config.Config)
-	followController := follow.NewFollowController(followUsecase)
+	followController := follow.NewFollowController(followUsecase, userUsecase)
 
 	saveRepository := save.NewSaveRepository()
 	saveUsecase := save.NewSaveUsecase(config.DB, config.Validate, userUsecase, saveRepository, config.Config)
@@ -35,7 +35,7 @@ func Bootstrap(config *BootstrapConfig) {
 
 	postRepository := post.NewPostRepository()
 	postUsecase := post.NewPostUsecase(config.DB, config.Validate, postRepository, userUsecase, userRepository, config.Config, saveUsecase)
-	postController := post.NewPostController(postUsecase, followUsecase)
+	postController := post.NewPostController(postUsecase, followUsecase, userUsecase)
 
 	routeConfig := route.RouteConfig{
 		App:              config.App,

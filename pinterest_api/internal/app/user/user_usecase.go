@@ -255,3 +255,25 @@ func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, 
 	}, nil
 
 }
+
+func (u *UserUsecase) ShowByUsername(ctx context.Context, token string, username string) (*UserOtherResponse, *fiber.Error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	user := new(User)
+	if err := u.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &UserOtherResponse{
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   *user.LastName,
+		ProfileImg: user.ProfileImg,
+	}, nil
+
+}

@@ -51,16 +51,15 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/img/:filename", c.PictureController.GetPicture)
 	c.App.Post("/img", c.PictureController.UploadPicture)
 
-	c.App.Post("/post", c.PostController.HandleUploadImage)
-	c.App.Get("/post", c.PostController.HandleShowImage)
-	c.App.Get("/post/list", c.PostController.HandleShowList)
-	c.App.Get("/user/:username", c.PostController.HandleShowProfile)
-	c.App.Get("/post/:post", c.PostController.HandleDetailPost)
+	c.App.Post("/post", c.PostController.HandleUpload)
+	c.App.Get("/post/:postId", c.PostController.HandleShowDetail)
+	c.App.Get("/posts/", c.PostController.HandleShowRandomList)
+	c.App.Get("/posts/:username", c.PostController.HandleListByUsername)
 
 	c.App.Post("/follow/:username", c.FollowController.HandleFollowUser)
-	c.App.Post("/unfollow/:username", c.FollowController.HandleUnFollowUser)
-	c.App.Get("/follower", c.FollowController.HandleCountController)
-	c.App.Get("/follower/:username", c.FollowController.HandleCountFollowerByUsername)
+	c.App.Delete("/unfollow/:username", c.FollowController.HandleUnFollowUser)
+
+	c.App.Get("/user/:username", c.FollowController.HandleShowFollowByUsername)
 
 	c.App.Post("/save_post/:postid", c.SaveController.HandleSavePost)
 	c.App.Delete("/unsave_post/:postid", c.SaveController.HandleUnSavePost)

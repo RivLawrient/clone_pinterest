@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"pinterest_api/internal/app/follow"
+	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
 	"strings"
 
@@ -13,16 +14,18 @@ import (
 type PostController struct {
 	PostUsecase   *PostUsecase
 	FollowUsecase *follow.FollowUsecase
+	UserUsecase   *user.UserUsecase
 }
 
-func NewPostController(postUsecase *PostUsecase, followUsecase *follow.FollowUsecase) *PostController {
+func NewPostController(postUsecase *PostUsecase, followUsecase *follow.FollowUsecase, userUsecase *user.UserUsecase) *PostController {
 	return &PostController{
 		FollowUsecase: followUsecase,
 		PostUsecase:   postUsecase,
+		UserUsecase:   userUsecase,
 	}
 }
 
-func (c *PostController) HandleUploadImage(ctx *fiber.Ctx) error {
+func (c *PostController) HandleUpload(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 	request := new(UploadPostRequest)
 
@@ -63,7 +66,7 @@ func (c *PostController) HandleUploadImage(ctx *fiber.Ctx) error {
 		})
 	}
 
-	response, error := c.PostUsecase.UploadImage(ctx.UserContext(), auth, *request)
+	response, error := c.PostUsecase.Upload(ctx.UserContext(), auth, *request)
 	if error != nil {
 		error := error
 		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
@@ -79,44 +82,16 @@ func (c *PostController) HandleUploadImage(ctx *fiber.Ctx) error {
 	})
 }
 
-func (c *PostController) HandleShowImage(ctx *fiber.Ctx) error {
+func (c *PostController) HandleShowRandomList(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
-	request := new(ShowPostRequest)
 
-	if err := ctx.BodyParser(request); err != nil {
-		error := fiber.ErrBadRequest
-		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
-			StatusCode: error.Code,
-			Errors:     "invalid request body",
-		})
-	}
-
-	response, err := c.PostUsecase.ShowImage(ctx.UserContext(), request, auth)
+	response, err := c.PostUsecase.ShowRandomList(ctx.UserContext(), auth)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
 			StatusCode: err.Code,
 			Data:       nil,
 			Errors:     err.Message,
 		})
-	}
-
-	return ctx.JSON(model.WebResponse[PostResponse]{
-		StatusCode: ctx.Response().StatusCode(),
-		Data:       *response,
-	})
-}
-
-func (c *PostController) HandleShowList(ctx *fiber.Ctx) error {
-	auth := ctx.Cookies("auth-token")
-
-	response, err := c.PostUsecase.ShowList(ctx.UserContext(), auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-
 	}
 
 	return ctx.JSON(model.WebResponse[[]PostResponse]{
@@ -125,21 +100,11 @@ func (c *PostController) HandleShowList(ctx *fiber.Ctx) error {
 	})
 }
 
-func (c *PostController) HandleShowProfile(ctx *fiber.Ctx) error {
+func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
-	username := ctx.Params("username")
+	postId := ctx.Params("postId")
 
-	response, err := c.PostUsecase.ShowProfile(ctx.UserContext(), username, auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-
-	}
-
-	responseFollower, err := c.FollowUsecase.CountFollowerByUsername(ctx.UserContext(), auth, username)
+	_, err := c.UserUsecase.Verify(ctx.UserContext(), auth)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
 			StatusCode: err.Code,
@@ -148,7 +113,7 @@ func (c *PostController) HandleShowProfile(ctx *fiber.Ctx) error {
 		})
 	}
 
-	responseFollowing, err := c.FollowUsecase.CountFollowingByUsername(ctx.UserContext(), auth, username)
+	response, err := c.PostUsecase.ShowDetail(ctx.UserContext(), postId, auth)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
 			StatusCode: err.Code,
@@ -157,46 +122,63 @@ func (c *PostController) HandleShowProfile(ctx *fiber.Ctx) error {
 		})
 	}
 
-	responseStatus, err := c.FollowUsecase.StatusFollow(ctx.UserContext(), auth, username)
+	follow, err := c.FollowUsecase.ShowFollowByUsername(ctx.UserContext(), auth, response.User.Username)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
 			StatusCode: err.Code,
 			Data:       nil,
 			Errors:     err.Message,
 		})
-	}
-
-	return ctx.JSON(model.WebResponse[ProfileResponse]{
-		StatusCode: ctx.Response().StatusCode(),
-		Data: ProfileResponse{
-			Username:     response.Username,
-			FirstName:    response.FirstName,
-			LastName:     response.LastName,
-			ProfileImg:   response.ProfileImg,
-			Follower:     responseFollower.FollowerCount,
-			Following:    responseFollowing.FollowingCount,
-			FollowStatus: responseStatus.FollowStatus,
-			Post:         response.Post,
-		},
-	})
-}
-
-func (c *PostController) HandleDetailPost(ctx *fiber.Ctx) error {
-	auth := ctx.Cookies("auth-token")
-	id := ctx.Params("post")
-
-	response, err := c.PostUsecase.DetailPost(ctx.UserContext(), id, auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-
 	}
 
 	return ctx.JSON(model.WebResponse[PostResponse]{
 		StatusCode: ctx.Response().StatusCode(),
-		Data:       *response,
+		Data: PostResponse{
+			Id:          response.Id,
+			Title:       response.Title,
+			Description: response.Description,
+			User: user.UserOtherResponse{
+				Username:   response.User.Username,
+				FirstName:  response.User.FirstName,
+				LastName:   response.User.LastName,
+				ProfileImg: response.User.ProfileImg,
+				Follow:     follow,
+			},
+			Image:      response.Image,
+			SaveStatus: response.SaveStatus,
+			CreatedAt:  response.CreatedAt,
+		},
 	})
+}
+
+func (c *PostController) HandleListByUsername(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	username := ctx.Params("username")
+
+	post, err := c.PostUsecase.ShowListPostByUsername(ctx.UserContext(), username, auth)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	saved, err := c.PostUsecase.ShowListSavedByUsername(ctx.UserContext(), username, auth)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[ListPostandSaved]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data: ListPostandSaved{
+			Posted: *post,
+			Saved:  *saved,
+		},
+	})
+
 }
