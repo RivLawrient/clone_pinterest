@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import ProfileImg from "./profileImg";
 import { useUser } from "@/app/(userContext)/User";
-import Logout from "./logout";
 
 export default function DropdownNotif({
   isVisible,

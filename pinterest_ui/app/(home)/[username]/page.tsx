@@ -3,12 +3,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Masonry from "../(Masonry)/masonry";
 import { Post, User } from "../(postContext)/Post";
-import ProfileImg from "../(Header)/profileImg";
 import { useUser } from "@/app/(userContext)/User";
+import ProfileImage from "../(Component)/profileImage";
 
 export default function UsernamePage() {
   const [post, setPost] = useState<Post[]>([]);
+  const [save, setSave] = useState<Post[]>([]);
   const [users, setUsers] = useState<User | null>(null);
+
   const [tab, setTab] = useState<"created" | "saved">("created");
   const [isloading, setIsloading] = useState<boolean>(true);
   const { user } = useUser();
@@ -26,6 +28,7 @@ export default function UsernamePage() {
         if (respons.ok) {
           setPost(data.data.post);
           setUsers(data.data);
+          setSave(data.data.saved);
         }
       });
     } catch (err) {
@@ -90,16 +93,8 @@ export default function UsernamePage() {
           <>
             {users && user && (
               <>
-                {users.profile_img ? (
-                  <img
-                    src={users.profile_img}
-                    alt=""
-                    width="120"
-                    className="rounded-full"
-                  />
-                ) : (
-                  <ProfileImg alp={users.username} width={120} />
-                )}
+                <ProfileImage user={users} width={120} />
+
                 <div className="text-[36px]">
                   {users.first_name} {users.last_name}
                 </div>
@@ -194,8 +189,14 @@ export default function UsernamePage() {
               )}
             </div>
           ) : (
-            <div className="mt-5 w-full text-center">
-              someone d hasn't saved any Pins yet
+            <div className="mt-5 flex w-screen justify-center">
+              {save && save.length > 0 ? (
+                <Masonry post={save} setPost={setSave} />
+              ) : (
+                <div className="text-[16px]">
+                  someone d hasn't saved any Pins yet
+                </div>
+              )}
             </div>
           )}
         </div>

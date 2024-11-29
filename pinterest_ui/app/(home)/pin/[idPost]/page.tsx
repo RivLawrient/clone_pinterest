@@ -2,10 +2,9 @@
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Post } from "../../(postContext)/Post";
-import Link from "next/link";
-import ProfileImg from "../../(Header)/profileImg";
 import { useUser } from "@/app/(userContext)/User";
 import SaveBtn from "../../(Component)/saveBtn";
+import ProfileImage from "../../(Component)/profileImage";
 
 export default function PagePost() {
   const { user } = useUser();
@@ -16,14 +15,21 @@ export default function PagePost() {
   const [detail, setDetail] = useState<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);
+  const refWidth = useRef<HTMLImageElement>(null);
   const [width, setWidth] = useState(0);
-  console.log(ref);
+  console.log(refWidth);
 
   useEffect(() => {
-    if (ref.current) {
-      setWidth(ref.current.clientWidth);
+    if (refWidth.current != null) {
+      isloading ? null : setWidth(refWidth.current.clientWidth);
     }
-  }, [ref.current]);
+  }, [refWidth.current]);
+
+  const handleImageLoad = () => {
+    if (refWidth.current) {
+      setWidth(refWidth.current.clientWidth);
+    }
+  };
 
   useEffect(() => {
     setIsloading(true);
@@ -43,8 +49,8 @@ export default function PagePost() {
     }
 
     const handleResize = () => {
-      if (ref.current) {
-        setWidth(ref.current.clientWidth);
+      if (refWidth.current) {
+        setWidth(refWidth.current.clientWidth);
       }
     };
 
@@ -99,21 +105,6 @@ export default function PagePost() {
     );
   };
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (ref.current) {
-  //       setWidth(ref.current.clientWidth);
-  //     }
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   handleResize(); // Set initial width
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
   return (
     <>
       <ShowDetailImg />
@@ -130,7 +121,6 @@ export default function PagePost() {
             className={`flex w-fit grow justify-center`}
           >
             <div
-              ref={ref}
               className={`relative z-[1] flex min-w-[35%] max-w-[50%] justify-end`}
             >
               <div
@@ -151,76 +141,89 @@ export default function PagePost() {
                 </svg>
               </div>
               <img
+                ref={refWidth}
                 src={post?.image}
                 alt=""
+                onLoad={handleImageLoad}
                 className={`rounded-l-[32px] object-cover`}
               />
             </div>
-            <div
-              style={{
-                width: `${width}px`,
-              }}
-              className={`relative rounded-r-[32px] p-8 shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px]`}
-            >
-              {post && (
-                <div className={`flex justify-between`}>
-                  <div className={`ml-[-14px] flex items-center`}>
-                    <div
-                      className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20px"
-                        viewBox="0 0 6.3499998 6.3499998"
-                        id="svg8"
-                        version="1.1"
+            {width > 0 && (
+              <div
+                style={{
+                  width: `${width}px`,
+                }}
+                className={`relative overflow-hidden rounded-r-[32px] p-8 shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px]`}
+              >
+                {post && (
+                  <div className={`flex justify-between`}>
+                    <div className={`ml-[-14px] flex items-center`}>
+                      <div
+                        className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
                       >
-                        <defs id="defs2" />
-                        <path
-                          d="m 2.1835938,0.72070302 c -0.4271174,0 -0.8546461,0.16323989 -1.1796876,0.48828128 -0.65008277,0.6500828 -0.65008277,1.707339 0,2.3574219 l 1.984375,1.9843749 a 0.26460976,0.26460976 0 0 0 0.373047,0 L 5.3457031,3.5664062 c 0.6500828,-0.6500829 0.6500828,-1.7073391 0,-2.3574219 C 4.7473328,0.61061415 3.8291869,0.62768703 3.1757812,1.1308593 2.8770626,0.90036497 2.5432669,0.72070302 2.1835938,0.72070302 Z m 0,0.52539068 c 0.2902341,-1e-7 0.5800571,0.1113071 0.8046874,0.3359374 a 0.26460976,0.26460976 0 0 0 0.373047,0 c 0.4492606,-0.4492607 1.1620671,-0.4492608 1.611328,0 0.4492609,0.4492608 0.4492609,1.1620674 0,1.6113282 L 3.1757812,4.9902344 1.3769531,3.1933593 c -0.44926078,-0.4492608 -0.44926078,-1.1620674 0,-1.6113282 C 1.6015836,1.3574007 1.8933596,1.2460937 2.1835938,1.2460937 Z"
-                          id="rect2507"
-                        />
-                      </svg>
-                    </div>
-                    <div
-                      className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        aria-label=""
-                        height="20"
-                        role="img"
-                        viewBox="0 0 24 24"
-                        width="20"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20px"
+                          viewBox="0 0 6.3499998 6.3499998"
+                          id="svg8"
+                          version="1.1"
+                        >
+                          <defs id="defs2" />
+                          <path
+                            d="m 2.1835938,0.72070302 c -0.4271174,0 -0.8546461,0.16323989 -1.1796876,0.48828128 -0.65008277,0.6500828 -0.65008277,1.707339 0,2.3574219 l 1.984375,1.9843749 a 0.26460976,0.26460976 0 0 0 0.373047,0 L 5.3457031,3.5664062 c 0.6500828,-0.6500829 0.6500828,-1.7073391 0,-2.3574219 C 4.7473328,0.61061415 3.8291869,0.62768703 3.1757812,1.1308593 2.8770626,0.90036497 2.5432669,0.72070302 2.1835938,0.72070302 Z m 0,0.52539068 c 0.2902341,-1e-7 0.5800571,0.1113071 0.8046874,0.3359374 a 0.26460976,0.26460976 0 0 0 0.373047,0 c 0.4492606,-0.4492607 1.1620671,-0.4492608 1.611328,0 0.4492609,0.4492608 0.4492609,1.1620674 0,1.6113282 L 3.1757812,4.9902344 1.3769531,3.1933593 c -0.44926078,-0.4492608 -0.44926078,-1.1620674 0,-1.6113282 C 1.6015836,1.3574007 1.8933596,1.2460937 2.1835938,1.2460937 Z"
+                            id="rect2507"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
                       >
-                        <path d="M7.44 5.44a1.5 1.5 0 1 0 2.12 2.12l.94-.94v6.88a1.5 1.5 0 0 0 3 0V6.62l.94.94a1.5 1.5 0 0 0 2.12-2.12l-3.5-3.5a1.5 1.5 0 0 0-2.12 0zM5 13.5a1.5 1.5 0 0 0-3 0v5A3.5 3.5 0 0 0 5.5 22h13a3.5 3.5 0 0 0 3.5-3.5v-5a1.5 1.5 0 0 0-3 0v5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5z"></path>
-                      </svg>
-                    </div>
-                    <div
-                      className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        aria-label=""
-                        height="20"
-                        role="img"
-                        viewBox="0 0 24 24"
-                        width="20"
+                        <svg
+                          aria-hidden="true"
+                          aria-label=""
+                          height="20"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="20"
+                        >
+                          <path d="M7.44 5.44a1.5 1.5 0 1 0 2.12 2.12l.94-.94v6.88a1.5 1.5 0 0 0 3 0V6.62l.94.94a1.5 1.5 0 0 0 2.12-2.12l-3.5-3.5a1.5 1.5 0 0 0-2.12 0zM5 13.5a1.5 1.5 0 0 0-3 0v5A3.5 3.5 0 0 0 5.5 22h13a3.5 3.5 0 0 0 3.5-3.5v-5a1.5 1.5 0 0 0-3 0v5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5z"></path>
+                        </svg>
+                      </div>
+                      <div
+                        className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
                       >
-                        <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
-                      </svg>
+                        <svg
+                          aria-hidden="true"
+                          aria-label=""
+                          height="20"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="20"
+                        >
+                          <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
+                        </svg>
+                      </div>
                     </div>
+                    <SaveBtn
+                      eachPost={post}
+                      setEachPost={setPost}
+                      setPost={null}
+                      post={null}
+                    />
                   </div>
-                  <SaveBtn
-                    eachPost={post}
-                    setEachPost={setPost}
-                    setPost={null}
-                    post={null}
-                  />
+                )}
+                <div className={`mt-4 text-[28px]`}>{post?.title}</div>
+                <div className={`mb-8 mt-4 flex w-full`}>
+                  <div>
+                    {post?.user && (
+                      <ProfileImage user={post?.user} width={120} />
+                    )}
+                  </div>
+                  <div></div>
+                  <div></div>
                 </div>
-              )}
-              <div className={`mt-4 text-[28px]`}>{post?.title}</div>
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>

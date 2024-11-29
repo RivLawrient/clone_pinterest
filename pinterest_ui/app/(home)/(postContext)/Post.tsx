@@ -7,9 +7,9 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_img: string;
-  follower: number;
-  following: number;
-  follow_status: boolean;
+  follower: number | null;
+  following: number | null;
+  follow_status: boolean | null;
 }
 
 export interface Post {

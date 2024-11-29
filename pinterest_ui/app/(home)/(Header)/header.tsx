@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "../../(userContext)/User";
-import ProfileImg from "./profileImg";
+
 import DropdownDetail from "./dropdownDetail";
 import DropdownNotif from "./dropdownNotif";
+import ProfileImage from "../(Component)/profileImage";
 
 function PageButton({
   destination,
@@ -114,15 +115,19 @@ export default function HeaderHome() {
           onClick={() => route.push("/" + user?.username)}
           className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-[#f1f1f1]"
         >
-          {user?.profile_img ? (
-            <img
-              src={user?.profile_img}
-              alt=""
-              width="24"
-              className="rounded-full"
+          {user && (
+            <ProfileImage
+              user={{
+                follow_status: null,
+                follower: null,
+                following: null,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                profile_img: user.profile_img,
+                username: user.username,
+              }}
+              width={24}
             />
-          ) : (
-            <ProfileImg alp={user?.username} width={24} />
           )}
         </div>
 
