@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface User {
   username: string;
@@ -18,12 +18,13 @@ export interface Post {
   user: User;
   description: string;
   image: string;
+  save_status: boolean;
   created_at: string;
 }
 
 type PostContextType = {
-  post: Post[] | null;
-  setPost: (post: Post[]) => void;
+  post: Post[];
+  setPost: React.Dispatch<React.SetStateAction<Post[]>>;
   postLoading: boolean;
   setPostLoading: (postLoading: boolean) => void;
   loadMorePosts: () => Promise<void>;
@@ -32,7 +33,7 @@ type PostContextType = {
 const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider = ({ children }: { children: React.ReactNode }) => {
-  const [post, setPost] = useState<Post[] | null>(null);
+  const [post, setPost] = useState<Post[]>([]);
   const [postLoading, setPostLoading] = useState<boolean>(false);
 
   const loadMorePosts = async () => {
@@ -44,9 +45,17 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
         credentials: "include",
       });
       const data = await response.json();
-      setPost((prevPost) =>
-        prevPost ? [...prevPost, ...data.data] : data.data,
-      );
+      setPost((prevPost) => {
+        if (!prevPost) return data.data;
+
+        // Filter out posts with duplicate IDs
+        const newPosts = data.data.filter(
+          (newPost: Post) =>
+            !prevPost.some((existingPost) => existingPost.id === newPost.id),
+        );
+
+        return [...prevPost, ...newPosts];
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

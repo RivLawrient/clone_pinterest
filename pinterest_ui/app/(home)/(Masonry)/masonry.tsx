@@ -1,9 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MasonryItem from "./masonryItem";
 import { Post, usePost } from "../(postContext)/Post";
 
-export default function Masonry({ post }: { post: Post[] | null }) {
-  // const { post } = usePost();
+export default function Masonry({
+  post,
+  setPost,
+}: {
+  post: Post[];
+  setPost: React.Dispatch<React.SetStateAction<Post[]>>;
+}) {
   const [leng, setLeng] = useState(0);
   const result = Array.from({ length: leng }, (_, i) =>
     post?.filter((_, index) => index % leng === i),
@@ -37,7 +42,12 @@ export default function Masonry({ post }: { post: Post[] | null }) {
               }}
             >
               {value?.map((val, ind) => (
-                <MasonryItem src={val.image} id={val.id} key={ind} />
+                <MasonryItem
+                  eachPost={val}
+                  post={post}
+                  setPost={setPost}
+                  key={ind}
+                />
               ))}
             </div>
           ))}

@@ -74,7 +74,7 @@ export default function HomeLanding() {
       <span className="font-roboto2 text-[60px]">Get your next</span>
       <br />
       <AnimateText step={step} />
-      <AnimateImg step={step} setStep={setStep} />
+      <AnimateImg step={step} />
       <div className="absolute bottom-0 flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent to-white">
         <AnimateBtn step={step} />
         <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">

@@ -5,6 +5,7 @@ import { Post } from "../../(postContext)/Post";
 import Link from "next/link";
 import ProfileImg from "../../(Header)/profileImg";
 import { useUser } from "@/app/(userContext)/User";
+import SaveBtn from "../../(Component)/saveBtn";
 
 export default function PagePost() {
   const { user } = useUser();
@@ -44,7 +45,12 @@ export default function PagePost() {
         }
         className="fixed top-0 z-50 flex h-screen w-screen justify-between bg-black bg-opacity-85 p-4 backdrop-blur-sm"
       >
-        <div className="flex size-[48px] items-center justify-center rounded-full bg-white">
+        <div
+          onClick={() => {
+            setDetail(false);
+          }}
+          className="flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-white"
+        >
           <svg
             aria-hidden="true"
             aria-label=""
@@ -60,9 +66,12 @@ export default function PagePost() {
 
         <img src={post.image} alt="" className="rounded-[32px]" />
 
-        <div className="h-fit select-none rounded-full bg-red-700 p-4 text-[16px] leading-none tracking-wide text-white transition-all hover:bg-red-800 active:scale-90">
-          Save
-        </div>
+        <SaveBtn
+          eachPost={post}
+          setEachPost={setPost}
+          setPost={null}
+          post={null}
+        />
       </div>
     );
   };
@@ -83,7 +92,7 @@ export default function PagePost() {
                 }}
                 className="flex h-full w-full flex-col overflow-hidden rounded-[32px] border bg-white lg:flex-row"
               >
-                <div className="relative min-w-[35%] max-w-[50%] bg-slate-50">
+                <div className="min relative h-full min-w-[35%] max-w-[50%] bg-slate-50">
                   <div
                     onMouseEnter={() => setView(true)}
                     onMouseLeave={() => setView(false)}
@@ -107,7 +116,7 @@ export default function PagePost() {
                   <img
                     src={post?.image}
                     alt=""
-                    className="max-h-full object-cover"
+                    className="object-cover"
                     style={{
                       height: "100%",
                       width: "100%",

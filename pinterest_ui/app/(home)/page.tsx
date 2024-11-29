@@ -4,7 +4,7 @@ import { usePost } from "./(postContext)/Post";
 import Masonry from "./(Masonry)/masonry";
 
 export default function Home() {
-  const { post, postLoading, loadMorePosts } = usePost();
+  const { post, setPost, postLoading, loadMorePosts } = usePost();
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -25,7 +25,7 @@ export default function Home() {
     <>
       {post && (
         <div className="mt-[80px]">
-          <Masonry post={post} />
+          <Masonry post={post} setPost={setPost} />
         </div>
       )}
     </>

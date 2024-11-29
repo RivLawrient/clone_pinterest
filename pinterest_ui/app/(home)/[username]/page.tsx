@@ -7,14 +7,13 @@ import ProfileImg from "../(Header)/profileImg";
 import { useUser } from "@/app/(userContext)/User";
 
 export default function UsernamePage() {
-  const [post, setPost] = useState<Post[] | null>(null);
+  const [post, setPost] = useState<Post[]>([]);
   const [users, setUsers] = useState<User | null>(null);
   const [tab, setTab] = useState<"created" | "saved">("created");
   const [isloading, setIsloading] = useState<boolean>(true);
   const { user } = useUser();
   const path = usePathname();
-
-  console.log(users);
+  const [followBtn, setFollowBtn] = useState<boolean>(false);
 
   useEffect(() => {
     setIsloading(true);
@@ -37,6 +36,7 @@ export default function UsernamePage() {
 
   const FollowHandle = async () => {
     try {
+      setFollowBtn(true);
       await fetch(`http://127.0.0.1:4000/follow/${path.slice(1)}`, {
         method: "POST",
         credentials: "include",
@@ -53,11 +53,13 @@ export default function UsernamePage() {
       });
     } catch (err) {
     } finally {
+      setFollowBtn(false);
     }
   };
 
   const UnFollowHandle = async () => {
     try {
+      setFollowBtn(true);
       await fetch(`http://127.0.0.1:4000/unfollow/${path.slice(1)}`, {
         method: "POST",
         credentials: "include",
@@ -74,6 +76,7 @@ export default function UsernamePage() {
       });
     } catch (err) {
     } finally {
+      setFollowBtn(false);
     }
   };
   return (
@@ -135,15 +138,23 @@ export default function UsernamePage() {
 
                     {users.follow_status ? (
                       <div
-                        onClick={UnFollowHandle}
-                        className="cursor-pointer rounded-full bg-black px-4 py-3 text-white"
+                        onClick={() => {
+                          if (!followBtn) {
+                            UnFollowHandle();
+                          }
+                        }}
+                        className={`${followBtn ? "opacity-50" : "cursor-pointer"} rounded-full bg-black px-4 py-3 text-white`}
                       >
                         Following
                       </div>
                     ) : (
                       <div
-                        onClick={FollowHandle}
-                        className="cursor-pointer rounded-full bg-[#E60023] px-4 py-3 text-white hover:bg-[#c9001e]"
+                        onClick={() => {
+                          if (!followBtn) {
+                            FollowHandle();
+                          }
+                        }}
+                        className={`${followBtn ? "opacity-50" : "cursor-pointer"} rounded-full bg-[#E60023] px-4 py-3 text-white hover:bg-[#c9001e]`}
                       >
                         Follow
                       </div>
@@ -175,7 +186,7 @@ export default function UsernamePage() {
           {tab == "created" ? (
             <div className="mt-5 flex w-screen justify-center">
               {post && post.length > 0 ? (
-                <Masonry post={post} />
+                <Masonry post={post} setPost={setPost} />
               ) : (
                 <div className="text-[16px]">
                   No Pins yet, but there's tons of potential
