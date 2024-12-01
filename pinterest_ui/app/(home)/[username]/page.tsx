@@ -26,8 +26,16 @@ export default function UsernamePage() {
       }).then(async (respons) => {
         const data = await respons.json();
         if (respons.ok) {
-          setPost(data.data.post);
           setUsers(data.data);
+        }
+      });
+      fetch(`http://127.0.0.1:4000/posts/${path.slice(1)}`, {
+        method: "GET",
+        credentials: "include",
+      }).then(async (respons) => {
+        const data = await respons.json();
+        if (respons.ok) {
+          setPost(data.data.posted);
           setSave(data.data.saved);
         }
       });
@@ -47,8 +55,15 @@ export default function UsernamePage() {
         const data = await respons.json();
         if (respons.ok) {
           setUsers((prevUsers) => {
-            if (!prevUsers) return null;
-            return { ...prevUsers, follow_status: true };
+            if (!prevUsers) return null; // Handle the case where there are no previous users
+            return {
+              ...prevUsers,
+              follow: {
+                follower_count: prevUsers.follow?.follower_count ?? null, // Ensure a default value
+                following_count: prevUsers.follow?.following_count ?? null, // Ensure a default value
+                follow_status: true, // Update the follow_status
+              },
+            };
           });
         } else {
           return new Error(data.errors);
@@ -64,14 +79,21 @@ export default function UsernamePage() {
     try {
       setFollowBtn(true);
       await fetch(`http://127.0.0.1:4000/unfollow/${path.slice(1)}`, {
-        method: "POST",
+        method: "DELETE",
         credentials: "include",
       }).then(async (respons) => {
         const data = await respons.json();
         if (respons.ok) {
           setUsers((prevUsers) => {
-            if (!prevUsers) return null; // Jika `users` null, tidak melakukan apa-apa
-            return { ...prevUsers, follow_status: false }; // Hanya ubah `name`
+            if (!prevUsers) return null; // Handle the case where there are no previous users
+            return {
+              ...prevUsers,
+              follow: {
+                follower_count: prevUsers.follow?.follower_count ?? null, // Ensure a default value
+                following_count: prevUsers.follow?.following_count ?? null, // Ensure a default value
+                follow_status: false, // Update the follow_status
+              },
+            };
           });
         } else {
           return new Error(data.errors);
@@ -113,7 +135,8 @@ export default function UsernamePage() {
                 </div>
 
                 <div className="text-[16px]">
-                  {users.follower} followers · {users.following} following
+                  {users.follow?.follower_count} followers ·{" "}
+                  {users.follow?.following_count} following
                 </div>
 
                 {users.username == user?.username ? (
@@ -131,7 +154,7 @@ export default function UsernamePage() {
                       Message
                     </div>
 
-                    {users.follow_status ? (
+                    {users.follow?.follow_status ? (
                       <div
                         onClick={() => {
                           if (!followBtn) {

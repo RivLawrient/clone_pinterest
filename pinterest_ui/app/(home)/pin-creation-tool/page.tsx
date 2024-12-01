@@ -137,7 +137,7 @@ export default function Create() {
                     credentials: "include",
                     body: JSON.stringify({
                       title: title,
-                      descripion: desc,
+                      description: desc,
                       image: image,
                     }),
                   }).then(async (response) => {
@@ -190,7 +190,7 @@ export default function Create() {
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Add a detailed description"
-              maxLength={300}
+              maxLength={100}
               className="h-[164px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3"
             />
           </div>

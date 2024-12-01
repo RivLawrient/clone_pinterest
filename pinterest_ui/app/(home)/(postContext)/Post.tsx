@@ -7,8 +7,12 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_img: string;
-  follower: number | null;
-  following: number | null;
+  follow: Follow | null;
+}
+
+export interface Follow {
+  follower_count: number | null;
+  following_count: number | null;
   follow_status: boolean | null;
 }
 
@@ -41,7 +45,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
     setPostLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:4000/post/list", {
+      const response = await fetch("http://127.0.0.1:4000/posts", {
         credentials: "include",
       });
       const data = await response.json();

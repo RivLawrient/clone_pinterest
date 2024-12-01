@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import ProfileImg from "./profileImg";
 import { useUser } from "@/app/(userContext)/User";
 import Logout from "./logout";
+import ProfileImage from "../(Component)/profileImage";
 
 export default function DropdownDetail({
   isVisible,
@@ -42,15 +42,17 @@ export default function DropdownDetail({
           <div className="p-2 text-[12px]">Currently in</div>
           <div className="flex cursor-pointer items-center rounded-lg p-2 pr-8 hover:bg-slate-200">
             <div className="mr-2">
-              {user?.profile_img ? (
-                <img
-                  src={user?.profile_img}
-                  alt=""
-                  width="60"
-                  className="rounded-full"
+              {user && (
+                <ProfileImage
+                  user={{
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    profile_img: user.profile_img,
+                    username: user.username,
+                    follow: null,
+                  }}
+                  width={60}
                 />
-              ) : (
-                <ProfileImg alp={user?.username} width={60} />
               )}
             </div>
             <div className="gap-[2px]">

@@ -4,7 +4,7 @@ export default function ProfileImage({
   user,
   width,
 }: {
-  user: User | null;
+  user: User;
   width: number;
 }) {
   const radius = width / 2; // Menentukan jari-jari lingkaran berdasarkan lebar
@@ -16,7 +16,7 @@ export default function ProfileImage({
         <img
           src={user?.profile_img}
           alt=""
-          width="24"
+          width={width}
           className="rounded-full"
         />
       ) : (

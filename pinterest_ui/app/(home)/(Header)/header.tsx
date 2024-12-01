@@ -118,13 +118,11 @@ export default function HeaderHome() {
           {user && (
             <ProfileImage
               user={{
-                follow_status: null,
-                follower: null,
-                following: null,
                 first_name: user.first_name,
                 last_name: user.last_name,
                 profile_img: user.profile_img,
                 username: user.username,
+                follow: null,
               }}
               width={24}
             />
