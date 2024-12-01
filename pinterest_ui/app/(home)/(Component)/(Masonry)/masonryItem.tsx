@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
-import SaveBtn from "../(Component)/saveBtn";
-import { Post } from "../(postContext)/Post";
+import { Post } from "../../(postContext)/Post";
+import SaveBtn from "../saveBtn";
 
 export default function MasonryItem({
   eachPost,

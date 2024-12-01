@@ -1,10 +1,11 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import Masonry from "../(Masonry)/masonry";
+
 import { Post, User } from "../(postContext)/Post";
 import { useUser } from "@/app/(userContext)/User";
 import ProfileImage from "../(Component)/profileImage";
+import Masonry from "../(Component)/(Masonry)/masonry";
 
 export default function UsernamePage() {
   const [post, setPost] = useState<Post[]>([]);

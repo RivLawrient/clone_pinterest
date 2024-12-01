@@ -1,8 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { usePost } from "./(postContext)/Post";
-import Masonry from "./(Masonry)/masonry";
-
+import Masonry from "./(Component)/(Masonry)/masonry";
 export default function Home() {
   const { post, setPost, postLoading, loadMorePosts } = usePost();
   useEffect(() => {
