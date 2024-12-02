@@ -2,7 +2,9 @@ package route
 
 import (
 	picture "pinterest_api/internal/app/Picture"
+	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/follow"
+	likePost "pinterest_api/internal/app/like_post"
 	"pinterest_api/internal/app/post"
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
@@ -13,12 +15,14 @@ import (
 )
 
 type RouteConfig struct {
-	App               *fiber.App
-	UserController    *user.UserController
-	PostController    *post.PostController
-	FollowController  *follow.FollowController
-	PictureController *picture.PictureController
-	SaveController    *save.SaveController
+	App                *fiber.App
+	UserController     *user.UserController
+	PostController     *post.PostController
+	FollowController   *follow.FollowController
+	PictureController  *picture.PictureController
+	SaveController     *save.SaveController
+	LikePostController *likePost.LikePostController
+	CommentController  *comment.CommentController
 }
 
 func (c *RouteConfig) Setup() {
@@ -63,6 +67,11 @@ func (c *RouteConfig) SetupGuestRoute() {
 
 	c.App.Post("/save_post/:postid", c.SaveController.HandleSavePost)
 	c.App.Delete("/unsave_post/:postid", c.SaveController.HandleUnSavePost)
+
+	c.App.Post("/like_post/:postid", c.LikePostController.HandleLikeaPost)
+	c.App.Delete("/unlike_post/:postid", c.LikePostController.HandleUnLikeaPost)
+
+	c.App.Post("/comment/:postid", c.CommentController.HandleAddComment)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

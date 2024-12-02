@@ -1,7 +1,9 @@
 package internal
 
 import (
+	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/follow"
+	likePost "pinterest_api/internal/app/like_post"
 	"pinterest_api/internal/app/post"
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
@@ -33,16 +35,26 @@ func Bootstrap(config *BootstrapConfig) {
 	saveUsecase := save.NewSaveUsecase(config.DB, config.Validate, userUsecase, saveRepository, config.Config)
 	saveController := save.NewSaveController(saveUsecase)
 
+	likePostRepository := likePost.NewLikePostRespository()
+	likePosttUsecase := likePost.NewLikePostUsecase(config.DB, config.Validate, likePostRepository, userUsecase)
+	likePostController := likePost.NewLikePostController(likePosttUsecase)
+
+	commentRepository := comment.NewCommentRepository()
+	commentUsecase := comment.NewCommentUsecase(config.DB, config.Validate, commentRepository, userUsecase)
+	commentController := comment.NewCommentController(commentUsecase)
+
 	postRepository := post.NewPostRepository()
-	postUsecase := post.NewPostUsecase(config.DB, config.Validate, postRepository, userUsecase, userRepository, config.Config, saveUsecase)
+	postUsecase := post.NewPostUsecase(config.DB, config.Validate, postRepository, userUsecase, userRepository, config.Config, saveUsecase, likePosttUsecase, commentUsecase)
 	postController := post.NewPostController(postUsecase, followUsecase, userUsecase)
 
 	routeConfig := route.RouteConfig{
-		App:              config.App,
-		UserController:   userController,
-		PostController:   postController,
-		FollowController: followController,
-		SaveController:   saveController,
+		App:                config.App,
+		UserController:     userController,
+		PostController:     postController,
+		FollowController:   followController,
+		SaveController:     saveController,
+		LikePostController: likePostController,
+		CommentController:  commentController,
 	}
 
 	routeConfig.Setup()

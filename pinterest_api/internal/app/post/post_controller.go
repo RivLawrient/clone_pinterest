@@ -146,6 +146,9 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 			},
 			Image:      response.Image,
 			SaveStatus: response.SaveStatus,
+			LikeStatus: response.LikeStatus,
+			TotalLike:  response.TotalLike,
+			Comment:    response.Comment,
 			CreatedAt:  response.CreatedAt,
 		},
 	})

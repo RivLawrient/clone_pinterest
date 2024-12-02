@@ -2,6 +2,8 @@ package post
 
 import (
 	"context"
+	"pinterest_api/internal/app/comment"
+	likePost "pinterest_api/internal/app/like_post"
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
@@ -14,26 +16,30 @@ import (
 )
 
 type PostUsecase struct {
-	DB             *gorm.DB
-	Validate       *config.Validator
-	PostRepository *PostRepository
-	UserUsecase    *user.UserUsecase
-	UserRepository *user.UserRepository
-	SaveUsecase    *save.SaveUsecase
-	Viper          *viper.Viper
+	DB              *gorm.DB
+	Validate        *config.Validator
+	PostRepository  *PostRepository
+	UserUsecase     *user.UserUsecase
+	UserRepository  *user.UserRepository
+	SaveUsecase     *save.SaveUsecase
+	LikePostUsecase *likePost.LikePostUsecase
+	CommentUsecase  *comment.CommentUsecase
+	Viper           *viper.Viper
 }
 
 func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *PostRepository,
 	userUsecase *user.UserUsecase, userRepository *user.UserRepository, viper *viper.Viper,
-	saveUsecase *save.SaveUsecase) *PostUsecase {
+	saveUsecase *save.SaveUsecase, likePostUsecase *likePost.LikePostUsecase, commentUsecase *comment.CommentUsecase) *PostUsecase {
 	return &PostUsecase{
-		DB:             db,
-		Validate:       validate,
-		PostRepository: postRepository,
-		UserUsecase:    userUsecase,
-		UserRepository: userRepository,
-		SaveUsecase:    saveUsecase,
-		Viper:          viper,
+		DB:              db,
+		Validate:        validate,
+		PostRepository:  postRepository,
+		UserUsecase:     userUsecase,
+		UserRepository:  userRepository,
+		SaveUsecase:     saveUsecase,
+		LikePostUsecase: likePostUsecase,
+		CommentUsecase:  commentUsecase,
+		Viper:           viper,
 	}
 }
 
@@ -103,6 +109,31 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 	}
 
 	save := p.SaveUsecase.StatusSave(ctx, token, post.ID)
+	like := p.LikePostUsecase.StatusLike(ctx, token, post.ID)
+	totalLike := p.LikePostUsecase.TotalLike(ctx, token, post.ID)
+
+	listComments := []comment.CommentResponse{}
+	for _, com := range *p.CommentUsecase.FindListByPost(ctx, postId) {
+		commentUser := new(user.User)
+		if err := p.UserRepository.FindById(tx, commentUser, *com.UserId); err != nil {
+			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+		}
+
+		listComment := comment.CommentResponse{
+			Id:      com.Id,
+			Comment: com.Comment,
+			User: &user.UserOtherResponse{
+				Username:   commentUser.Username,
+				FirstName:  commentUser.FirstName,
+				LastName:   *commentUser.LastName,
+				ProfileImg: commentUser.ProfileImg,
+			},
+			PostId:    com.PostId,
+			CreatedAt: com.CreatedAt,
+		}
+
+		listComments = append(listComments, listComment)
+	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
@@ -115,6 +146,9 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 		Description: post.Description,
 		Image:       post.Image,
 		SaveStatus:  &save,
+		LikeStatus:  &like,
+		TotalLike:   &totalLike,
+		Comment:     &listComments,
 		CreatedAt:   time.UnixMilli(post.CreatedAt),
 	}, nil
 }
@@ -147,12 +181,14 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 			ProfileImg: userOther.ProfileImg,
 		}
 		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
+		like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
 		postResponse := PostResponse{
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
 			Image:       posts.Image,
 			SaveStatus:  &save,
+			LikeStatus:  &like,
 			User:        postUser,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
@@ -189,11 +225,14 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 	for _, posts := range post {
 
 		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
+		like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
+
 		postResponse := PostResponse{
 			Id:          posts.ID,
 			Title:       posts.Title,
 			Description: posts.Description,
 			SaveStatus:  &save,
+			LikeStatus:  &like,
 			Image:       posts.Image,
 			CreatedAt:   time.UnixMilli(posts.CreatedAt),
 		}
@@ -234,6 +273,7 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 		p.PostRepository.FindById(tx, postSave, save.PostId)
 
 		saveStatus := p.SaveUsecase.StatusSave(ctx, token, save.PostId)
+
 		saveResponse := PostResponse{
 			Id:          save.PostId,
 			Title:       postSave.Title,

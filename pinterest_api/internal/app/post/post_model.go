@@ -1,6 +1,7 @@
 package post
 
 import (
+	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/user"
 	"time"
 )
@@ -16,13 +17,16 @@ type UploadPostRequest struct {
 //		ProfileOtherUser *user.UserOtherResponse
 //	}
 type PostResponse struct {
-	Id          string                 `json:"id"`
-	Title       string                 `json:"title"`
-	Description string                 `json:"description"`
-	User        user.UserOtherResponse `json:"user,omitempty"`
-	Image       string                 `json:"image"`
-	SaveStatus  *bool                  `json:"save_status"`
-	CreatedAt   time.Time              `json:"created_at"`
+	Id          string                     `json:"id"`
+	Title       string                     `json:"title"`
+	Description string                     `json:"description"`
+	User        user.UserOtherResponse     `json:"user,omitempty"`
+	Image       string                     `json:"image"`
+	SaveStatus  *bool                      `json:"save_status"`
+	LikeStatus  *bool                      `json:"like_status"`
+	TotalLike   *int                       `json:"total_like"`
+	Comment     *[]comment.CommentResponse `json:"comment"`
+	CreatedAt   time.Time                  `json:"created_at"`
 }
 
 type ListPostandSaved struct {
