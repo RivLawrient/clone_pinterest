@@ -83,7 +83,6 @@ export default function SaveBtn({
             }}
             className={`${eachPost.save_status ? "bg-black hover:bg-slate-800" : "bg-red-700 hover:bg-red-900"} ${loading ? "cursor-wait" : "cursor-pointer active:scale-90"} size-fit select-none rounded-full p-4 text-[16px] leading-none tracking-wide text-white transition-all`}
           >
-            {/* {loading ? "Saving..." : eachPost.save_status ? "Saved" : "Save"} */}
             {eachPost.save_status
               ? loading
                 ? "Saving..."
