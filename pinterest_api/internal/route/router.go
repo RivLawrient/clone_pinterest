@@ -5,6 +5,7 @@ import (
 	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/follow"
 	likePost "pinterest_api/internal/app/like_post"
+	"pinterest_api/internal/app/person"
 	"pinterest_api/internal/app/post"
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
@@ -23,6 +24,7 @@ type RouteConfig struct {
 	SaveController     *save.SaveController
 	LikePostController *likePost.LikePostController
 	CommentController  *comment.CommentController
+	PersonController   *person.PersonController
 }
 
 func (c *RouteConfig) Setup() {
@@ -40,6 +42,7 @@ func (c *RouteConfig) Setup() {
 			Errors:     "Route is not found",
 		})
 	})
+
 }
 
 func (c *RouteConfig) SetupGuestRoute() {
@@ -72,6 +75,8 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Delete("/unlike_post/:postid", c.LikePostController.HandleUnLikeaPost)
 
 	c.App.Post("/comment/:postid", c.CommentController.HandleAddComment)
+
+	c.App.Post("/", c.PersonController.Insert)
 }
 
 func (c *RouteConfig) SetupAuthRoute() {

@@ -23,9 +23,9 @@ export default function PagePost() {
   const [height, setHeight] = useState(0);
 
   const [comment, setComment] = useState<string>("");
-  const [hiddenComment, setHiddenComment] = useState<boolean>(false);
+  const [hiddenComment, setHiddenComment] = useState<boolean>(true);
 
-  console.log(refWidth.current?.getBoundingClientRect());
+  // console.log(refWidth.current?.getBoundingClientRect());
   useEffect(() => {
     if (refWidth.current != null) {
       isloading ? null : setWidth(refWidth.current.clientWidth);

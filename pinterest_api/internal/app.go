@@ -4,6 +4,7 @@ import (
 	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/follow"
 	likePost "pinterest_api/internal/app/like_post"
+	"pinterest_api/internal/app/person"
 	"pinterest_api/internal/app/post"
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
@@ -47,6 +48,8 @@ func Bootstrap(config *BootstrapConfig) {
 	postUsecase := post.NewPostUsecase(config.DB, config.Validate, postRepository, userUsecase, userRepository, config.Config, saveUsecase, likePosttUsecase, commentUsecase)
 	postController := post.NewPostController(postUsecase, followUsecase, userUsecase)
 
+	personController := person.NewPersonController(config.DB, config.Validate)
+
 	routeConfig := route.RouteConfig{
 		App:                config.App,
 		UserController:     userController,
@@ -55,6 +58,7 @@ func Bootstrap(config *BootstrapConfig) {
 		SaveController:     saveController,
 		LikePostController: likePostController,
 		CommentController:  commentController,
+		PersonController:   personController,
 	}
 
 	routeConfig.Setup()

@@ -39,6 +39,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.17.11 // indirect
