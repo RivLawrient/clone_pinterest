@@ -9,7 +9,6 @@ import (
 	"pinterest_api/internal/config"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -40,9 +39,9 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	err := u.Validate.ValidateStruct(request)
+	err := u.Validate.Validate.Struct(request)
 	if err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
 	}
 
 	if err := u.UserRepository.FindByEmail(tx, new(User), request.Email); err == nil {
@@ -73,8 +72,6 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		Password:   password,
 		IsGoogle:   false,
 		IsFacebook: false,
-		BirthDate:  0,
-		ProfileImg: "",
 		Token:      uuid.New().String(),
 	}
 
@@ -94,10 +91,10 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		Email:      user.Email,
 		IsGoogle:   user.IsGoogle,
 		IsFacebook: user.IsFacebook,
-		BirthDate:  time.UnixMilli(user.BirthDate),
+		// BirthDate:  time.UnixMilli(user.BirthDate),
 		ProfileImg: user.ProfileImg,
 		Token:      user.Token,
-		CreatedAt:  time.UnixMilli(user.CreatedAt),
+		CreatedAt:  user.CreatedAt,
 	}, nil
 }
 
@@ -193,7 +190,7 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUs
 		user.Email = googleUser.Email
 		user.IsGoogle = true
 		user.IsFacebook = false
-		user.BirthDate = 0
+		// user.BirthDate = 0
 		user.ProfileImg = googleUser.Picture
 		user.Token = uuid.New().String()
 
@@ -249,9 +246,9 @@ func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, 
 		Email:      user.Email,
 		IsGoogle:   user.IsGoogle,
 		IsFacebook: user.IsFacebook,
-		BirthDate:  time.UnixMilli(user.BirthDate),
+		// BirthDate:  time.UnixMilli(user.BirthDate),
 		ProfileImg: user.ProfileImg,
-		CreatedAt:  time.UnixMilli(user.CreatedAt),
+		CreatedAt:  user.CreatedAt,
 	}, nil
 
 }

@@ -3,8 +3,8 @@ package person
 import (
 	"fmt"
 	"pinterest_api/internal/config"
+	"strings"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -23,7 +23,8 @@ func NewPersonController(db *gorm.DB, validate *config.Validator) *PersonControl
 }
 
 type PersonRequest struct {
-	Name string `json:"name" validate:"required,max=100"`
+	Name      string `json:"name" validate:"required,alpha,min=100"`
+	AgePerson int    `json:"age" validate:"required,numeric"`
 }
 
 func (p *PersonController) Insert(ctx *fiber.Ctx) error {
@@ -34,29 +35,37 @@ func (p *PersonController) Insert(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := p.Validate.Validate.Struct(request); err != nil {
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			fmt.Println(err)
-			return ctx.SendString(err.Error())
-		}
-
-		for _, err := range err.(validator.ValidationErrors) {
-
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace())
-			fmt.Println(err.StructField())
-			fmt.Println(err.Tag())
-			fmt.Println(err.ActualTag())
-			fmt.Println(err.Kind())
-			fmt.Println(err.Type())
-			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-		}
-
-		return ctx.SendString(err.Error())
+	err = p.Validate.Validate.Struct(request)
+	if err != nil {
+		fmt.Println(len(p.Validate.TranslateErrors(err)))
+		return ctx.JSON(fiber.Map{
+			"error": strings.Join(p.Validate.TranslateErrors(err), ", "),
+		})
 	}
+	// p.Validate.Validate.RegisterTranslation("")
+	// if err := p.Validate.Validate.Struct(request); err != nil {
+	// 	if _, ok := err.(*validator.InvalidValidationError); ok {
+	// 		fmt.Println(err)
+	// 		return ctx.SendString(err.Error())
+	// 	}
+
+	// 	for _, err := range err.(validator.ValidationErrors) {
+
+	// 		fmt.Println(err.Namespace())
+	// 		fmt.Println(err.Field())
+	// 		fmt.Println(err.StructNamespace())
+	// 		fmt.Println(err.StructField())
+	// 		fmt.Println(err.Tag())
+	// 		fmt.Println(err.ActualTag())
+	// 		fmt.Println(err.Kind())
+	// 		fmt.Println(err.Type())
+	// 		fmt.Println(err.Value())
+	// 		fmt.Println(err.Param())
+	// 		fmt.Println()
+	// 	}
+
+	// 	return ctx.SendString(err.Error())
+	// }
 
 	// if request.Name == "" {
 	// 	return ctx.SendString("gaboleh kosong cuy")
