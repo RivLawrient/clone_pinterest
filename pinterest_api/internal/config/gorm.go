@@ -10,11 +10,11 @@ import (
 )
 
 func NewDatabase(viper *viper.Viper) *gorm.DB {
-	// username := viper.GetString("database.username")
-	// password := viper.GetString("database.password")
-	// host := viper.GetString("database.host")
-	// port := viper.GetInt("database.port")
-	// database := viper.GetString("database.name")
+	username := viper.GetString("database.username")
+	password := viper.GetString("database.password")
+	host := viper.GetString("database.host")
+	port := viper.GetInt("database.port")
+	database := viper.GetString("database.name")
 	idleConnection := viper.GetInt("database.pool.idle")
 	maxConnection := viper.GetInt("database.pool.max")
 	maxLifeTimeConnection := viper.GetInt("database.pool.lifetime")
@@ -23,9 +23,9 @@ func NewDatabase(viper *viper.Viper) *gorm.DB {
 
 	// db, err := gorm.Open(mysql.Open(dsn))a
 
-	dsn := "host=localhost user=lawrient dbname=pinterest_clone port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	// dsn := "host=localhost user=lawrient  dbname=pinterest_clone port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 
-	// dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=Asia/Makassar", host, username, password, database, port, "disable")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=Asia/Makassar", host, username, password, database, port, "require")
 	db, err := gorm.Open(postgres.Open(dsn))
 	if err != nil {
 		fmt.Println("failed to connect database:", err)
