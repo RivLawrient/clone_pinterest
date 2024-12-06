@@ -1,0 +1,28 @@
+{
+  "app": {
+    "name": ""
+  },
+  "web": {
+    "prefork": false,
+    "port": 0
+  },
+  "log": {
+    "level": 6
+  },
+  "database": {
+    "username":"",
+    "password":"",
+    "host": "",
+    "port": 0,
+    "name": "",
+    "pool": {
+      "idle": 0,
+      "max": 0,
+      "lifetime": 0
+    }
+  },
+  "google": {
+    "clientId": "",
+    "clientSecret": ""
+  }
+}
