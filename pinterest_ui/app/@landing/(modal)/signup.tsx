@@ -19,7 +19,7 @@ export default function SignUp({
   async function RegisterHandle() {
     setIsloading(true);
     try {
-      await fetch(`http://127.0.0.1:4000/auth/register`, {
+      await fetch(`${process.env.API_REGISTER2}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

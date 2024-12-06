@@ -29,11 +29,6 @@ type LoginUserByEmailRequest struct {
 	Password string `json:"password" validate:"required,min=8,max=100"`
 }
 
-type LoginUserResponse struct {
-	Email string `json:"email,omitempty"`
-	Token string `json:"token,omitempty"`
-}
-
 type GoogleUser struct {
 	ID            string `json:"id"`
 	Email         string `json:"email"`
