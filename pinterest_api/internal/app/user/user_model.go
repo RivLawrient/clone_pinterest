@@ -54,6 +54,7 @@ type UserResponse struct {
 	IsFacebook bool      `json:"is_facebook"`
 	BirthDate  *string   `json:"birth_date"`
 	ProfileImg string    `json:"profile_img"`
+	Token      string    `json:"token,omitempty"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 

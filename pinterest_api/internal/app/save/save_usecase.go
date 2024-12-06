@@ -35,18 +35,22 @@ func (s *SaveUsecase) SavePost(ctx context.Context, token string, postId string)
 	tx := s.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := s.UserUsecase.Verify(ctx, token)
+	me, err := s.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := s.SaveRepository.FindByUserIdAndPostId(tx, new(Save), me.Id, postId); err == nil {
+	if err := s.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, s.Validate.TranslateErrors(err))
+	}
+
+	if err := s.SaveRepository.FindByUserIdAndPostId(tx, new(Save), me.ID, postId); err == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user already save")
 	}
 
 	save := &Save{
 		ID:     uuid.New().String(),
-		UserId: me.Id,
+		UserId: me.ID,
 		PostId: postId,
 	}
 
@@ -69,13 +73,17 @@ func (s *SaveUsecase) UnSavePost(ctx context.Context, token string, postId strin
 	tx := s.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := s.UserUsecase.Verify(ctx, token)
+	me, err := s.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
+	if err := s.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, s.Validate.TranslateErrors(err))
+	}
+
 	save := new(Save)
-	if err := s.SaveRepository.FindByUserIdAndPostId(tx, save, me.Id, postId); err != nil {
+	if err := s.SaveRepository.FindByUserIdAndPostId(tx, save, me.ID, postId); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "save is not found")
 	}
 
@@ -94,17 +102,18 @@ func (s *SaveUsecase) UnSavePost(ctx context.Context, token string, postId strin
 	}, nil
 }
 
+// tanpa handle/constroller
 func (s *SaveUsecase) StatusSave(ctx context.Context, token string, postId string) bool {
 	tx := s.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := s.UserUsecase.Verify(ctx, token)
+	me, err := s.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return false
 	}
 
 	save := new(Save)
-	if err := s.SaveRepository.FindByUserIdAndPostId(tx, save, me.Id, postId); err != nil {
+	if err := s.SaveRepository.FindByUserIdAndPostId(tx, save, me.ID, postId); err != nil {
 		return false
 	}
 
@@ -115,6 +124,7 @@ func (s *SaveUsecase) StatusSave(ctx context.Context, token string, postId strin
 	return true
 }
 
+// tanpa handle/constroller
 func (s *SaveUsecase) ShowSaveByUser(ctx context.Context, userId string) *[]SaveResponse {
 	tx := s.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()

@@ -7,7 +7,6 @@ import (
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -47,13 +46,13 @@ func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPo
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	users, err := p.UserUsecase.Verify(ctx, token)
+	users, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := p.Validate.ValidateStruct(request); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
+	if err := p.Validate.Validate.Struct(request); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
 	}
 
 	if request.Image == "" {
@@ -66,7 +65,7 @@ func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPo
 
 	post := &Post{
 		ID:          uuid.New().String(),
-		UserId:      users.Id,
+		UserId:      users.ID,
 		Title:       request.Title,
 		Description: request.Description,
 		Image:       request.Image,
@@ -84,13 +83,22 @@ func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPo
 		Title:       post.Title,
 		Description: post.Description,
 		Image:       post.Image,
-		CreatedAt:   time.UnixMilli(post.CreatedAt),
+		CreatedAt:   post.CreatedAt,
 	}, nil
 }
 
 func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token string) (*PostResponse, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
+
+	_, err := p.UserUsecase.VerifyToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := p.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
+	}
 
 	post := new(Post)
 	if err := p.PostRepository.FindById(tx, post, postId); err != nil {
@@ -149,7 +157,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 		LikeStatus:  &like,
 		TotalLike:   &totalLike,
 		Comment:     &listComments,
-		CreatedAt:   time.UnixMilli(post.CreatedAt),
+		CreatedAt:   post.CreatedAt,
 	}, nil
 }
 
@@ -157,12 +165,12 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := p.UserUsecase.Verify(ctx, token)
+	me, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 	post := []Post{}
-	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.Id); err != nil {
+	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.ID); err != nil {
 		return &[]PostResponse{}, nil
 	}
 
@@ -190,7 +198,7 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 			SaveStatus:  &save,
 			LikeStatus:  &like,
 			User:        postUser,
-			CreatedAt:   time.UnixMilli(posts.CreatedAt),
+			CreatedAt:   posts.CreatedAt,
 		}
 		postResponses = append(postResponses, postResponse)
 	}
@@ -206,9 +214,13 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	_, err := p.UserUsecase.Verify(ctx, token)
+	_, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
+	}
+
+	if err := p.Validate.Validate.Var(username, "required"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
 	}
 
 	user := new(user.User)
@@ -234,7 +246,7 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 			SaveStatus:  &save,
 			LikeStatus:  &like,
 			Image:       posts.Image,
-			CreatedAt:   time.UnixMilli(posts.CreatedAt),
+			CreatedAt:   posts.CreatedAt,
 		}
 		postResponses = append(postResponses, postResponse)
 	}
@@ -250,9 +262,13 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	_, err := p.UserUsecase.Verify(ctx, token)
+	_, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
+	}
+
+	if err := p.Validate.Validate.Var(username, "required"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
 	}
 
 	user := new(user.User)
@@ -280,7 +296,7 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 			Description: postSave.Description,
 			Image:       postSave.Image,
 			SaveStatus:  &saveStatus,
-			CreatedAt:   time.UnixMilli(postSave.CreatedAt),
+			CreatedAt:   postSave.CreatedAt,
 		}
 		saveResponses = append(saveResponses, saveResponse)
 	}

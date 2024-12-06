@@ -53,7 +53,8 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/auth/google/callback", c.UserController.HandleGoogleCallback)
 	c.App.Get("/bye", c.UserController.Logout)
 
-	c.App.Get("/user", c.UserController.GetUser)
+	c.App.Get("/user", c.UserController.HandleGetUser)
+	c.App.Put("/user/update_birth/:birth_date", c.UserController.HandleUpdateBirthDate)
 
 	c.App.Get("/img/:filename", c.PictureController.GetPicture)
 	c.App.Post("/img", c.PictureController.UploadPicture)

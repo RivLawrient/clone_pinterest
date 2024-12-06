@@ -31,18 +31,22 @@ func (l *LikePostUsecase) LikeaPost(ctx context.Context, token string, postId st
 	tx := l.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := l.UserUsecase.Verify(ctx, token)
+	me, err := l.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, new(LikePost), me.Id, postId); err == nil {
+	if err := l.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, l.Validate.TranslateErrors(err))
+	}
+
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, new(LikePost), me.ID, postId); err == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "post already liked")
 	}
 
 	likePost := &LikePost{
 		ID:     uuid.New().String(),
-		UserId: me.Id,
+		UserId: me.ID,
 		PostId: postId,
 	}
 
@@ -65,13 +69,17 @@ func (l *LikePostUsecase) UnLikeaPost(ctx context.Context, token string, postId 
 	tx := l.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := l.UserUsecase.Verify(ctx, token)
+	me, err := l.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
+	if err := l.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, l.Validate.TranslateErrors(err))
+	}
+
 	likePost := new(LikePost)
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.Id, postId); err != nil {
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.ID, postId); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "post is not liked")
 	}
 
@@ -94,13 +102,17 @@ func (l *LikePostUsecase) StatusLike(ctx context.Context, token string, postId s
 	tx := l.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := l.UserUsecase.Verify(ctx, token)
+	me, err := l.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return false
 	}
 
+	if err := l.Validate.Validate.Var(postId, "required,uuid"); err != nil {
+		return false
+	}
+
 	likePost := new(LikePost)
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.Id, postId); err != nil {
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.ID, postId); err != nil {
 		return false
 	}
 
@@ -115,7 +127,7 @@ func (l *LikePostUsecase) TotalLike(ctx context.Context, token string, postId st
 	tx := l.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	_, err := l.UserUsecase.Verify(ctx, token)
+	_, err := l.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return 0
 	}

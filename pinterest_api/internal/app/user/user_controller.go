@@ -2,6 +2,7 @@ package user
 
 import (
 	"pinterest_api/internal/model"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,8 +21,7 @@ func NewUserController(userUsecase *UserUsecase) *UserController {
 func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 	request := new(RegisterUserByEmailRequest)
 
-	err := ctx.BodyParser(request)
-	if err != nil {
+	if err := ctx.BodyParser(request); err != nil {
 		error := fiber.ErrBadRequest
 		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
 			StatusCode: error.Code,
@@ -54,12 +54,11 @@ func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	request := new(LoginUserByEmailRequest)
 
-	err := ctx.BodyParser(request)
-	if err != nil {
+	if err := ctx.BodyParser(request); err != nil {
 		error := fiber.ErrBadRequest
 		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
 			StatusCode: error.Code,
-			Errors:     "invalid request body",
+			Errors:     "invalid body request",
 		})
 	}
 
@@ -71,6 +70,8 @@ func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 		})
 	}
 
+	response.Id = ""
+
 	cookie := new(fiber.Cookie)
 	cookie.Name = "auth-token"
 	cookie.Value = response.Token
@@ -79,14 +80,14 @@ func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	cookie.Secure = true
 	ctx.Cookie(cookie)
 
-	return ctx.JSON(model.WebResponse[*LoginUserResponse]{
+	return ctx.JSON(model.WebResponse[*UserResponse]{
 		StatusCode: ctx.Response().StatusCode(),
 		Data:       response,
 	})
 }
 
 func (c *UserController) HandleGoogleRedirect(ctx *fiber.Ctx) error {
-	url := c.UserUsecase.GoogleHandle()
+	url := c.UserUsecase.GoogleRedirect()
 
 	return ctx.Redirect(url)
 }
@@ -110,10 +111,10 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 	return ctx.Redirect("http://127.0.0.1:3000")
 }
 
-func (c *UserController) GetUser(ctx *fiber.Ctx) error {
+func (c *UserController) HandleGetUser(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 
-	response, err := c.UserUsecase.Verify(ctx.UserContext(), auth)
+	response, err := c.UserUsecase.GetUser(ctx.UserContext(), auth)
 	if err != nil {
 		error := err
 		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
@@ -134,4 +135,31 @@ func (c *UserController) Logout(ctx *fiber.Ctx) error {
 	ctx.ClearCookie("auth-token")
 
 	return nil
+}
+
+func (c *UserController) HandleUpdateBirthDate(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	birthDate, err := strconv.ParseInt(ctx.Params("birth_date"), 10, 64)
+
+	if err != nil {
+		error := fiber.ErrBadRequest
+		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+			StatusCode: error.Code,
+			Errors:     "invalid body request",
+		})
+	}
+
+	response, error := c.UserUsecase.UpdateBirthDate(ctx.UserContext(), auth, birthDate)
+	if error != nil {
+		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
+			StatusCode: error.Code,
+			Data:       nil,
+			Errors:     error.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[UserResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
 }

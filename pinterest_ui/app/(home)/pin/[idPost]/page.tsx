@@ -205,7 +205,7 @@ export default function PagePost() {
               style={{
                 maxWidth: `calc(100vw - 400px)`,
                 maxHeight: `calc(100vh - 150px)`,
-                minHeight: `calc(100vh - 300px)`,
+                minHeight: `calc(100vh - 200px)`,
               }}
               className={`flex w-fit grow justify-center`}
             >

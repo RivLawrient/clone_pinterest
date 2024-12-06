@@ -104,7 +104,7 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 	postId := ctx.Params("postId")
 
-	_, err := c.UserUsecase.Verify(ctx.UserContext(), auth)
+	_, err := c.UserUsecase.VerifyToken(ctx.UserContext(), auth)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
 			StatusCode: err.Code,

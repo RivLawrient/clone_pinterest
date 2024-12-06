@@ -32,11 +32,11 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	tx := c.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	if err := c.Validate.ValidateStruct(request); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err[0])
+	if err := c.Validate.Validate.Struct(request); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, c.Validate.TranslateErrors(err))
 	}
 
-	me, err := c.UserUsecase.Verify(ctx, token)
+	me, err := c.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	comment := &Comment{
 		ID:      uuid.New().String(),
 		Comment: request.Comment,
-		UserId:  me.Id,
+		UserId:  me.ID,
 		PostId:  postId,
 	}
 

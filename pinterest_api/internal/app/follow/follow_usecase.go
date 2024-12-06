@@ -2,6 +2,7 @@ package follow
 
 import (
 	"context"
+	"fmt"
 
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
@@ -36,7 +37,7 @@ func (f *FollowUsecase) FollowUser(ctx context.Context, token string, username s
 	tx := f.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := f.UserUsecase.Verify(ctx, token)
+	me, err := f.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
@@ -46,14 +47,14 @@ func (f *FollowUsecase) FollowUser(ctx context.Context, token string, username s
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	if err := f.FollowRepository.FindFollow(tx, &Follow{}, user.ID, me.Id); err == nil {
+	if err := f.FollowRepository.FindFollow(tx, &Follow{}, user.ID, me.ID); err == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user already follow")
 	}
 
 	follow := new(Follow)
 	follow.ID = uuid.New().String()
 	follow.FollowerId = user.ID // yang difollow
-	follow.FollowingId = me.Id  // yang ngefollow
+	follow.FollowingId = me.ID  // yang ngefollow
 
 	if err := f.FollowRepository.Create(tx, follow); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "something error")
@@ -73,7 +74,7 @@ func (f *FollowUsecase) UnFollowUser(ctx context.Context, token string, username
 	tx := f.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := f.UserUsecase.Verify(ctx, token)
+	me, err := f.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (f *FollowUsecase) UnFollowUser(ctx context.Context, token string, username
 	}
 
 	follow := new(Follow)
-	if err := f.FollowRepository.FindFollow(tx, follow, user.ID, me.Id); err != nil {
+	if err := f.FollowRepository.FindFollow(tx, follow, user.ID, me.ID); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user not following")
 	}
 
@@ -98,7 +99,7 @@ func (f *FollowUsecase) UnFollowUser(ctx context.Context, token string, username
 
 	return &UnFollowResponse{
 		Username:      username,
-		UnFollowingId: me.Id,
+		UnFollowingId: me.ID,
 	}, nil
 }
 
@@ -106,47 +107,45 @@ func (f *FollowUsecase) ShowFollowByUsername(ctx context.Context, token string, 
 	tx := f.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := f.UserUsecase.Verify(ctx, token)
+	me, err := f.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println(username)
 	user := new(user.User)
 	if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
+
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	follower := new([]Follow)
-	if err := f.FollowRepository.FindFollower(tx, new(Follow), follower, me.Id); err != nil {
-		return nil, fiber.NewError(fiber.ErrNotFound.Code, "user not have follower")
+	followResponse := &ShowFollowResponse{
+		Username: &username,
 	}
 
-	following := new([]Follow)
-	if err := f.FollowRepository.FindFollower(tx, new(Follow), following, user.ID); err != nil {
-		return nil, fiber.NewError(fiber.ErrNotFound.Code, "user not have follower")
+	followers := make([]Follow, 0)
+	if err := f.FollowRepository.FindFollower(tx, new(Follow), &followers, user.ID); err != nil {
+		followResponse.FollowerCount = 0
+	} else {
+		followResponse.FollowerCount = len(followers)
 	}
 
-	if err := f.FollowRepository.FindFollow(tx, new(Follow), user.ID, me.Id); err != nil {
-		if err := tx.Commit().Error; err != nil {
-			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-		}
+	following := make([]Follow, 0)
+	if err := f.FollowRepository.FindFollowing(tx, new(Follow), &following, user.ID); err != nil {
+		followResponse.FollowingCount = 0
+	} else {
+		followResponse.FollowingCount = len(following)
+	}
 
-		return &ShowFollowResponse{
-			Username:       &username,
-			FollowingCount: len(*following),
-			FollowerCount:  len(*follower),
-			FollowStatus:   false,
-		}, nil
+	if err := f.FollowRepository.FindFollow(tx, new(Follow), user.ID, me.ID); err != nil {
+		followResponse.FollowStatus = false
+	} else {
+		followResponse.FollowStatus = true
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &ShowFollowResponse{
-		Username:       &username,
-		FollowingCount: len(*following),
-		FollowerCount:  len(*follower),
-		FollowStatus:   true,
-	}, nil
+	return followResponse, nil
 }

@@ -24,23 +24,28 @@ export default function UsernamePage() {
       fetch(`http://127.0.0.1:4000/user/${path.slice(1)}`, {
         method: "GET",
         credentials: "include",
-      }).then(async (respons) => {
-        const data = await respons.json();
-        if (respons.ok) {
-          setUsers(data.data);
-        }
-      });
+      })
+        .then(async (respons) => {
+          const data = await respons.json();
+          if (respons.ok) {
+            setUsers(data.data);
+          }
+        })
+        .catch(() => console.log("err"));
       fetch(`http://127.0.0.1:4000/posts/${path.slice(1)}`, {
         method: "GET",
         credentials: "include",
-      }).then(async (respons) => {
-        const data = await respons.json();
-        if (respons.ok) {
-          setPost(data.data.posted);
-          setSave(data.data.saved);
-        }
-      });
+      })
+        .then(async (respons) => {
+          const data = await respons.json();
+          if (respons.ok) {
+            setPost(data.data.posted);
+            setSave(data.data.saved);
+          }
+        })
+        .catch(() => console.log());
     } catch (err) {
+      console.log("error");
     } finally {
       setIsloading(false);
     }
