@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import MasonryItem from "./masonryItem";
+import { Post } from "../../(postContext)/Post";
 export default function Masonry({
   post,
   setPost,
