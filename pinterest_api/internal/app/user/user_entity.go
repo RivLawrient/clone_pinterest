@@ -12,7 +12,7 @@ type User struct {
 	IsGoogle   bool
 	IsFacebook bool
 	BirthDate  *time.Time
-	ProfileImg string
+	ProfileImg *string
 	Token      string
 	CreatedAt  time.Time
 }

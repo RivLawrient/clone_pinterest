@@ -34,19 +34,19 @@ func NewValidator(viper *viper.Viper) *Validator {
 	return &Validator{Validate: validate, Trans: trans}
 }
 
-// func (v *Validator) ValidateStruct(s interface{}) []string {
-// 	var translatedErrors []string
+func (v *Validator) ValidateStruct(s interface{}) []string {
+	var translatedErrors []string
 
-// 	err := v.Validate.Struct(s)
-// 	if err != nil {
-// 		if valErr, ok := err.(validator.ValidationErrors); ok {
-// 			for _, e := range valErr {
-// 				translatedErrors = append(translatedErrors, e.Translate(v.Trans))
-// 			}
-// 		}
-// 	}
-// 	return translatedErrors
-// }
+	err := v.Validate.Struct(s)
+	if err != nil {
+		if valErr, ok := err.(validator.ValidationErrors); ok {
+			for _, e := range valErr {
+				translatedErrors = append(translatedErrors, e.Translate(v.Trans))
+			}
+		}
+	}
+	return translatedErrors
+}
 
 // func (v *Validator) ValidateVar(field interface{}, tag string) []string {
 // 	var messages []string

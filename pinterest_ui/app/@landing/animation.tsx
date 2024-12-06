@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function AnimateText({ step }: { step: number }) {
@@ -38,7 +37,6 @@ export function AnimateText({ step }: { step: number }) {
 }
 
 export function AnimateBtn({ step }: { step: number }) {
-  const route = useRouter();
   const color: string[] = [
     "bg-[#C28B00]",
     "bg-[#618C7B]",

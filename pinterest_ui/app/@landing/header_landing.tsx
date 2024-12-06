@@ -3,10 +3,12 @@ import { useState } from "react";
 import Modal from "./(modal)/modal";
 import SingIn from "./(modal)/signin";
 import SignUp from "./(modal)/signup";
+import { useModal } from "./(modalContext)/Modal";
+import Form from "./(modal)/form";
 
 export default function HeaderLanding() {
-  const [open, setOpen] = useState<boolean>(false);
-  const [isSignin, setIsSignin] = useState<string>("");
+  const { show, setShow } = useModal();
+  const [isSignin, setIsSignin] = useState<boolean>(true);
   return (
     <>
       <div className="fixed top-0 z-50 flex h-[80px] w-screen items-center justify-between bg-white p-4">
@@ -38,8 +40,8 @@ export default function HeaderLanding() {
           </div>
           <div
             onClick={() => {
-              setIsSignin("signin");
-              setOpen(true);
+              setIsSignin(true);
+              setShow(true);
             }}
             className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E60023] p-3 align-middle font-roboto text-[16px] leading-none text-white hover:bg-[#c9001e] active:scale-90"
           >
@@ -47,8 +49,8 @@ export default function HeaderLanding() {
           </div>
           <div
             onClick={() => {
-              setIsSignin("signup");
-              setOpen(true);
+              setIsSignin(false);
+              setShow(true);
             }}
             className="mr-2 cursor-pointer text-nowrap rounded-full bg-[#E9E9E9] p-3 font-roboto text-[16px] leading-none text-black hover:bg-[#d7d7d7] active:scale-90"
           >
@@ -56,17 +58,8 @@ export default function HeaderLanding() {
           </div>
         </div>
       </div>
-      <Modal open={open} setOpen={setOpen}>
-        <SingIn
-          isSignin={isSignin}
-          setIsSignin={setIsSignin}
-          setOpen={setOpen}
-        />
-        <SignUp
-          isSignin={isSignin}
-          setIsSignin={setIsSignin}
-          setOpen={setOpen}
-        />
+      <Modal open={show} setOpen={setShow}>
+        <Form isSignin={isSignin} setIsSignin={setIsSignin} setOpen={setShow} />
       </Modal>
     </>
   );

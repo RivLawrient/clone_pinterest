@@ -105,7 +105,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 		Username:   userOther.Username,
 		FirstName:  userOther.FirstName,
 		LastName:   *userOther.LastName,
-		ProfileImg: userOther.ProfileImg,
+		ProfileImg: *userOther.ProfileImg,
 	}
 
 	save := p.SaveUsecase.StatusSave(ctx, token, post.ID)
@@ -126,7 +126,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 				Username:   commentUser.Username,
 				FirstName:  commentUser.FirstName,
 				LastName:   *commentUser.LastName,
-				ProfileImg: commentUser.ProfileImg,
+				ProfileImg: *commentUser.ProfileImg,
 			},
 			PostId:    com.PostId,
 			CreatedAt: com.CreatedAt,
@@ -163,7 +163,7 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 	}
 	post := []Post{}
 	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.Id); err != nil {
-		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
+		return &[]PostResponse{}, nil
 	}
 
 	postResponses := []PostResponse{}
@@ -178,7 +178,7 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 			Username:   userOther.Username,
 			FirstName:  userOther.FirstName,
 			LastName:   *userOther.LastName,
-			ProfileImg: userOther.ProfileImg,
+			ProfileImg: *userOther.ProfileImg,
 		}
 		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
 		like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)

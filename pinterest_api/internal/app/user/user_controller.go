@@ -25,7 +25,7 @@ func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 		error := fiber.ErrBadRequest
 		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
 			StatusCode: error.Code,
-			Errors:     "invalid request body",
+			Errors:     "invalid body request",
 		})
 	}
 

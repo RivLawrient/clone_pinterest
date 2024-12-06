@@ -4,11 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import SingIn from "./(modal)/signin";
 import SignUp from "./(modal)/signup";
+import { useModal } from "./(modalContext)/Modal";
+import Modal from "./(modal)/modal";
+import Form from "./(modal)/form";
 
 export default function BottomLanding() {
+  const { show, setShow } = useModal();
   const [pass, setPass] = useState<string>("password");
-  const [open, setOpen] = useState<boolean>(true);
-  const [isSignin, setIsSignin] = useState<string>("signup");
+  const [isSignin, setIsSignin] = useState<boolean>(true);
   const link = "http://127.0.0.1:4000/img/";
   const images: string[] = [
     `${link}e3414b2fcf00375a199ba6964be551af.jpg`,
@@ -97,16 +100,13 @@ export default function BottomLanding() {
           </div>
         </div>
         <div className="flex w-full flex-col items-center justify-center">
-          <SingIn
-            setOpen={setOpen}
-            isSignin={isSignin}
-            setIsSignin={setIsSignin}
-          />
-          <SignUp
-            setOpen={setOpen}
-            isSignin={isSignin}
-            setIsSignin={setIsSignin}
-          />
+          {!show && (
+            <Form
+              isSignin={isSignin}
+              setIsSignin={setIsSignin}
+              setOpen={setShow}
+            />
+          )}
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import (
 	"pinterest_api/internal/config"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -63,15 +64,19 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		counter++
 	}
 
+	birth := time.UnixMilli(request.BirthDate)
+
 	user := &User{
 		ID:         uuid.New().String(),
 		Username:   username,
-		FirstName:  string(request.Email[0]),
+		FirstName:  strings.Split(request.Email, "@")[0],
 		LastName:   new(string),
 		Email:      request.Email,
 		Password:   password,
 		IsGoogle:   false,
 		IsFacebook: false,
+		BirthDate:  &birth,
+		ProfileImg: new(string),
 		Token:      uuid.New().String(),
 	}
 
@@ -83,19 +88,7 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &RegisterUserResponse{
-		Id:         user.ID,
-		Username:   user.Username,
-		FirstName:  user.FirstName,
-		LastName:   *user.LastName,
-		Email:      user.Email,
-		IsGoogle:   user.IsGoogle,
-		IsFacebook: user.IsFacebook,
-		// BirthDate:  time.UnixMilli(user.BirthDate),
-		ProfileImg: user.ProfileImg,
-		Token:      user.Token,
-		CreatedAt:  user.CreatedAt,
-	}, nil
+	return UserToRegisterUserResponse(user), nil
 }
 
 func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmailRequest) (*LoginUserResponse, *fiber.Error) {
@@ -160,10 +153,17 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUs
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, err.Error())
 	}
 
+	// jsonStr := string(body)
+	// // var result map[string]interface{}
+	// json.Unmarshal(body, &jsonStr)
+	// fmt.Println(jsonStr)
+
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "failed to read response body: "+err.Error())
 	}
+
+	fmt.Println(string(body))
 	var googleUser GoogleUser
 	json.Unmarshal(body, &googleUser)
 
@@ -190,8 +190,7 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*LoginUs
 		user.Email = googleUser.Email
 		user.IsGoogle = true
 		user.IsFacebook = false
-		// user.BirthDate = 0
-		user.ProfileImg = googleUser.Picture
+		user.ProfileImg = &googleUser.Picture
 		user.Token = uuid.New().String()
 
 		if err := u.UserRepository.Create(tx, user); err != nil {
@@ -238,6 +237,12 @@ func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, 
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
+	birth := new(string)
+	if user.BirthDate != nil {
+		result := user.BirthDate.Format("2006-01-02")
+		birth = &result
+	}
+
 	return &UserResponse{
 		Id:         user.ID,
 		Username:   user.Username,
@@ -246,8 +251,8 @@ func (u *UserUsecase) Verify(ctx context.Context, token string) (*UserResponse, 
 		Email:      user.Email,
 		IsGoogle:   user.IsGoogle,
 		IsFacebook: user.IsFacebook,
-		// BirthDate:  time.UnixMilli(user.BirthDate),
-		ProfileImg: user.ProfileImg,
+		BirthDate:  birth,
+		ProfileImg: *user.ProfileImg,
 		CreatedAt:  user.CreatedAt,
 	}, nil
 
@@ -270,7 +275,7 @@ func (u *UserUsecase) ShowByUsername(ctx context.Context, token string, username
 		Username:   user.Username,
 		FirstName:  user.FirstName,
 		LastName:   *user.LastName,
-		ProfileImg: user.ProfileImg,
+		ProfileImg: *user.ProfileImg,
 	}, nil
 
 }

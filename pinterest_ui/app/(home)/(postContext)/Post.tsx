@@ -53,7 +53,6 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadMorePosts = async () => {
     if (postLoading) return;
-
     setPostLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:4000/posts", {
@@ -62,13 +61,11 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await response.json();
       setPost((prevPost) => {
         if (!prevPost) return data.data;
-
         // Filter out posts with duplicate IDs
         const newPosts = data.data.filter(
           (newPost: Post) =>
             !prevPost.some((existingPost) => existingPost.id === newPost.id),
         );
-
         return [...prevPost, ...newPosts];
       });
     } catch (error) {

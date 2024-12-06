@@ -3,7 +3,6 @@ package person
 import (
 	"fmt"
 	"pinterest_api/internal/config"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -35,13 +34,13 @@ func (p *PersonController) Insert(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	err = p.Validate.Validate.Struct(request)
-	if err != nil {
-		fmt.Println(len(p.Validate.TranslateErrors(err)))
-		return ctx.JSON(fiber.Map{
-			"error": strings.Join(p.Validate.TranslateErrors(err), ", "),
-		})
-	}
+	// err = p.Validate.Validate.Struct(request)
+	// if err != nil {
+	// 	fmt.Println(len(p.Validate.TranslateErrors(err)))
+	// 	return ctx.JSON(fiber.Map{
+	// 		"error": strings.Join(p.Validate.TranslateErrors(err), ", "),
+	// 	})
+	// }
 	// p.Validate.Validate.RegisterTranslation("")
 	// if err := p.Validate.Validate.Struct(request); err != nil {
 	// 	if _, ok := err.(*validator.InvalidValidationError); ok {
