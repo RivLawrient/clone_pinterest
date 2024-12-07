@@ -8,6 +8,39 @@ import ProfileImage from "../../(Component)/profileImage";
 import Link from "next/link";
 import { LikeBtn } from "./likeBtn";
 
+const useWebSocket = (url: string) => {
+  const socketRef = useRef<WebSocket | null>(null);
+  const [response, setResponse] = useState(null);
+
+  useEffect(() => {
+    const socket = new WebSocket(url);
+    socketRef.current = socket;
+
+    socket.onopen = () => console.log("WebSocket connected");
+    socket.onmessage = (event) => {
+      console.log("Message from server:", event.data);
+      setResponse(event.data); // Simpan umpan balik dari server
+    };
+    socket.onerror = (error) => console.error("WebSocket error:", error);
+    socket.onclose = () => console.log("WebSocket disconnected");
+
+    return () => {
+      socket.close();
+    };
+  }, [url]);
+
+  // Fungsi untuk mengirim pesan
+  const sendMessage = (message: string) => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(message);
+    } else {
+      console.error("WebSocket not connected");
+    }
+  };
+
+  return { sendMessage, response };
+};
+
 export default function PagePost() {
   const { user } = useUser();
   const path = usePathname();
@@ -25,7 +58,8 @@ export default function PagePost() {
   const [comment, setComment] = useState<string>("");
   const [hiddenComment, setHiddenComment] = useState<boolean>(true);
 
-  // console.log(refWidth.current?.getBoundingClientRect());
+  const { sendMessage, response } = useWebSocket("ws://127.0.0.1:4000/ws");
+
   useEffect(() => {
     if (refWidth.current != null) {
       isloading ? null : setWidth(refWidth.current.clientWidth);
@@ -176,6 +210,7 @@ export default function PagePost() {
     } finally {
     }
   }
+
   return (
     <>
       <ShowDetailImg />
@@ -424,7 +459,7 @@ export default function PagePost() {
                       className={`flex w-full items-center gap-2 rounded-full border px-4 py-3 text-[16px] text-black`}
                     >
                       <input
-                        value={comment}
+                        value={response ? response : ""}
                         onChange={(e) => {
                           setComment(e.currentTarget.value);
                         }}
@@ -434,9 +469,10 @@ export default function PagePost() {
                         className={`grow outline-none`}
                       />
                       <div
-                        onClick={() => {
-                          comment && handleComment();
-                        }}
+                        // onClick={() => {
+                        //   comment && handleComment();
+                        // }}
+                        onClick={() => sendMessage("like_post")}
                         className={`z-[3] flex size-[32px] cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
                       >
                         <svg

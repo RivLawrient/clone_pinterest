@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	picture "pinterest_api/internal/app/Picture"
 	"pinterest_api/internal/app/comment"
 	"pinterest_api/internal/app/follow"
@@ -10,10 +11,28 @@ import (
 	"pinterest_api/internal/app/save"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
+	"sync"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/websocket/v2"
 )
+
+var clients = make(map[*websocket.Conn]bool) // Store all active clients
+var mutex = &sync.Mutex{}
+
+func broadcastMessage(mt int, message string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	for client := range clients {
+		if err := client.WriteMessage(mt, []byte(message)); err != nil {
+			fmt.Println("Broadcast error:", err)
+			client.Close()
+			delete(clients, client)
+		}
+	}
+}
 
 type RouteConfig struct {
 	App                *fiber.App
@@ -34,6 +53,47 @@ func (c *RouteConfig) Setup() {
 		AllowHeaders:     "Content-Type, Authorization, Origin, Accept",
 		AllowCredentials: true,
 	}))
+
+	c.App.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+
+	// Endpoint WebSocket
+	c.App.Get("/ws", websocket.New(func(c *websocket.Conn) {
+		// Register client
+		mutex.Lock()
+		clients[c] = true
+		mutex.Unlock()
+
+		fmt.Println("New client connected")
+		defer func() {
+			// Unregister client
+			mutex.Lock()
+			delete(clients, c)
+			mutex.Unlock()
+			c.Close()
+		}()
+
+		for {
+			// Read message from client
+			mt, msg, err := c.ReadMessage()
+			if err != nil {
+				fmt.Println("Read error:", err)
+				break
+			}
+			fmt.Printf("Message received: %s", msg)
+
+			// Process the "like_post" action
+			if string(msg) == "like_post" {
+				fmt.Println("Post liked by a user")
+				broadcastMessage(mt, "Post liked successfully!")
+			}
+		}
+	}))
+
 	c.SetupGuestRoute()
 	c.SetupAuthRoute()
 	c.App.Use(func(ctx *fiber.Ctx) error {
