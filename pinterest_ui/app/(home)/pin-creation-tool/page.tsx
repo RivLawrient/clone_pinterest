@@ -22,7 +22,7 @@ function Image({
             onChange={async (e) => {
               const file = new FormData();
               file.append("image", e.target.files ? e.target.files[0] : "");
-              const api = await fetch(`http://127.0.0.1:4000/img`, {
+              const api = await fetch(`${process.env.HOST_API_PUBLIC}/img`, {
                 method: "post",
                 body: file,
               }).then(async (response) => {
@@ -129,7 +129,7 @@ export default function Create() {
               onClick={async () => {
                 setPublishing(true);
                 try {
-                  await fetch("http://127.0.0.1:4000/post", {
+                  await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",

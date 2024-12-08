@@ -12,7 +12,7 @@ export default function BottomLanding() {
   const { show, setShow } = useModal();
   const [pass, setPass] = useState<string>("password");
   const [isSignin, setIsSignin] = useState<boolean>(true);
-  const link = "http://127.0.0.1:4000/img/";
+  const link = "/img/";
   const images: string[] = [
     `${link}e3414b2fcf00375a199ba6964be551af.jpg`,
     `${link}786e00eab219eca59803d118fbe0feb3.jpg`,

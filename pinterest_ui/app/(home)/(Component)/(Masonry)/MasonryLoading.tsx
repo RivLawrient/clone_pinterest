@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { FixedSizeList } from "react-window";
 
 export default function MasonryLoading() {
   // const { post } = usePost();

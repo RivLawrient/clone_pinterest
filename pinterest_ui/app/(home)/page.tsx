@@ -21,8 +21,32 @@ export default function Home() {
     };
   }, [postLoading, loadMorePosts]);
   return (
+    //     <>
+    //       {postLoading ? (
+    //         <div className="mt-20 flex w-screen justify-center">LOADING...J</div>
+    //       ) : post &&
+
+    //           post.length == 0 (
+    // <div className="mt-20 flex w-screen justify-center">
+    //           post is not found
+    //         </div>
+    //           ):
+    //           (
+    // <div className="mt-[80px]">
+    //           <Masonry post={post} setPost={setPost} />
+    //         </div>
+    //           )
+
+    //       )
+    //     </>
     <>
-      {post && (
+      {postLoading ? (
+        <div className="mt-20 flex w-screen justify-center">LOADING...</div>
+      ) : Array.isArray(post) && post.length === 0 ? (
+        <div className="mt-20 flex w-screen justify-center">
+          Post is not found
+        </div>
+      ) : (
         <div className="mt-[80px]">
           <Masonry post={post} setPost={setPost} />
         </div>

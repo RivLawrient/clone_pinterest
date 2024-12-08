@@ -12,7 +12,7 @@ export function LikeBtn({
   const handleLike = async () => {
     setLoading(true);
     try {
-      fetch("http://127.0.0.1:4000/like_post/" + post?.id, {
+      fetch(`${process.env.HOST_API_PUBLIC}/like_post/` + post?.id, {
         method: "POST",
         credentials: "include",
       }).then(async (response) => {
@@ -40,7 +40,7 @@ export function LikeBtn({
   const handleUnlike = () => {
     setLoading(true);
     try {
-      fetch("http://127.0.0.1:4000/unlike_post/" + post?.id, {
+      fetch(`${process.env.HOST_API_PUBLIC}/unlike_post/` + post?.id, {
         method: "DELETE",
         credentials: "include",
       }).then(async (response) => {

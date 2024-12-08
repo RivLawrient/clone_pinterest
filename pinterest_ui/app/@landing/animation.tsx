@@ -69,7 +69,7 @@ export function AnimateBtn({ step }: { step: number }) {
 }
 
 export function AnimateImg({ step }: { step: number }) {
-  const link = "http://127.0.0.1:4000/img/";
+  const link = "/img/";
   const images = [
     [
       `${link}e3414b2fcf00375a199ba6964be551af.jpg`,

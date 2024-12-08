@@ -23,16 +23,18 @@ const nextConfig: NextConfig = {
   //   ];
   // },
   env: {
-    LOCAL: process.env.LOCAL,
-    LOCAL2: process.env.LOCAL2,
-    API_HOST: process.env.API_HOST,
-    API_GET_USER: process.env.API_GET_USER,
-    API_LOGOUT: process.env.API_LOGOUT,
-    API_RANDOM_POST: process.env.API_RANDOM_POST,
-    API_GOOGLE: process.env.API_GOOGLE,
-    API_REGISTER: process.env.API_REGISTER,
-    API_BIRTH: process.env.API_BIRTH,
-    API_REGISTER2: process.env.API_REGISTER2,
+    HOST_API_PUBLIC: process.env.HOST_API_PUBLIC,
+    HOST_API_LOCAL: process.env.HOST_API_LOCAL,
+    // LOCAL: process.env.LOCAL,
+    // LOCAL2: process.env.LOCAL2,
+    // API_HOST: process.env.API_HOST,
+    // API_GET_USER: process.env.API_GET_USER,
+    // API_LOGOUT: process.env.API_LOGOUT,
+    // API_RANDOM_POST: process.env.API_RANDOM_POST,
+    // API_GOOGLE: process.env.API_GOOGLE,
+    // API_REGISTER: process.env.API_REGISTER,
+    // API_BIRTH: process.env.API_BIRTH,
+    // API_REGISTER2: process.env.API_REGISTER2,
   },
 };
 

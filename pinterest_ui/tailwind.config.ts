@@ -22,6 +22,7 @@ const config: Config = {
       fade: "fade 5s",
       img: "before 500ms forwards, after 500ms 5s forwards;",
       bounce: "bouncing 2s infinite",
+      rotate: "rotateAnimation 2s linear infinite",
     },
   },
   plugins: [],

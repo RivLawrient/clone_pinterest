@@ -17,7 +17,7 @@ export default function SaveBtn({
   const SaveHandle = async () => {
     setLoading(true);
     try {
-      await fetch(`http://127.0.0.1:4000/save_post/${eachPost.id}`, {
+      await fetch(`${process.env.HOST_API_PUBLIC}/save_post/${eachPost.id}`, {
         method: "POST",
         credentials: "include",
       }).then(async (respons) => {
@@ -44,7 +44,7 @@ export default function SaveBtn({
   const UnSaveHandle = async () => {
     setLoading(true);
     try {
-      await fetch(`http://127.0.0.1:4000/unsave_post/${eachPost.id}`, {
+      await fetch(`${process.env.HOST_API_PUBLIC}/unsave_post/${eachPost.id}`, {
         method: "DELETE",
         credentials: "include",
       }).then(async (respons) => {
@@ -85,10 +85,10 @@ export default function SaveBtn({
           >
             {eachPost.save_status
               ? loading
-                ? "Saving..."
+                ? "Unsave..."
                 : "Saved"
               : loading
-                ? "Unsave..."
+                ? "Saving..."
                 : "Save"}
           </div>
         </>
