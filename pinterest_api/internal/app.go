@@ -26,7 +26,7 @@ type BootstrapConfig struct {
 func Bootstrap(config *BootstrapConfig) {
 	userRepository := user.NewUserRepository()
 	userUsecase := user.NewUserUsecase(config.DB, config.Validate, userRepository, config.Config)
-	userController := user.NewUserController(userUsecase)
+	userController := user.NewUserController(userUsecase, config.Config)
 
 	followRepository := follow.NewFollowRepository()
 	followUsecase := follow.NewFollowUsecase(config.DB, config.Validate, followRepository, userUsecase, userRepository, config.Config)
