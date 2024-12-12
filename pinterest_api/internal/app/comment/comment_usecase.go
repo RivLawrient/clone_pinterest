@@ -4,7 +4,6 @@ import (
 	"context"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -60,7 +59,7 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 		Id:        comment.ID,
 		Comment:   comment.Comment,
 		PostId:    comment.PostId,
-		CreatedAt: time.UnixMilli(comment.CreatedAt),
+		CreatedAt: comment.CreatedAt,
 	}, nil
 }
 
@@ -81,7 +80,7 @@ func (c *CommentUsecase) FindListByPost(ctx context.Context, postId string) *[]C
 			Comment:   comments.Comment,
 			UserId:    &comments.UserId,
 			PostId:    comments.PostId,
-			CreatedAt: time.UnixMilli(comments.CreatedAt),
+			CreatedAt: comments.CreatedAt,
 		}
 		commentResponses = append(commentResponses, commentResponse)
 	}

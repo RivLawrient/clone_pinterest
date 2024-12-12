@@ -1,89 +1,100 @@
 import React, { useState } from "react";
-import { Post, usePost } from "../(postContext)/Post";
+import { ListPost, Post, usePost } from "../(postContext)/Post";
+import { useNotif } from "@/app/(notifContext)/Notif";
 
 export default function SaveBtn({
-  eachPost,
-  setEachPost,
   post,
   setPost,
 }: {
-  eachPost: Post;
-  setEachPost: React.Dispatch<React.SetStateAction<Post | null>> | null;
-  post: Post[] | null;
-  setPost: React.Dispatch<React.SetStateAction<Post[]>> | null;
+  post: ListPost | Post;
+  setPost:
+    | React.Dispatch<React.SetStateAction<ListPost[]>>
+    | React.Dispatch<React.SetStateAction<Post>>;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
+  const { setMsg, triggerNotif } = useNotif();
 
-  const SaveHandle = async () => {
+  function isPost(post: ListPost | Post): post is Post {
+    return (post as Post).user !== undefined;
+  }
+
+  async function SaveHandle() {
     setLoading(true);
-    try {
-      await fetch(`${process.env.HOST_API_PUBLIC}/save_post/${eachPost.id}`, {
-        method: "POST",
-        credentials: "include",
-      }).then(async (respons) => {
-        const data = await respons.json();
-        if (respons.ok) {
-          if (setPost) {
-            setPost(
-              post?.map((p) =>
-                p.id === eachPost.id ? { ...p, save_status: true } : p,
-              ) || [],
+    await fetch(`${process.env.HOST_API_PUBLIC}/save_post/${post.id}`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          if (isPost(post)) {
+            (setPost as React.Dispatch<React.SetStateAction<Post>>)(
+              (prevPost: Post) => ({
+                ...prevPost,
+                save_status: !prevPost.save_status,
+              }),
             );
-          } else if (setEachPost) {
-            setEachPost({ ...eachPost, save_status: true });
+          } else {
+            (setPost as React.Dispatch<React.SetStateAction<ListPost[]>>)(
+              (prevPosts: ListPost[]) =>
+                prevPosts.map((p) =>
+                  p.id === post.id ? { ...p, save_status: !p.save_status } : p,
+                ),
+            );
           }
+          setLoading(false);
         }
-      });
-    } catch (err) {
-    } finally {
-      setTimeout(() => {
+      })
+      .finally(() => {
         setLoading(false);
-      }, 500);
-    }
-  };
-  const UnSaveHandle = async () => {
+        setMsg("success save post");
+        triggerNotif();
+      });
+  }
+
+  async function UnSaveHandle() {
     setLoading(true);
-    try {
-      await fetch(`${process.env.HOST_API_PUBLIC}/unsave_post/${eachPost.id}`, {
-        method: "DELETE",
-        credentials: "include",
-      }).then(async (respons) => {
-        const data = await respons.json();
-        if (respons.ok) {
-          if (setPost) {
-            setPost(
-              post?.map((p) =>
-                p.id === eachPost.id ? { ...p, save_status: false } : p,
-              ) || [],
+    await fetch(`${process.env.HOST_API_PUBLIC}/unsave_post/${post.id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          if (isPost(post)) {
+            (setPost as React.Dispatch<React.SetStateAction<Post>>)(
+              (prevPost: Post) => ({
+                ...prevPost,
+                save_status: !prevPost.save_status,
+              }),
             );
-          } else if (setEachPost) {
-            setEachPost({ ...eachPost, save_status: false });
+          } else {
+            (setPost as React.Dispatch<React.SetStateAction<ListPost[]>>)(
+              (prevPosts: ListPost[]) =>
+                prevPosts.map((p) =>
+                  p.id === post.id ? { ...p, save_status: !p.save_status } : p,
+                ),
+            );
           }
+          setLoading(false);
         }
-      });
-    } catch (err) {
-    } finally {
-      setTimeout(() => {
+      })
+      .finally(() => {
         setLoading(false);
-      }, 500);
-    }
-  };
+        setMsg("success unsave post");
+        triggerNotif();
+      });
+  }
 
   return (
     <>
-      {eachPost && (
+      {post.id && (
         <>
           <div
             onClick={() => {
-              loading
-                ? null
-                : eachPost.save_status
-                  ? UnSaveHandle()
-                  : SaveHandle();
+              loading ? null : post.save_status ? UnSaveHandle() : SaveHandle();
             }}
-            className={`${eachPost.save_status ? "bg-black hover:bg-slate-800" : "bg-red-700 hover:bg-red-900"} ${loading ? "cursor-wait" : "cursor-pointer active:scale-90"} size-fit select-none rounded-full p-4 text-[16px] leading-none tracking-wide text-white transition-all`}
+            className={`${post.save_status ? "bg-black hover:bg-slate-800" : "bg-red-700 hover:bg-red-900"} ${loading ? "cursor-wait" : "cursor-pointer active:scale-90"} size-fit select-none rounded-full p-4 text-[16px] leading-none tracking-wide text-white transition-all`}
           >
-            {eachPost.save_status
+            {post.save_status
               ? loading
                 ? "Unsave..."
                 : "Saved"

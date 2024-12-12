@@ -7,8 +7,9 @@ import (
 
 func NewFiber(config *viper.Viper) *fiber.App {
 	var app = fiber.New(fiber.Config{
-		AppName: config.GetString("app.name"),
-		Prefork: config.GetBool("web.prefork"),
+		AppName:   config.GetString("app.name"),
+		Prefork:   config.GetBool("web.prefork"),
+		BodyLimit: 20 * 1024 * 1024,
 	})
 
 	return app

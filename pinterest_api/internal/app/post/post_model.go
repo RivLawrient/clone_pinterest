@@ -12,15 +12,17 @@ type UploadPostRequest struct {
 	Image       string `json:"image" validate:"required"`
 }
 
-//	type ProfileWrapper struct {
-//		ProfileResponse  *ProfileResponse
-//		ProfileOtherUser *user.UserOtherResponse
-//	}
+type ListPost struct {
+	Id         string `json:"id"`
+	Image      string `json:"image"`
+	SaveStatus bool   `json:"save_status"`
+}
+
 type PostResponse struct {
 	Id          string                     `json:"id"`
 	Title       string                     `json:"title"`
 	Description string                     `json:"description"`
-	User        user.UserOtherResponse     `json:"user,omitempty"`
+	User        *user.UserOtherResponse    `json:"user,omitempty"`
 	Image       string                     `json:"image"`
 	SaveStatus  *bool                      `json:"save_status"`
 	LikeStatus  *bool                      `json:"like_status"`

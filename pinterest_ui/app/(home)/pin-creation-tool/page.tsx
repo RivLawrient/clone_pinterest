@@ -13,7 +13,11 @@ function Image({
   return (
     <>
       {image != "" ? (
-        <img src={image} alt="" className="w-[342px] rounded-[32px]" />
+        <img
+          src={image}
+          alt=""
+          className="max-h-[600px] min-w-[323px] max-w-[420px] rounded-[32px]"
+        />
       ) : (
         <div className="relative h-[453px] w-[375px]">
           <input

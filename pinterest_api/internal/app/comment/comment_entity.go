@@ -1,11 +1,13 @@
 package comment
 
+import "time"
+
 type Comment struct {
-	ID        string `gorm:"id;primaryKey"`
-	Comment   string `gorm:"comment"`
-	UserId    string `gorm:"user_id"`
-	PostId    string `gorm:"post_id"`
-	CreatedAt int64  `gorm:"column:created_at;autoCreateTime:milli"`
+	ID        string
+	Comment   string
+	UserId    string
+	PostId    string
+	CreatedAt time.Time
 }
 
 func (c *Comment) TableName() string {

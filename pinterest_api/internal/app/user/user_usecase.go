@@ -232,7 +232,6 @@ func (u *UserUsecase) VerifyToken(ctx context.Context, token string) (*User, *fi
 	}
 
 	return user, nil
-
 }
 
 func (u *UserUsecase) GetUser(ctx context.Context, token string) (*UserResponse, *fiber.Error) {

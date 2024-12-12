@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import MasonryItem from "./masonryItem";
-import { Post } from "../../(postContext)/Post";
+import { ListPost, Post } from "../../(postContext)/Post";
 export default function Masonry({
   post,
   setPost,
 }: {
-  post: Post[];
-  setPost: React.Dispatch<React.SetStateAction<Post[]>>;
+  post: ListPost[];
+  setPost: React.Dispatch<React.SetStateAction<ListPost[]>>;
 }) {
   const [leng, setLeng] = useState(0);
   const result = Array.from({ length: leng }, (_, i) =>
@@ -17,7 +17,7 @@ export default function Masonry({
   useEffect(() => {
     const updateColumns = () => {
       if (ref.current) {
-        setLeng(Math.max(2, Math.floor(ref.current.clientWidth / 253)));
+        setLeng(Math.max(2, Math.floor(ref.current.clientWidth / 211)));
       }
     };
 
@@ -37,7 +37,7 @@ export default function Masonry({
               key={index}
               className="flex flex-col gap-4"
               style={{
-                width: `${238}px`,
+                width: `${200}px`,
               }}
             >
               {value?.map((val, ind) => (

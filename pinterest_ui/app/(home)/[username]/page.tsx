@@ -111,7 +111,7 @@ export default function UsernamePage() {
   };
   return (
     <>
-      <div className="mt-20 flex w-screen select-none flex-col items-center justify-center">
+      <div className="flex w-screen select-none flex-col items-center justify-center pt-2 md:pt-20">
         {isloading ? (
           <>
             <div>loading...</div>
@@ -202,7 +202,7 @@ export default function UsernamePage() {
                     Saved
                   </div>
                 </div>
-                {isLoadingPost ? (
+                {/* {isLoadingPost ? (
                   <div>LOADING...</div>
                 ) : tab == "created" ? (
                   <div className="mt-5 flex w-screen justify-center">
@@ -224,7 +224,7 @@ export default function UsernamePage() {
                       </div>
                     )}
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </>

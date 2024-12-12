@@ -94,7 +94,7 @@ func (c *PostController) HandleShowRandomList(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(model.WebResponse[[]PostResponse]{
+	return ctx.JSON(model.WebResponse[[]ListPost]{
 		StatusCode: ctx.Response().StatusCode(),
 		Data:       *response,
 	})
@@ -131,25 +131,27 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 		})
 	}
 
+	users := user.UserOtherResponse{
+		Username:   response.User.Username,
+		FirstName:  response.User.FirstName,
+		LastName:   response.User.LastName,
+		ProfileImg: response.User.ProfileImg,
+		Follow:     follow,
+	}
+
 	return ctx.JSON(model.WebResponse[PostResponse]{
 		StatusCode: ctx.Response().StatusCode(),
 		Data: PostResponse{
 			Id:          response.Id,
 			Title:       response.Title,
 			Description: response.Description,
-			User: user.UserOtherResponse{
-				Username:   response.User.Username,
-				FirstName:  response.User.FirstName,
-				LastName:   response.User.LastName,
-				ProfileImg: response.User.ProfileImg,
-				Follow:     follow,
-			},
-			Image:      response.Image,
-			SaveStatus: response.SaveStatus,
-			LikeStatus: response.LikeStatus,
-			TotalLike:  response.TotalLike,
-			Comment:    response.Comment,
-			CreatedAt:  response.CreatedAt,
+			User:        &users,
+			Image:       response.Image,
+			SaveStatus:  response.SaveStatus,
+			LikeStatus:  response.LikeStatus,
+			TotalLike:   response.TotalLike,
+			Comment:     response.Comment,
+			CreatedAt:   response.CreatedAt,
 		},
 	})
 }

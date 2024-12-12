@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"pinterest_api/internal/model"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -116,7 +117,7 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 	cookie.Value = hasil.Token
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
-	cookie.Domain = domain
+	cookie.Domain = strings.Split(domain, ":")[0]
 	cookie.Secure = true
 	ctx.Cookie(cookie)
 

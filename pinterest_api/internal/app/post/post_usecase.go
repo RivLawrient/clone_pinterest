@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+	"fmt"
 	"pinterest_api/internal/app/comment"
 	likePost "pinterest_api/internal/app/like_post"
 	"pinterest_api/internal/app/save"
@@ -150,7 +151,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 	return &PostResponse{
 		Id:          post.ID,
 		Title:       post.Title,
-		User:        postUser,
+		User:        &postUser,
 		Description: post.Description,
 		Image:       post.Image,
 		SaveStatus:  &save,
@@ -161,7 +162,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 	}, nil
 }
 
-func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]PostResponse, *fiber.Error) {
+func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]ListPost, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -169,45 +170,17 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]Post
 	if err != nil {
 		return nil, err
 	}
-	post := []Post{}
-	if err := p.PostRepository.ListRandomExcept(tx, new(Post), &post, me.ID); err != nil {
-		return &[]PostResponse{}, nil
+	post := []ListPost{}
+	if err := p.PostRepository.FindListRandom(tx, &post, me.ID); err != nil {
+		return &[]ListPost{}, nil
 	}
-
-	postResponses := []PostResponse{}
-	for _, posts := range post {
-
-		userOther := new(user.User)
-		if err := p.UserRepository.FindById(tx, userOther, posts.UserId); err != nil {
-			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-		}
-
-		postUser := user.UserOtherResponse{
-			Username:   userOther.Username,
-			FirstName:  userOther.FirstName,
-			LastName:   *userOther.LastName,
-			ProfileImg: *userOther.ProfileImg,
-		}
-		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
-		like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
-		postResponse := PostResponse{
-			Id:          posts.ID,
-			Title:       posts.Title,
-			Description: posts.Description,
-			Image:       posts.Image,
-			SaveStatus:  &save,
-			LikeStatus:  &like,
-			User:        postUser,
-			CreatedAt:   posts.CreatedAt,
-		}
-		postResponses = append(postResponses, postResponse)
-	}
+	fmt.Println(post)
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &postResponses, nil
+	return &post, nil
 }
 
 func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
@@ -307,3 +280,19 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 
 	return &saveResponses, nil
 }
+
+// func (p *PostUsecase) PList(ctx context.Context) []PostResult {
+// 	tx := p.DB.WithContext(ctx).Begin()
+// 	defer tx.Rollback()
+
+// 	list := &[]PostResult{}
+// 	if err := p.PostRepository.FindList(tx, list); err != nil {
+// 		return []PostResult{}
+// 	}
+
+// 	if err := tx.Commit().Error; err != nil {
+// 		return []PostResult{}
+// 	}
+
+// 	return *list
+// }

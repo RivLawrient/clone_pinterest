@@ -70,7 +70,7 @@ export function LikeBtn({
       onClick={() => {
         loading ? null : post?.like_status ? handleUnlike() : handleLike();
       }}
-      className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
+      className={`flex size-[48px] ${loading ? "cursor-wait" : "cursor-pointer"} items-center justify-center rounded-full hover:bg-slate-100`}
     >
       {post?.like_status ? <LikedIcon /> : <LikeIcon />}
     </div>

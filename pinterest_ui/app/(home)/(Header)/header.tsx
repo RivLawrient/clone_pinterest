@@ -43,7 +43,7 @@ export default function HeaderHome() {
       <DropdownNotif isVisible={showNotif} setIsVisible={setShowNotif} />
       <DropdownDetail isVisible={showDetail} setIsVisible={setShowDetail} />
       <div
-        className={`fixed top-0 z-10 flex h-[80px] w-screen items-center bg-white px-4 py-1 ${path === "/pin-creation-tool" ? "border border-[#cdcdcd]" : null}`}
+        className={`fixed top-0 z-10 hidden h-[80px] w-screen items-center bg-white px-4 py-1 md:flex ${path === "/pin-creation-tool" ? "border border-[#cdcdcd]" : null}`}
       >
         <Link
           href={"/"}

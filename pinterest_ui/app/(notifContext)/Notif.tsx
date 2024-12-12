@@ -25,7 +25,7 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
     <NotifContext.Provider value={{ setMsg, setIsError, triggerNotif }}>
       {show && msg && (
         <div
-          className={`pointer-events-none absolute left-0 right-0 z-[51] flex justify-center ${isError ? "top-0" : "bottom-0"}`}
+          className={`pointer-events-none fixed left-0 right-0 z-[51] flex justify-center ${isError ? "top-0" : "bottom-0"}`}
         >
           <div
             className={`z-[51] my-5 rounded-xl p-3 text-[16px] text-white ${isError ? "bg-red-500" : "bg-black"}`}

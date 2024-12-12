@@ -37,10 +37,16 @@ export interface Post {
   created_at: string;
 }
 
+export interface ListPost {
+  id: string;
+  image: string;
+  save_status: boolean;
+}
 type PostContextType = {
-  post: Post[];
-  setPost: React.Dispatch<React.SetStateAction<Post[]>>;
+  post: ListPost[];
+  setPost: React.Dispatch<React.SetStateAction<ListPost[]>>;
   postLoading: boolean;
+  moreLoading: boolean;
   setPostLoading: (postLoading: boolean) => void;
   loadMorePosts: () => Promise<void>;
 };
@@ -48,40 +54,60 @@ type PostContextType = {
 const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider = ({ children }: { children: React.ReactNode }) => {
-  const [post, setPost] = useState<Post[]>([]);
-  const [postLoading, setPostLoading] = useState<boolean>(false);
-
-  const loadMorePosts = async () => {
-    if (postLoading) return;
-    setPostLoading(true);
-    try {
-      const response = await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      setPost((prevPost) => {
-        if (!prevPost) return data.data;
-        // Filter out posts with duplicate IDs
-        const newPosts = data.data.filter(
-          (newPost: Post) =>
-            !prevPost.some((existingPost) => existingPost.id === newPost.id),
-        );
-        return [...prevPost, ...newPosts];
-      });
-    } catch (error) {
-      console.log("Error fetching data");
-    } finally {
-      setPostLoading(false);
-    }
-  };
+  const [post, setPost] = useState<ListPost[]>([]);
+  const [postLoading, setPostLoading] = useState<boolean>(true);
+  const [moreLoading, setMoreLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    loadMorePosts();
+    setPostLoading(true);
+    fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          setPost(data.data);
+          console.log(data.data);
+        }
+      })
+      .then(() => setPostLoading(false));
   }, []);
+
+  const loadMorePosts = async () => {
+    setMoreLoading(true);
+    await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          setPost((prevPost) => {
+            if (!prevPost) return data.data;
+            const newPosts = data.data.filter(
+              (newPost: ListPost) =>
+                !prevPost.some(
+                  (existingPost) => existingPost.id === newPost.id,
+                ),
+            );
+            return [...prevPost, ...newPosts];
+          });
+        }
+      })
+      .finally(() => setMoreLoading(false));
+  };
 
   return (
     <PostContext.Provider
-      value={{ post, setPost, postLoading, setPostLoading, loadMorePosts }}
+      value={{
+        post,
+        setPost,
+        postLoading,
+        moreLoading,
+        setPostLoading,
+        loadMorePosts,
+      }}
     >
       {children}
     </PostContext.Provider>
