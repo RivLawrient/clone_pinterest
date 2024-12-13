@@ -11,6 +11,8 @@ import SaveBtn from "../../(Component)/saveBtn";
 import { LikeBtn } from "./likeBtn";
 import ShowDetail from "./showDetail";
 import CommentDetail from "./commentList";
+import { ShareBtn } from "../../(Component)/shareBtn";
+import { MoreBtn } from "../../(Component)/moreBtn";
 
 export interface Sizes {
   height: number;
@@ -119,7 +121,7 @@ export default function PagePost() {
               }
             />
             <div>{post?.total_like ? post.total_like : null}</div>
-            <div
+            {/* <div
               className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
             >
               <svg
@@ -146,7 +148,13 @@ export default function PagePost() {
               >
                 <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
               </svg>
-            </div>
+            </div> */}
+            {post && (
+              <>
+                <ShareBtn post={post} size={48} />
+                <MoreBtn post={post} />
+              </>
+            )}
           </div>
           <div>
             <SaveBtn
@@ -166,7 +174,7 @@ export default function PagePost() {
   }
 
   function Mobile() {
-    return <div className={`block md:hidden`}>mobile</div>;
+    return <div className={`placeholder: block md:hidden`}></div>;
   }
 
   return (

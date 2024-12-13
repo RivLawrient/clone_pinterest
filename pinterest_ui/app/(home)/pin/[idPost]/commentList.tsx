@@ -81,7 +81,7 @@ export default function CommentDetail({
   return (
     <>
       <div
-        className={`m-4 grow ${!hiddenComment ? "overflow-hidden" : "overflow-y-scroll"}`}
+        className={`mx-4 grow ${!hiddenComment ? "overflow-hidden" : "overflow-y-scroll"}`}
       >
         <div className={`mb-8 mt-4 flex w-full justify-between`}>
           <div className={`flex items-center`}>
