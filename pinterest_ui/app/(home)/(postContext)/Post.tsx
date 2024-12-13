@@ -17,10 +17,9 @@ export interface Follow {
 }
 
 export interface Comment {
-  id: string;
   comment: string;
-  post_id: string;
-  user: User;
+  username: string;
+  profile_img: string;
   created_at: string;
 }
 
@@ -32,9 +31,8 @@ export interface Post {
   image: string;
   save_status: boolean;
   like_status: boolean;
-  total_like: number | null;
+  total_like: number;
   comment: Comment[] | null;
-  created_at: string;
 }
 
 export interface ListPost {

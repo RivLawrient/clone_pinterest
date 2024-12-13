@@ -38,7 +38,7 @@ export default function MasonryItem({
         >
           <ShareBtn post={eachPost as Post} size={32} />
 
-          <MoreBtn post={eachPost as Post} />
+          <MoreBtn post={eachPost as Post} size={32} />
         </div>
         <Link href={`/pin/${eachPost.id}`}>
           <img

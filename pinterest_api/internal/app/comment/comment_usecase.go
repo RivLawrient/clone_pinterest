@@ -56,9 +56,9 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	}
 
 	return &CommentResponse{
-		Id:        comment.ID,
-		Comment:   comment.Comment,
-		PostId:    comment.PostId,
+		Id:      comment.ID,
+		Comment: comment.Comment,
+		// PostId:    comment.PostId,
 		CreatedAt: comment.CreatedAt,
 	}, nil
 }
@@ -68,18 +68,20 @@ func (c *CommentUsecase) FindListByPost(ctx context.Context, postId string) *[]C
 	defer tx.Rollback()
 
 	listComment := []Comment{}
-	if err := c.CommentRepository.FindByPostId(tx, new(Comment), &listComment, postId); err != nil {
-		return &[]CommentResponse{}
-	}
+	// if err := c.CommentRepository.FindByPostId(tx, new(Comment), &listComment, postId); err != nil {
+	// 	return &[]CommentResponse{}
+	// }
 
 	commentResponses := []CommentResponse{}
 	for _, comments := range listComment {
 
 		commentResponse := CommentResponse{
-			Id:        comments.ID,
-			Comment:   comments.Comment,
-			UserId:    &comments.UserId,
-			PostId:    comments.PostId,
+			Id:      comments.ID,
+			Comment: comments.Comment,
+			User: &CommentResponseUser{
+				Username:   "",
+				ProfileImg: "",
+			},
 			CreatedAt: comments.CreatedAt,
 		}
 		commentResponses = append(commentResponses, commentResponse)

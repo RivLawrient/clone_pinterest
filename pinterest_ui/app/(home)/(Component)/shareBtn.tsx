@@ -31,7 +31,7 @@ export function ShareBtn({ post, size }: { post: Post; size: number }) {
         <div
           onMouseEnter={() => setShow(true)}
           onMouseLeave={() => setShow(false)}
-          className={`absolute z-[3] m-6 flex min-w-[150px] flex-col items-center rounded-2xl border bg-white p-3 duration-200`}
+          className={`${size == 32 ? "m-7" : "m-11"} absolute z-[3] flex min-w-[150px] flex-col items-center rounded-2xl border bg-white p-3 duration-200`}
         >
           <div className={`mb-3 text-[14px] font-semibold`}>Share</div>
           <div className={`flex flex-col items-center`}>

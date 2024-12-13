@@ -10,7 +10,6 @@ import (
 	"pinterest_api/internal/config"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -44,55 +43,56 @@ func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *Pos
 }
 
 func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPostRequest) (*PostResponse, *fiber.Error) {
-	tx := p.DB.WithContext(ctx).Begin()
-	defer tx.Rollback()
+	// tx := p.DB.WithContext(ctx).Begin()
+	// defer tx.Rollback()
 
-	users, err := p.UserUsecase.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, err
-	}
+	// users, err := p.UserUsecase.VerifyToken(ctx, token)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if err := p.Validate.Validate.Struct(request); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	}
+	// if err := p.Validate.Validate.Struct(request); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
+	// }
 
-	if request.Image == "" {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image cannot be empty string")
-	}
+	// if request.Image == "" {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image cannot be empty string")
+	// }
 
-	if err := p.PostRepository.FindByImage(tx, new(Post), request.Image); err == nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image already used")
-	}
+	// if err := p.PostRepository.FindByImage(tx, new(Post), request.Image); err == nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image already used")
+	// }
 
-	post := &Post{
-		ID:          uuid.New().String(),
-		UserId:      users.ID,
-		Title:       request.Title,
-		Description: request.Description,
-		Image:       request.Image,
-	}
+	// post := &Post{
+	// 	ID:          uuid.New().String(),
+	// 	UserId:      users.ID,
+	// 	Title:       request.Title,
+	// 	Description: request.Description,
+	// 	Image:       request.Image,
+	// }
 
-	if err := p.PostRepository.Create(tx, post); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadGateway.Code)
-	}
+	// if err := p.PostRepository.Create(tx, post); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadGateway.Code)
+	// }
 
-	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	}
-	return &PostResponse{
-		Id:          post.ID,
-		Title:       post.Title,
-		Description: post.Description,
-		Image:       post.Image,
-		CreatedAt:   post.CreatedAt,
-	}, nil
+	// if err := tx.Commit().Error; err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	// }
+	// return &PostResponse{
+	// 	Id:          post.ID,
+	// 	Title:       post.Title,
+	// 	Description: post.Description,
+	// 	Image:       post.Image,
+	// 	CreatedAt:   post.CreatedAt,
+	// }, nil
+	return nil, nil
 }
 
-func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token string) (*PostResponse, *fiber.Error) {
+func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token string) (*DetailPost, *fiber.Error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	_, err := p.UserUsecase.VerifyToken(ctx, token)
+	me, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
@@ -101,64 +101,45 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
 	}
 
-	post := new(Post)
-	if err := p.PostRepository.FindById(tx, post, postId); err != nil {
-		return nil, fiber.NewError(fiber.StatusNotFound, "post is not found")
+	post := DetailPostResult{}
+	if err := p.PostRepository.FindDetail(tx, &post, me.ID, postId); err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong, when getting data")
 	}
-
-	userOther := new(user.User)
-	if err := p.UserRepository.FindById(tx, userOther, post.UserId); err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	}
-	postUser := user.UserOtherResponse{
-		Username:   userOther.Username,
-		FirstName:  userOther.FirstName,
-		LastName:   *userOther.LastName,
-		ProfileImg: *userOther.ProfileImg,
-	}
-
-	save := p.SaveUsecase.StatusSave(ctx, token, post.ID)
-	like := p.LikePostUsecase.StatusLike(ctx, token, post.ID)
-	totalLike := p.LikePostUsecase.TotalLike(ctx, token, post.ID)
-
-	listComments := []comment.CommentResponse{}
-	for _, com := range *p.CommentUsecase.FindListByPost(ctx, postId) {
-		commentUser := new(user.User)
-		if err := p.UserRepository.FindById(tx, commentUser, *com.UserId); err != nil {
-			return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-		}
-
-		listComment := comment.CommentResponse{
-			Id:      com.Id,
-			Comment: com.Comment,
-			User: &user.UserOtherResponse{
-				Username:   commentUser.Username,
-				FirstName:  commentUser.FirstName,
-				LastName:   *commentUser.LastName,
-				ProfileImg: *commentUser.ProfileImg,
+	comment := []comment.ListComment{}
+	if err := p.CommentUsecase.CommentRepository.FindByPostId(tx, &comment, postId); err != nil {
+		return &DetailPost{
+			Id:          post.Id,
+			Title:       post.Title,
+			Description: post.Description,
+			Image:       post.Image,
+			SaveStatus:  post.SaveStatus,
+			LikeStatus:  post.LikeStatus,
+			TotalLike:   post.TotalLike,
+			User: DetailPostUser{
+				Username:   post.Username,
+				ProfileImg: post.ProfileImg,
 			},
-			PostId:    com.PostId,
-			CreatedAt: com.CreatedAt,
-		}
-
-		listComments = append(listComments, listComment)
+			Comment: comment,
+		}, nil
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &PostResponse{
-		Id:          post.ID,
+	return &DetailPost{
+		Id:          post.Id,
 		Title:       post.Title,
-		User:        &postUser,
 		Description: post.Description,
 		Image:       post.Image,
-		SaveStatus:  &save,
-		LikeStatus:  &like,
-		TotalLike:   &totalLike,
-		Comment:     &listComments,
-		CreatedAt:   post.CreatedAt,
+		SaveStatus:  post.SaveStatus,
+		LikeStatus:  post.LikeStatus,
+		TotalLike:   post.TotalLike,
+		User: DetailPostUser{
+			Username:   post.Username,
+			ProfileImg: post.ProfileImg,
+		},
+		Comment: comment,
 	}, nil
 }
 
@@ -184,101 +165,103 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]List
 }
 
 func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
-	tx := p.DB.WithContext(ctx).Begin()
-	defer tx.Rollback()
+	// tx := p.DB.WithContext(ctx).Begin()
+	// defer tx.Rollback()
 
-	_, err := p.UserUsecase.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, err
-	}
+	// _, err := p.UserUsecase.VerifyToken(ctx, token)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if err := p.Validate.Validate.Var(username, "required"); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	}
+	// if err := p.Validate.Validate.Var(username, "required"); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
+	// }
 
-	user := new(user.User)
-	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
-	}
+	// user := new(user.User)
+	// if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	// }
 
-	post := []Post{}
-	if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
-		return &[]PostResponse{}, nil
-	}
+	// post := []Post{}
+	// if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
+	// 	return &[]PostResponse{}, nil
+	// }
 
-	postResponses := []PostResponse{}
-	for _, posts := range post {
+	// postResponses := []PostResponse{}
+	// for _, posts := range post {
 
-		save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
-		like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
+	// 	save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
+	// 	like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
 
-		postResponse := PostResponse{
-			Id:          posts.ID,
-			Title:       posts.Title,
-			Description: posts.Description,
-			SaveStatus:  &save,
-			LikeStatus:  &like,
-			Image:       posts.Image,
-			CreatedAt:   posts.CreatedAt,
-		}
-		postResponses = append(postResponses, postResponse)
-	}
+	// 	postResponse := PostResponse{
+	// 		Id:          posts.ID,
+	// 		Title:       posts.Title,
+	// 		Description: posts.Description,
+	// 		SaveStatus:  &save,
+	// 		LikeStatus:  &like,
+	// 		Image:       posts.Image,
+	// 		CreatedAt:   posts.CreatedAt,
+	// 	}
+	// 	postResponses = append(postResponses, postResponse)
+	// }
 
-	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	}
+	// if err := tx.Commit().Error; err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	// }
 
-	return &postResponses, nil
+	// return &postResponses, nil
+	return nil, nil
 }
 
 func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
-	tx := p.DB.WithContext(ctx).Begin()
-	defer tx.Rollback()
+	// tx := p.DB.WithContext(ctx).Begin()
+	// defer tx.Rollback()
 
-	_, err := p.UserUsecase.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, err
-	}
+	// _, err := p.UserUsecase.VerifyToken(ctx, token)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if err := p.Validate.Validate.Var(username, "required"); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	}
+	// if err := p.Validate.Validate.Var(username, "required"); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
+	// }
 
-	user := new(user.User)
-	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
-	}
+	// user := new(user.User)
+	// if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	// }
 
-	post := []Post{}
-	if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
-		return &[]PostResponse{}, nil
-	}
+	// post := []Post{}
+	// if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
+	// 	return &[]PostResponse{}, nil
+	// }
 
-	saveList := p.SaveUsecase.ShowSaveByUser(ctx, user.ID)
+	// saveList := p.SaveUsecase.ShowSaveByUser(ctx, user.ID)
 
-	saveResponses := []PostResponse{}
-	for _, save := range *saveList {
-		postSave := new(Post)
-		p.PostRepository.FindById(tx, postSave, save.PostId)
+	// saveResponses := []PostResponse{}
+	// for _, save := range *saveList {
+	// 	postSave := new(Post)
+	// 	p.PostRepository.FindById(tx, postSave, save.PostId)
 
-		saveStatus := p.SaveUsecase.StatusSave(ctx, token, save.PostId)
+	// 	saveStatus := p.SaveUsecase.StatusSave(ctx, token, save.PostId)
 
-		saveResponse := PostResponse{
-			Id:          save.PostId,
-			Title:       postSave.Title,
-			Description: postSave.Description,
-			Image:       postSave.Image,
-			SaveStatus:  &saveStatus,
-			CreatedAt:   postSave.CreatedAt,
-		}
-		saveResponses = append(saveResponses, saveResponse)
-	}
+	// 	saveResponse := PostResponse{
+	// 		Id:          save.PostId,
+	// 		Title:       postSave.Title,
+	// 		Description: postSave.Description,
+	// 		Image:       postSave.Image,
+	// 		SaveStatus:  &saveStatus,
+	// 		CreatedAt:   postSave.CreatedAt,
+	// 	}
+	// 	saveResponses = append(saveResponses, saveResponse)
+	// }
 
-	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	}
+	// if err := tx.Commit().Error; err != nil {
+	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	// }
 
-	return &saveResponses, nil
+	return &[]PostResponse{}, nil
+	// return nil, nil
 }
 
 // func (p *PostUsecase) PList(ctx context.Context) []PostResult {

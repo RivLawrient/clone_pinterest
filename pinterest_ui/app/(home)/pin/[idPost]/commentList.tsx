@@ -49,16 +49,10 @@ export default function CommentDetail({
             if (!prevPost) return prevPost; // prevPost is already null
             if (user) {
               const newComment: Comment = {
-                id: data.data.id,
+                // id: data.data.id,
                 comment: data.data.comment,
-                user: {
-                  username: user.username,
-                  first_name: user.first_name,
-                  follow: null,
-                  last_name: user.last_name,
-                  profile_img: user.profile_img,
-                },
-                post_id: data.data.post_id,
+                username: data.data.username,
+                profile_img: data.data.profile_img,
                 created_at: data.data.created_at,
               };
 
@@ -132,6 +126,7 @@ export default function CommentDetail({
                 role="img"
                 viewBox="0 0 24 24"
                 width="16"
+                className={`duration-200 ${hiddenComment ? "rotate-180" : null}`}
               >
                 <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
               </svg>
@@ -140,18 +135,24 @@ export default function CommentDetail({
               <div className={`pr-8`}>
                 {post.comment.map((value: Comment, index: number) => (
                   <div key={index} className={`my-2 flex w-full gap-2`}>
-                    <Link
-                      href={`/${value.user.username}`}
-                      className={`flex-none`}
-                    >
-                      <ProfileImage user={value.user} width={32} />
+                    <Link href={`/${value.username}`} className={`flex-none`}>
+                      <ProfileImage
+                        user={{
+                          first_name: "",
+                          follow: null,
+                          last_name: "",
+                          profile_img: value.profile_img,
+                          username: value.username,
+                        }}
+                        width={32}
+                      />
                     </Link>
                     <div className={`h-auto flex-col leading-none`}>
                       <Link
-                        href={`/${value.user.username}`}
+                        href={`/${value.username}`}
                         className={`mr-2 text-[16px] font-semibold`}
                       >
-                        {value.user.username}
+                        {value.username}
                       </Link>
                       {value.comment}
                       <div className={`mt-1 text-[14px] text-[#767676]`}>

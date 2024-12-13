@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Post } from "../(postContext)/Post";
 
-export function MoreBtn({ post }: { post: Post }) {
+export function MoreBtn({ post, size }: { post: Post; size: number }) {
   const [show, setShow] = useState<boolean>(false);
 
   const handleDownload = async () => {
@@ -21,15 +21,15 @@ export function MoreBtn({ post }: { post: Post }) {
       <div
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
-        className={`${show && "brightness-90"} flex size-[32px] items-center justify-center rounded-full bg-white`}
+        className={`${show && "brightness-90"} flex size-[${size}px] items-center justify-center rounded-full bg-white`}
       >
         <svg
           aria-hidden="true"
           aria-label=""
-          height="16"
+          height={size == 32 ? 16 : 20}
           role="img"
           viewBox="0 0 24 24"
-          width="16"
+          width={size == 32 ? 16 : 20}
         >
           <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
         </svg>
@@ -40,14 +40,14 @@ export function MoreBtn({ post }: { post: Post }) {
         <div
           onMouseEnter={() => setShow(true)}
           onMouseLeave={() => setShow(false)}
-          className={`absolute z-[3] m-6 flex flex-col rounded-2xl border bg-white p-3 duration-200`}
+          className={`${size == 32 ? "m-7" : "m-11"} absolute z-[3] flex flex-col rounded-2xl border bg-white p-3 duration-200`}
         >
           <div className={`text-nowrap text-[14px]`}>
             This Pin was inspired by your recent activity
           </div>
           <a
             onClick={handleDownload}
-            className={`cursor-pointer rounded-lg p-2 text-start text-[16px] font-semibold hover:bg-black/40`}
+            className={`cursor-pointer rounded-lg p-2 text-start text-[16px] font-semibold hover:bg-black/40 active:bg-black/50`}
           >
             Download image
           </a>

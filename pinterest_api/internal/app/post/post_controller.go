@@ -104,15 +104,6 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 	postId := ctx.Params("postId")
 
-	_, err := c.UserUsecase.VerifyToken(ctx.UserContext(), auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-	}
-
 	response, err := c.PostUsecase.ShowDetail(ctx.UserContext(), postId, auth)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
@@ -122,68 +113,40 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 		})
 	}
 
-	follow, err := c.FollowUsecase.ShowFollowByUsername(ctx.UserContext(), auth, response.User.Username)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-	}
-
-	users := user.UserOtherResponse{
-		Username:   response.User.Username,
-		FirstName:  response.User.FirstName,
-		LastName:   response.User.LastName,
-		ProfileImg: response.User.ProfileImg,
-		Follow:     follow,
-	}
-
-	return ctx.JSON(model.WebResponse[PostResponse]{
+	return ctx.JSON(model.WebResponse[DetailPost]{
 		StatusCode: ctx.Response().StatusCode(),
-		Data: PostResponse{
-			Id:          response.Id,
-			Title:       response.Title,
-			Description: response.Description,
-			User:        &users,
-			Image:       response.Image,
-			SaveStatus:  response.SaveStatus,
-			LikeStatus:  response.LikeStatus,
-			TotalLike:   response.TotalLike,
-			Comment:     response.Comment,
-			CreatedAt:   response.CreatedAt,
-		},
+		Data:       *response,
 	})
 }
 
 func (c *PostController) HandleListByUsername(ctx *fiber.Ctx) error {
-	auth := ctx.Cookies("auth-token")
-	username := ctx.Params("username")
+	// auth := ctx.Cookies("auth-token")
+	// username := ctx.Params("username")
 
-	post, err := c.PostUsecase.ShowListPostByUsername(ctx.UserContext(), username, auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-	}
+	// post, err := c.PostUsecase.ShowListPostByUsername(ctx.UserContext(), username, auth)
+	// if err != nil {
+	// 	return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+	// 		StatusCode: err.Code,
+	// 		Data:       nil,
+	// 		Errors:     err.Message,
+	// 	})
+	// }
 
-	saved, err := c.PostUsecase.ShowListSavedByUsername(ctx.UserContext(), username, auth)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-	}
+	// saved, err := c.PostUsecase.ShowListSavedByUsername(ctx.UserContext(), username, auth)
+	// if err != nil {
+	// 	return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+	// 		StatusCode: err.Code,
+	// 		Data:       nil,
+	// 		Errors:     err.Message,
+	// 	})
+	// }
 
-	return ctx.JSON(model.WebResponse[ListPostandSaved]{
-		StatusCode: ctx.Response().StatusCode(),
-		Data: ListPostandSaved{
-			Posted: *post,
-			Saved:  *saved,
-		},
-	})
-
+	// return ctx.JSON(model.WebResponse[ListPostandSaved]{
+	// 	StatusCode: ctx.Response().StatusCode(),
+	// 	Data: ListPostandSaved{
+	// 		Posted: *post,
+	// 		Saved:  *saved,
+	// 	},
+	// })
+	return fiber.ErrBadRequest
 }

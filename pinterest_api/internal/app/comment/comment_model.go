@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"pinterest_api/internal/app/user"
 	"time"
 )
 
@@ -10,10 +9,19 @@ type CommentRequest struct {
 }
 
 type CommentResponse struct {
-	Id        string                  `json:"id"`
-	Comment   string                  `json:"comment"`
-	UserId    *string                 `json:"user_id,omitempty"`
-	PostId    string                  `json:"post_id,omitempty"`
-	User      *user.UserOtherResponse `json:"user"`
-	CreatedAt time.Time               `json:"created_at"`
+	Id        string               `json:"id"`
+	Comment   string               `json:"comment"`
+	User      *CommentResponseUser `json:"user"`
+	CreatedAt time.Time            `json:"created_at"`
+}
+type CommentResponseUser struct {
+	Username   string `json:"username"`
+	ProfileImg string `json:"profile_img"`
+}
+
+type ListComment struct {
+	Comment    string    `json:"comment"`
+	Username   string    `json:"username"`
+	ProfileImg string    `json:"profile_img"`
+	CreatedAt  time.Time `json:"created_at"`
 }

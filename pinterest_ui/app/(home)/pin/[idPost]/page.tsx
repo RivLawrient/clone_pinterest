@@ -4,12 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Post } from "../../(postContext)/Post";
 import { usePathname } from "next/navigation";
 import { BackBtn } from "./backBtn";
-import ProfileImage from "../../(Component)/profileImage";
 import { useUser } from "@/app/(userContext)/User";
-import Link from "next/link";
 import SaveBtn from "../../(Component)/saveBtn";
 import { LikeBtn } from "./likeBtn";
-import ShowDetail from "./showDetail";
 import CommentDetail from "./commentList";
 import { ShareBtn } from "../../(Component)/shareBtn";
 import { MoreBtn } from "../../(Component)/moreBtn";
@@ -121,40 +118,8 @@ export default function PagePost() {
               }
             />
             <div>{post?.total_like ? post.total_like : null}</div>
-            {/* <div
-              className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
-            >
-              <svg
-                aria-hidden="true"
-                aria-label=""
-                height="20"
-                role="img"
-                viewBox="0 0 24 24"
-                width="20"
-              >
-                <path d="M7.44 5.44a1.5 1.5 0 1 0 2.12 2.12l.94-.94v6.88a1.5 1.5 0 0 0 3 0V6.62l.94.94a1.5 1.5 0 0 0 2.12-2.12l-3.5-3.5a1.5 1.5 0 0 0-2.12 0zM5 13.5a1.5 1.5 0 0 0-3 0v5A3.5 3.5 0 0 0 5.5 22h13a3.5 3.5 0 0 0 3.5-3.5v-5a1.5 1.5 0 0 0-3 0v5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5z"></path>
-              </svg>
-            </div>
-            <div
-              className={`flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100`}
-            >
-              <svg
-                aria-hidden="true"
-                aria-label=""
-                height="20"
-                role="img"
-                viewBox="0 0 24 24"
-                width="20"
-              >
-                <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
-              </svg>
-            </div> */}
-            {post && (
-              <>
-                <ShareBtn post={post} size={48} />
-                <MoreBtn post={post} />
-              </>
-            )}
+            <ShareBtn post={post as Post} size={48} />
+            <MoreBtn post={post as Post} size={48} />
           </div>
           <div>
             <SaveBtn
@@ -192,7 +157,7 @@ export default function PagePost() {
               <div className={`relative`}>
                 <div
                   onClick={() => setIsFullscreen(true)}
-                  className={`absolute bottom-0 right-0 m-4 hidden cursor-pointer items-center justify-center rounded-full bg-white md:flex`}
+                  className={`absolute bottom-0 right-0 m-4 hidden cursor-pointer items-center justify-center rounded-full bg-white hover:brightness-90 md:flex`}
                 >
                   <svg
                     aria-label="closeup image action button"

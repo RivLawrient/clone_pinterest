@@ -51,7 +51,7 @@ export function LikeBtn({
               ? {
                   ...post,
                   like_status: false,
-                  total_like: post.total_like ? post.total_like - 1 : null,
+                  total_like: post.total_like ? post.total_like - 1 : 0,
                 }
               : null,
           );
