@@ -13,9 +13,8 @@ func (c *CommentRepository) Create(db *gorm.DB, comment *Comment) error {
 	return db.Create(comment).Error
 }
 
-func (c *CommentRepository) FindByPostId(db *gorm.DB, listComment *[]ListComment, postId string) error {
-	// return db.Where("post_id = ?", postId).Model(comment).Find(listComment).Error
-	return db.Table("comment").
+func (c *CommentRepository) FindByPostId(db *gorm.DB, listComment *[]ListComment, postId string) {
+	db.Table("comment").
 		Select(`
 	comment.comment,
 	users.username,
@@ -24,5 +23,5 @@ func (c *CommentRepository) FindByPostId(db *gorm.DB, listComment *[]ListComment
 	`).
 		Joins("JOIN users ON users.id = comment.user_id").
 		Where("comment.post_id = ? ", postId).
-		Scan(listComment).Error
+		Scan(listComment)
 }

@@ -119,7 +119,11 @@ export default function PagePost() {
             />
             <div>{post?.total_like ? post.total_like : null}</div>
             <ShareBtn post={post as Post} size={48} />
-            <MoreBtn post={post as Post} size={48} />
+            {user?.username == post?.user.username ? (
+              <MoreBtn post={post as Post} size={48} isMe={true} />
+            ) : (
+              <MoreBtn post={post as Post} size={48} isMe={false} />
+            )}
           </div>
           <div>
             <SaveBtn

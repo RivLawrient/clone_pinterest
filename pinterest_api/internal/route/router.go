@@ -64,6 +64,7 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Get("/post/:postId", c.PostController.HandleShowDetail)
 	c.App.Get("/posts/", c.PostController.HandleShowRandomList)
 	c.App.Get("/posts/:username", c.PostController.HandleListByUsername)
+	c.App.Delete("/post/:postId", c.PostController.HandleDelete)
 
 	c.App.Post("/follow/:username", c.FollowController.HandleFollowUser)
 	c.App.Delete("/unfollow/:username", c.FollowController.HandleUnFollowUser)

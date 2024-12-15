@@ -56,29 +56,29 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [postLoading, setPostLoading] = useState<boolean>(true);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    setPostLoading(true);
-    fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (response) => {
-        const data = await response.json();
-        if (response.ok) {
-          setPost(data.data);
-          console.log(data.data);
-        }
-      })
-      .then(() => setPostLoading(false));
-  }, []);
-
   const loadMorePosts = async () => {
-    setMoreLoading(true);
-    await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (response) => {
+    if (post.length == 0) {
+      setPostLoading(true);
+      await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then(async (response) => {
+          const data = await response.json();
+          if (response.ok) {
+            setPost(data.data);
+            console.log(data.data);
+            setPostLoading(false);
+          }
+        })
+        .finally(() => setPostLoading(false));
+    } else {
+      setMoreLoading(true);
+      console.log("terpanggil");
+      await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
+        method: "GET",
+        credentials: "include",
+      }).then(async (response) => {
         const data = await response.json();
         if (response.ok) {
           setPost((prevPost) => {
@@ -91,9 +91,11 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
             );
             return [...prevPost, ...newPosts];
           });
+          setMoreLoading(false);
         }
-      })
-      .finally(() => setMoreLoading(false));
+      });
+      // .finally(() => setMoreLoading(false));
+    }
   };
 
   return (

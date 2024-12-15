@@ -11,7 +11,7 @@ import (
 
 func NewDatabase(viper *viper.Viper) *gorm.DB {
 	username := viper.GetString("database.username")
-	password := viper.GetString("database.password")
+	// password := viper.GetString("database.password")
 	host := viper.GetString("database.host")
 	port := viper.GetInt("database.port")
 	database := viper.GetString("database.name")
@@ -25,7 +25,7 @@ func NewDatabase(viper *viper.Viper) *gorm.DB {
 
 	// dsn := "host=localhost user=lawrient  dbname=pinterest_clone port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=Asia/Makassar", host, username, password, database, port, "require")
+	dsn := fmt.Sprintf("host=%s user=%s dbname=%s port=%d sslmode=%s TimeZone=Asia/Makassar", host, username, database, port, "disable")
 	db, err := gorm.Open(postgres.Open(dsn))
 	if err != nil {
 		fmt.Println("failed to connect database:", err)

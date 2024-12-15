@@ -1,8 +1,6 @@
 package post
 
 import (
-	"fmt"
-	"net/http"
 	"pinterest_api/internal/app/follow"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
@@ -46,25 +44,25 @@ func (c *PostController) HandleUpload(ctx *fiber.Ctx) error {
 		})
 	}
 
-	link, errs := http.Get(request.Image)
-	if errs != nil {
-		fmt.Println("Error:", errs)
-		error := fiber.ErrBadRequest
-		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
-			StatusCode: error.Code,
-			Errors:     "image is invalid",
-		})
-	}
-	defer link.Body.Close()
+	// link, errs := http.Get(request.Image)
+	// if errs != nil {
+	// 	fmt.Println("Error:", errs)
+	// 	error := fiber.ErrBadRequest
+	// 	return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+	// 		StatusCode: error.Code,
+	// 		Errors:     "image is invalid",
+	// 	})
+	// }
+	// defer link.Body.Close()
 
-	if link.StatusCode != http.StatusOK {
-		fmt.Println("Status Code:", link.StatusCode)
-		error := fiber.ErrBadGateway
-		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
-			StatusCode: error.Code,
-			Errors:     "image is invalid",
-		})
-	}
+	// if link.StatusCode != http.StatusOK {
+	// 	fmt.Println("Status Code:", link.StatusCode)
+	// 	error := fiber.ErrBadGateway
+	// 	return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+	// 		StatusCode: error.Code,
+	// 		Errors:     "image is invalid",
+	// 	})
+	// }
 
 	response, error := c.PostUsecase.Upload(ctx.UserContext(), auth, *request)
 	if error != nil {
@@ -118,7 +116,24 @@ func (c *PostController) HandleShowDetail(ctx *fiber.Ctx) error {
 		Data:       *response,
 	})
 }
+func (c *PostController) HandleDelete(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	postId := ctx.Params("postId")
 
+	response, err := c.PostUsecase.Delete(ctx.UserContext(), auth, postId)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[PostResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}
 func (c *PostController) HandleListByUsername(ctx *fiber.Ctx) error {
 	// auth := ctx.Cookies("auth-token")
 	// username := ctx.Params("username")

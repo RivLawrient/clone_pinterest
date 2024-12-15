@@ -96,7 +96,7 @@ export default function CommentDetail({
             </div>
           </div>
 
-          <div className={``}>
+          {/* <div className={``}>
             {post?.user.username == user?.username ? null : post?.user.follow
                 ?.follow_status ? (
               <div
@@ -111,7 +111,7 @@ export default function CommentDetail({
                 Follow
               </div>
             )}
-          </div>
+          </div> */}
         </div>
         {post?.comment && post.comment.length > 0 ? (
           <>
@@ -132,7 +132,7 @@ export default function CommentDetail({
               </svg>
             </div>
             {hiddenComment && (
-              <div className={`pr-8`}>
+              <div className={`pr-2`}>
                 {post.comment.map((value: Comment, index: number) => (
                   <div key={index} className={`my-2 flex w-full gap-2`}>
                     <Link href={`/${value.username}`} className={`flex-none`}>
@@ -147,7 +147,7 @@ export default function CommentDetail({
                         width={32}
                       />
                     </Link>
-                    <div className={`h-auto flex-col leading-none`}>
+                    <div className={`h-auto flex-col text-wrap leading-none`}>
                       <Link
                         href={`/${value.username}`}
                         className={`mr-2 text-[16px] font-semibold`}

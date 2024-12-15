@@ -109,7 +109,7 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 
 	hasil, err := c.UserUsecase.GoogleCallback(ctx.UserContext(), code)
 	if err != nil {
-		return ctx.Redirect(fmt.Sprintf("%s//%s", protocol, domain))
+		return ctx.Redirect(fmt.Sprintf("%s://%s", protocol, domain))
 	}
 
 	cookie := new(fiber.Cookie)

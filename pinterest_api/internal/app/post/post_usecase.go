@@ -10,6 +10,7 @@ import (
 	"pinterest_api/internal/config"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -43,49 +44,46 @@ func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *Pos
 }
 
 func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPostRequest) (*PostResponse, *fiber.Error) {
-	// tx := p.DB.WithContext(ctx).Begin()
-	// defer tx.Rollback()
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
 
-	// users, err := p.UserUsecase.VerifyToken(ctx, token)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	me, err := p.UserUsecase.VerifyToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
 
-	// if err := p.Validate.Validate.Struct(request); err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	// }
+	if err := p.Validate.Validate.Struct(request); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
+	}
 
-	// if request.Image == "" {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image cannot be empty string")
-	// }
+	errs := p.PostRepository.CheckByImage(tx, new(Post), request.Image)
+	if errs == nil {
+		// return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image already used")
+		fmt.Println("if nil", errs)
+	}
+	fmt.Println("done", errs)
+	post := &Post{
+		ID:          uuid.New().String(),
+		UserId:      me.ID,
+		Title:       request.Title,
+		Description: request.Description,
+		Image:       request.Image,
+	}
 
-	// if err := p.PostRepository.FindByImage(tx, new(Post), request.Image); err == nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "image already used")
-	// }
+	if err := p.PostRepository.Create(tx, post); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadGateway.Code)
+	}
 
-	// post := &Post{
-	// 	ID:          uuid.New().String(),
-	// 	UserId:      users.ID,
-	// 	Title:       request.Title,
-	// 	Description: request.Description,
-	// 	Image:       request.Image,
-	// }
-
-	// if err := p.PostRepository.Create(tx, post); err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadGateway.Code)
-	// }
-
-	// if err := tx.Commit().Error; err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	// }
-	// return &PostResponse{
-	// 	Id:          post.ID,
-	// 	Title:       post.Title,
-	// 	Description: post.Description,
-	// 	Image:       post.Image,
-	// 	CreatedAt:   post.CreatedAt,
-	// }, nil
-	return nil, nil
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+	return &PostResponse{
+		Id:          post.ID,
+		Title:       post.Title,
+		Description: post.Description,
+		Image:       post.Image,
+		CreatedAt:   post.CreatedAt,
+	}, nil
 }
 
 func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token string) (*DetailPost, *fiber.Error) {
@@ -102,26 +100,11 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 	}
 
 	post := DetailPostResult{}
-	if err := p.PostRepository.FindDetail(tx, &post, me.ID, postId); err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong, when getting data")
+	if query := p.PostRepository.FindDetail(tx, &post, me.ID, postId); query.RowsAffected == 0 {
+		return nil, fiber.NewError(fiber.StatusBadRequest, "something wrong, when getting data")
 	}
 	comment := []comment.ListComment{}
-	if err := p.CommentUsecase.CommentRepository.FindByPostId(tx, &comment, postId); err != nil {
-		return &DetailPost{
-			Id:          post.Id,
-			Title:       post.Title,
-			Description: post.Description,
-			Image:       post.Image,
-			SaveStatus:  post.SaveStatus,
-			LikeStatus:  post.LikeStatus,
-			TotalLike:   post.TotalLike,
-			User: DetailPostUser{
-				Username:   post.Username,
-				ProfileImg: post.ProfileImg,
-			},
-			Comment: comment,
-		}, nil
-	}
+	p.CommentUsecase.CommentRepository.FindByPostId(tx, &comment, postId)
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
@@ -155,13 +138,36 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]List
 	if err := p.PostRepository.FindListRandom(tx, &post, me.ID); err != nil {
 		return &[]ListPost{}, nil
 	}
-	fmt.Println(post)
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	return &post, nil
+}
+
+func (p *PostUsecase) Delete(ctx context.Context, token string, postId string) (*PostResponse, *fiber.Error) {
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	me, err := p.UserUsecase.VerifyToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	query := p.PostRepository.RemoveById(tx, me.ID, postId)
+
+	if query.RowsAffected == 0 {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &PostResponse{
+		Id: postId,
+	}, nil
 }
 
 func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
