@@ -32,22 +32,22 @@ export default function UsernamePage() {
         }
       })
       .catch(() => console.log("err"));
-    fetch(`${process.env.HOST_API_PUBLIC}/posts/${path.slice(1)}`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (respons) => {
-        const data = await respons.json();
-        if (respons.ok) {
-          setPost(data.data.posted);
-          setSave(data.data.saved);
-        }
-      })
-      .finally(() => setIsLoadingPost(false))
-      .catch(() => console.log())
-      .finally(() => {
-        setIsloading(false);
-      });
+    // fetch(`${process.env.HOST_API_PUBLIC}/posts/${path.slice(1)}`, {
+    //   method: "GET",
+    //   credentials: "include",
+    // })
+    //   .then(async (respons) => {
+    //     const data = await respons.json();
+    //     if (respons.ok) {
+    //       setPost(data.data.posted);
+    //       setSave(data.data.saved);
+    //     }
+    //   })
+    //   .finally(() => setIsLoadingPost(false))
+    //   .catch(() => console.log())
+    //   .finally(() => {
+    //     setIsloading(false);
+    //   });
   }, []);
 
   const FollowHandle = async () => {

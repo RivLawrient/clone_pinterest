@@ -9,37 +9,42 @@ function Image({
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  // const [image, seImage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   return (
     <>
       {image != "" ? (
         <img
           src={image}
           alt=""
-          className="max-h-[600px] min-w-[323px] max-w-[420px] rounded-[32px]"
+          className="max-h-[600px] min-w-[323px] max-w-[420px] rounded-[32px] object-cover"
         />
       ) : (
-        <div className="relative h-[453px] w-[375px]">
+        <div className={`relative h-[453px] w-[375px]`}>
           <input
             type="file"
             accept="image/jpg"
             onChange={async (e) => {
               const file = new FormData();
               file.append("image", e.target.files ? e.target.files[0] : "");
+              setLoading(true);
               const api = await fetch(`${process.env.HOST_API_PUBLIC}/img`, {
                 method: "post",
                 body: file,
-              }).then(async (response) => {
-                const data = await response.json();
+              })
+                .then(async (response) => {
+                  const data = await response.json();
 
-                if (response.ok) {
-                  setImage(data.link);
-                }
-              });
+                  if (response.ok) {
+                    setImage(data.link);
+                  }
+                })
+                .finally(() => setLoading(false));
             }}
-            className="absolute size-full cursor-pointer rounded-[32px] bg-black opacity-0"
+            className={`${loading ? "cursor-wait" : "cursor-pointer"} absolute size-full rounded-[32px] bg-black opacity-0`}
           />
-          <div className="relative z-[-1] flex size-full flex-col items-center justify-center rounded-[32px] border-[2px] border-dashed border-[#b3b3b3] bg-[#DADADA]">
+          <div
+            className={`relative z-[-1] flex size-full flex-col items-center justify-center rounded-[32px] border-[2px] border-dashed border-[#b3b3b3] bg-[#DADADA]`}
+          >
             <div className="flex justify-center py-2">
               <svg
                 aria-label="Add files"
@@ -91,38 +96,11 @@ export default function Create() {
       setShowfail(false);
     }, 5000); //
   };
+
   return (
     <div className="mt-[80px] flex w-screen flex-col items-center justify-center">
       <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
         <span className="text-[20px] font-semibold">Create pin</span>
-        {/* <div
-          onClick={() => {
-            fetch("http://127.0.0.1:4000/post", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-              body: JSON.stringify({
-                title: title,
-                descripion: desc,
-                image: image,
-              }),
-            }).then(async (response) => {
-              if (response.ok) {
-                setImage("");
-                setTitle("");
-                setDesc("");
-              }
-            });
-          }}
-          className="cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90"
-        >
-          Publish
-        </div>
-        <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20 hover:bg-[#c9001e]">
-          Publishing
-        </div> */}
         {image ? (
           publishing ? (
             <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20">
@@ -160,7 +138,7 @@ export default function Create() {
                   setPublishing(false);
                 }
               }}
-              className="cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90"
+              className={`cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
             >
               Publish
             </div>
