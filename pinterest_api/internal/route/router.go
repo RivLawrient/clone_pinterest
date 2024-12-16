@@ -13,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/websocket/v2"
 )
 
 type RouteConfig struct {
@@ -37,6 +38,7 @@ func (c *RouteConfig) Setup() {
 
 	c.SetupGuestRoute()
 	c.SetupAuthRoute()
+	c.SetupWebSocketRoutes()
 	c.App.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusNotFound).JSON(model.WebResponse[string]{
 			StatusCode: fiber.StatusNotFound,
@@ -77,10 +79,23 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/like_post/:postid", c.LikePostController.HandleLikeaPost)
 	c.App.Delete("/unlike_post/:postid", c.LikePostController.HandleUnLikeaPost)
 
-	c.App.Post("/comment/:postid", c.CommentController.HandleAddComment)
+	// c.App.Post("/comment/:postid", c.CommentController.HandleAddComment)
 
 	c.App.Post("/", c.PersonController.Insert)
 }
 
+func (c *RouteConfig) SetupWebSocketRoutes() {
+	// Middleware untuk memastikan permintaan WebSocket
+	c.App.Use("/ws", func(ctx *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(ctx) {
+			return ctx.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+	// c.App.Use("/ws/comment_post", comment.WebSocketMiddleware)
+	// Rute WebSocket untuk setiap kebutuhan
+	c.App.Get("/ws/comment_post/:postid", websocket.New(c.CommentController.HandleAddComment))
+	c.App.Get("/ws/comment/:postid", websocket.New(c.CommentController.Handle))
+}
 func (c *RouteConfig) SetupAuthRoute() {
 }

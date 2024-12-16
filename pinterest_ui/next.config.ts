@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
   // },
   env: {
     HOST_API_PUBLIC: process.env.HOST_API_PUBLIC,
-    // HOST_WS_PUBLIC: process.env.HOST_WS_PUBLIC,
+    HOST_WS_PUBLIC: process.env.HOST_WS_PUBLIC,
     // LOCAL: process.env.LOCAL,
     // LOCAL2: process.env.LOCAL2,
     // API_HOST: process.env.API_HOST,

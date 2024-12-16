@@ -27,7 +27,7 @@ func NewCommentUsecase(db *gorm.DB, validate *config.Validator, commentRepositor
 	}
 }
 
-func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId string, request *CommentRequest) (*CommentResponse, *fiber.Error) {
+func (c *CommentUsecase) AddComment(ctx context.Context, token string, request *CommentRequest) (*CommentResponse, *fiber.Error) {
 	tx := c.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -44,7 +44,7 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 		ID:      uuid.New().String(),
 		Comment: request.Comment,
 		UserId:  me.ID,
-		PostId:  postId,
+		PostId:  request.PostId,
 	}
 
 	if err := c.CommentRepository.Create(tx, comment); err != nil {
@@ -56,40 +56,22 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	}
 
 	return &CommentResponse{
-		Id:      comment.ID,
-		Comment: comment.Comment,
-		// PostId:    comment.PostId,
-		CreatedAt: comment.CreatedAt,
+		Id:         comment.ID,
+		Comment:    comment.Comment,
+		Username:   me.Username,
+		ProfileImg: *me.ProfileImg,
+		CreatedAt:  comment.CreatedAt,
 	}, nil
 }
 
-func (c *CommentUsecase) FindListByPost(ctx context.Context, postId string) *[]CommentResponse {
+func (c *CommentUsecase) ListCommentByPost(ctx context.Context, postId string) *[]ListComment {
 	tx := c.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	listComment := []Comment{}
-	// if err := c.CommentRepository.FindByPostId(tx, new(Comment), &listComment, postId); err != nil {
-	// 	return &[]CommentResponse{}
-	// }
+	comment := []ListComment{}
+	c.CommentRepository.FindByPostId(tx, &comment, postId)
 
-	commentResponses := []CommentResponse{}
-	for _, comments := range listComment {
+	tx.Commit()
 
-		commentResponse := CommentResponse{
-			Id:      comments.ID,
-			Comment: comments.Comment,
-			User: &CommentResponseUser{
-				Username:   "",
-				ProfileImg: "",
-			},
-			CreatedAt: comments.CreatedAt,
-		}
-		commentResponses = append(commentResponses, commentResponse)
-	}
-
-	if err := tx.Commit().Error; err != nil {
-		return &[]CommentResponse{}
-	}
-
-	return &commentResponses
+	return &comment
 }

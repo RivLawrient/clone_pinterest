@@ -1,8 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Comment, Post } from "../../(postContext)/Post";
 import ProfileImage from "../../(Component)/profileImage";
 import Link from "next/link";
 import { useUser } from "@/app/(userContext)/User";
+import { hadUnsupportedValue } from "next/dist/build/analysis/get-page-static-info";
+
+export const useWebSocket = (url: any) => {
+  const socketRef = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    const socket = new WebSocket(url);
+
+    socket.onopen = () => {
+      console.log(`Connected to WebSocket: ${url}`);
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    socket.onclose = () => {
+      console.log(`WebSocket connection closed: ${url}`);
+    };
+
+    socket.onmessage = (event) => {
+      console.log("Message received: ", event.data);
+    };
+
+    socketRef.current = socket;
+
+    return () => {
+      socket.close();
+    };
+  }, [url]);
+
+  const sendMessage = (message: any) => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(message);
+    } else {
+      console.error("WebSocket is not open");
+    }
+  };
+
+  return { socket: socketRef.current, sendMessage };
+};
 
 export default function CommentDetail({
   post,
@@ -14,6 +55,33 @@ export default function CommentDetail({
   const { user } = useUser();
   const [hiddenComment, setHiddenComment] = useState<boolean>(true);
   const [comment, setComment] = useState<string>("");
+  const { sendMessage } = useWebSocket("ws://127.0.0.1:4000/ws/comment_post/1");
+
+  // socket.onopen = function (e) {
+  //   alert("[open] Connection established");
+  //   alert("Sending to server");
+  //   socket.send(
+  //     JSON.stringify({
+  //       post_id: "like_post",
+  //       comment: "aduha",
+  //     }),
+  //   );
+  // };
+
+  // socket.onerror = function (error) {
+  //   alert(`[error]`);
+  // };
+  // socket.onopen = () => {
+  //   console.log("Connected to WebSocket");
+
+  //   // Kirim data JSON dengan tipe aksi yang berbeda
+  //   socket.send(
+  //     JSON.stringify({
+  //       post_id: "like_post",
+  //       comment: "aduha",
+  //     }),
+  //   );
+  // };
 
   const getRelativeTime = (timestamp: string): string => {
     const now = new Date();
@@ -190,10 +258,14 @@ export default function CommentDetail({
             className={`grow leading-none outline-none`}
           />
           <div
-            onClick={() => {
-              comment && handleComment();
-            }}
-            // onClick={() => sendMessage("like_post")}
+            onClick={() =>
+              sendMessage(
+                JSON.stringify({
+                  post_id: post.id,
+                  comment: "aduha",
+                }),
+              )
+            }
             className={`z-[3] flex size-[32px] cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
           >
             <svg

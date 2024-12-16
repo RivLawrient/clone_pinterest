@@ -20,8 +20,7 @@ func (c *CommentRepository) FindByPostId(db *gorm.DB, listComment *[]ListComment
 	users.username,
 	users.profile_img,
 	comment.created_at
-	`).
-		Joins("JOIN users ON users.id = comment.user_id").
+	`).Joins("JOIN users ON users.id = comment.user_id").
 		Where("comment.post_id = ? ", postId).
 		Scan(listComment)
 }

@@ -22,7 +22,6 @@ export default function PagePost() {
   const [loadingPost, setLoadingPost] = useState<boolean>(true);
 
   const refImg = useRef<HTMLImageElement>(null);
-  const refWidth = useRef<HTMLImageElement>(null);
   const [size, setSize] = useState<Sizes>({
     height: 0,
     width: 0,

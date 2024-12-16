@@ -9,7 +9,9 @@ export default function Bottom() {
   const path = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-10 flex flex-row justify-around bg-white py-3">
+    <div
+      className={`${path.startsWith("/pin/") ? "hidden" : "fixed"} bottom-0 left-0 right-0 z-10 flex flex-row justify-around bg-white py-3`}
+    >
       <Link href={"/"} className={`${path != "/" && "opacity-50"}`}>
         <svg
           aria-label="Home"

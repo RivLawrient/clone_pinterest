@@ -86,8 +86,8 @@ func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	cookie.Value = response.Token
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
-	cookie.Domain = domain
-	cookie.Secure = true
+	cookie.Domain = strings.Split(domain, ":")[0]
+	// cookie.Secure = true
 	ctx.Cookie(cookie)
 
 	return ctx.JSON(model.WebResponse[*UserResponse]{
@@ -118,7 +118,7 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
 	cookie.Domain = strings.Split(domain, ":")[0]
-	cookie.Secure = true
+	// cookie.Secure = true
 	ctx.Cookie(cookie)
 
 	return ctx.Redirect(fmt.Sprintf("%s://%s", protocol, domain))
