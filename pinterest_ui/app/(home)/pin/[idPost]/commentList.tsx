@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useUser } from "@/app/(userContext)/User";
 import { hadUnsupportedValue } from "next/dist/build/analysis/get-page-static-info";
 
-export const useWebSocket = (url: any) => {
+export const useWebSocket = (
+  url: any,
+  post: Post,
+  setPost: React.Dispatch<React.SetStateAction<Post | undefined>>,
+) => {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -15,16 +19,29 @@ export const useWebSocket = (url: any) => {
       console.log(`Connected to WebSocket: ${url}`);
     };
 
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+    // socket.onerror = (error) => {
+    //   console.error("WebSocket error:", error);
+    // };
 
-    socket.onclose = () => {
-      console.log(`WebSocket connection closed: ${url}`);
-    };
+    // socket.onclose = () => {
+    //   console.log(`WebSocket connection closed: ${url}`);
+    // };
 
     socket.onmessage = (event) => {
-      console.log("Message received: ", event.data);
+      const data = JSON.parse(event.data);
+      setPost((prevPost) => {
+        if (!prevPost) return prevPost; // Jika prevPost undefined, kembalikan prevPost
+
+        return {
+          ...post,
+          comment: data, // Menambahkan komentar baru ke array comment
+        };
+      });
+      // event.data.jso.map((val: any) => {
+      //   console.log(val);
+      // });
+      // console.log(event.data);
+      console.log(data);
     };
 
     socketRef.current = socket;
@@ -55,49 +72,43 @@ export default function CommentDetail({
   const { user } = useUser();
   const [hiddenComment, setHiddenComment] = useState<boolean>(true);
   const [comment, setComment] = useState<string>("");
-  const { sendMessage } = useWebSocket("ws://127.0.0.1:4000/ws/comment_post/1");
+  const { sendMessage } = useWebSocket(
+    `${process.env.HOST_WS_PUBLIC}/ws/comment/${post.id}`,
+    post,
+    setPost,
+  );
 
-  // socket.onopen = function (e) {
-  //   alert("[open] Connection established");
-  //   alert("Sending to server");
-  //   socket.send(
-  //     JSON.stringify({
-  //       post_id: "like_post",
-  //       comment: "aduha",
-  //     }),
-  //   );
+  // const getRelativeTime = (timestamp: string): string => {
+  //   const now = new Date();
+  //   const targetDate = new Date(timestamp);
+  //   const diff = now.getTime() - targetDate.getTime(); // Selisih waktu dalam milidetik
+
+  //   const minutes = Math.floor(diff / (1000 * 60));
+  //   const hours = Math.floor(diff / (1000 * 60 * 60));
+  //   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  //   const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+
+  //   if (minutes < 60) return `${minutes} menit lalu`;
+  //   if (hours < 24) return `${hours} jam lalu`;
+  //   if (days < 30) return `${days} hari lalu`;
+  //   return `${months} bulan lalu`;
   // };
+  function getRelativeTime(isoDateString: string): string {
+    const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
+    const now = new Date(nowUTC); // Objek Date berdasarkan UTC
+    const date = new Date(isoDateString); // Waktu respons server (sudah UTC)
 
-  // socket.onerror = function (error) {
-  //   alert(`[error]`);
-  // };
-  // socket.onopen = () => {
-  //   console.log("Connected to WebSocket");
+    const diffMs = Math.abs(now.getTime() - date.getTime()); // Selisih waktu absolut
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
-  //   // Kirim data JSON dengan tipe aksi yang berbeda
-  //   socket.send(
-  //     JSON.stringify({
-  //       post_id: "like_post",
-  //       comment: "aduha",
-  //     }),
-  //   );
-  // };
-
-  const getRelativeTime = (timestamp: string): string => {
-    const now = new Date();
-    const targetDate = new Date(timestamp);
-    const diff = now.getTime() - targetDate.getTime(); // Selisih waktu dalam milidetik
-
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
-
+    if (seconds < 60) return `${seconds} detik lalu`;
     if (minutes < 60) return `${minutes} menit lalu`;
     if (hours < 24) return `${hours} jam lalu`;
-    if (days < 30) return `${days} hari lalu`;
-    return `${months} bulan lalu`;
-  };
+    return `${days} hari lalu`;
+  }
 
   async function handleComment() {
     try {
@@ -258,14 +269,14 @@ export default function CommentDetail({
             className={`grow leading-none outline-none`}
           />
           <div
-            onClick={() =>
+            onClick={() => {
               sendMessage(
                 JSON.stringify({
-                  post_id: post.id,
-                  comment: "aduha",
+                  comment: comment,
                 }),
-              )
-            }
+              );
+              setComment("");
+            }}
             className={`z-[3] flex size-[32px] cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
           >
             <svg

@@ -5,7 +5,6 @@ import (
 )
 
 type CommentRequest struct {
-	PostId  string `json:"post_id" validate:"required"`
 	Comment string `json:"comment" validate:"required,max=100"`
 }
 

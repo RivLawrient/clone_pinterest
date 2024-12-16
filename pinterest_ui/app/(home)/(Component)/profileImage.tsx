@@ -9,7 +9,7 @@ export default function ProfileImage({
 }) {
   const radius = width / 2; // Menentukan jari-jari lingkaran berdasarkan lebar
   const fontSize = width / 3; // Menyesuaikan ukuran font dengan lebar gambar
-  const text = user?.username.toLocaleUpperCase().charAt(0); // Ambil huruf pertama dari 'alp'
+  const text = user?.username?.toLocaleUpperCase().charAt(0); // Ambil huruf pertama dari 'alp'
   return (
     <>
       {user?.profile_img ? (

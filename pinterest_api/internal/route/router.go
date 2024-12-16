@@ -94,7 +94,7 @@ func (c *RouteConfig) SetupWebSocketRoutes() {
 	})
 	// c.App.Use("/ws/comment_post", comment.WebSocketMiddleware)
 	// Rute WebSocket untuk setiap kebutuhan
-	c.App.Get("/ws/comment_post/:postid", websocket.New(c.CommentController.HandleAddComment))
+	// c.App.Get("/ws/comment_post/:postid", websocket.New(c.CommentController.HandleAddComment))
 	c.App.Get("/ws/comment/:postid", websocket.New(c.CommentController.Handle))
 }
 func (c *RouteConfig) SetupAuthRoute() {

@@ -27,7 +27,7 @@ func NewCommentUsecase(db *gorm.DB, validate *config.Validator, commentRepositor
 	}
 }
 
-func (c *CommentUsecase) AddComment(ctx context.Context, token string, request *CommentRequest) (*CommentResponse, *fiber.Error) {
+func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId string, request *CommentRequest) (*CommentResponse, *fiber.Error) {
 	tx := c.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -44,7 +44,7 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, request *
 		ID:      uuid.New().String(),
 		Comment: request.Comment,
 		UserId:  me.ID,
-		PostId:  request.PostId,
+		PostId:  postId,
 	}
 
 	if err := c.CommentRepository.Create(tx, comment); err != nil {

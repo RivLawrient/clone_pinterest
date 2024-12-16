@@ -3,7 +3,6 @@ package comment
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"sync"
 
@@ -35,96 +34,124 @@ func (c *CommentController) Handle(w *websocket.Conn) {
 	c.Clients.Store(w, postId)
 
 	for {
+		req := new(CommentRequest)
 		typ, message, err := w.ReadMessage()
 		if err != nil {
 			log.Println("Read error:", err)
 			break
 		}
 
-		log.Printf("Received: %s", message)
-		if err := w.WriteMessage(typ, message); err != nil {
-			log.Println("error:", err)
-		}
-	}
-
-}
-
-func (c *CommentController) HandleAddComment(w *websocket.Conn) {
-	log.Println("WebSocket connected for comment_post")
-
-	// c.Clients.Store(w, true)
-
-	// Print all active connections
-	// c.Clients.Range(func(key, value interface{}) bool {
-	// 	clientConn, ok := key.(*websocket.Conn)
-	// 	if ok {
-	// 		log.Printf("Active connection: %v\n", clientConn.RemoteAddr())
-	// 	}
-	// 	return true
-	// })
-	// c.Clients.Store()
-
-	defer func() {
-		log.Println("WebSocket disconnected")
-		c.Clients.Delete(w) // Hapus koneksi saat terputus
-		w.Close()
-	}()
-
-	// Tambahkan koneksi ke map
-	c.Clients.Store(w, true)
-
-	for {
-		_, message, err := w.ReadMessage()
-		if err != nil {
-			log.Println("Read error:", err)
-			break
-		}
-
-		log.Printf("Like Post Received: %s\n", message)
-
-		auth := w.Cookies("auth-token")
-		postId := w.Params("postid")
-		fmt.Println(postId)
-		req := new(CommentRequest)
-
 		if err := json.Unmarshal(message, &req); err != nil {
 			log.Println("Invalid message format:", err)
 			continue
 		}
-		fmt.Println(auth)
-		fmt.Println("aku")
+
 		ctx := context.Background()
-		_, fiberErr := c.CommentUsecase.AddComment(ctx, auth, req)
+		_, fiberErr := c.CommentUsecase.AddComment(ctx, auth, postId, req)
 		if fiberErr != nil {
 			log.Println("Error adding comment:", fiberErr.Message)
 			continue
 		}
 
-		comments := c.CommentUsecase.ListCommentByPost(ctx, req.PostId)
-		broadcastData, err := json.Marshal(comments)
+		comments := c.CommentUsecase.ListCommentByPost(ctx, postId)
+		response, err := json.Marshal(comments)
 		if err != nil {
 			log.Println("Error marshalling broadcast data:", err)
 			continue
 		}
-		// Broadcast ke semua klien
-		// fmt.Println(string(resp))
-		c.Broadcast(broadcastData)
 
-		// broadcastMessage := "Data diupdate"
+		c.Clients.Range(func(key, value any) bool {
+			client := key.(*websocket.Conn)
+			val := value.(string)
 
-		// Broadcast pesan "data diupdate" ke semua klien
-		// c.Clients.Range(func(key, value interface{}) bool {
-		// 	clientConn, ok := key.(*websocket.Conn)
-		// 	if ok {
-		// 		err := clientConn.WriteMessage(websocket.TextMessage, []byte(broadcastMessage))
-		// 		if err != nil {
-		// 			log.Println("Error sending message to client:", err)
-		// 		}
-		// 	}
-		// 	return true
-		// })
+			if val == postId {
+				if err := client.WriteMessage(typ, response); err != nil {
+					log.Println("error:", err)
+				}
+
+			}
+			return true
+		})
 	}
+
 }
+
+// func (c *CommentController) HandleAddComment(w *websocket.Conn) {
+// 	log.Println("WebSocket connected for comment_post")
+
+// 	// c.Clients.Store(w, true)
+
+// 	// Print all active connections
+// 	// c.Clients.Range(func(key, value interface{}) bool {
+// 	// 	clientConn, ok := key.(*websocket.Conn)
+// 	// 	if ok {
+// 	// 		log.Printf("Active connection: %v\n", clientConn.RemoteAddr())
+// 	// 	}
+// 	// 	return true
+// 	// })
+// 	// c.Clients.Store()
+
+// 	defer func() {
+// 		log.Println("WebSocket disconnected")
+// 		c.Clients.Delete(w) // Hapus koneksi saat terputus
+// 		w.Close()
+// 	}()
+
+// 	// Tambahkan koneksi ke map
+// 	c.Clients.Store(w, true)
+
+// 	for {
+// 		_, message, err := w.ReadMessage()
+// 		if err != nil {
+// 			log.Println("Read error:", err)
+// 			break
+// 		}
+
+// 		log.Printf("Like Post Received: %s\n", message)
+
+// 		auth := w.Cookies("auth-token")
+// 		postId := w.Params("postid")
+// 		fmt.Println(postId)
+// 		req := new(CommentRequest)
+
+// 		if err := json.Unmarshal(message, &req); err != nil {
+// 			log.Println("Invalid message format:", err)
+// 			continue
+// 		}
+// 		fmt.Println(auth)
+// 		fmt.Println("aku")
+// 		ctx := context.Background()
+// 		_, fiberErr := c.CommentUsecase.AddComment(ctx, auth, req)
+// 		if fiberErr != nil {
+// 			log.Println("Error adding comment:", fiberErr.Message)
+// 			continue
+// 		}
+
+// 		comments := c.CommentUsecase.ListCommentByPost(ctx, req.PostId)
+// 		broadcastData, err := json.Marshal(comments)
+// 		if err != nil {
+// 			log.Println("Error marshalling broadcast data:", err)
+// 			continue
+// 		}
+// 		// Broadcast ke semua klien
+// 		// fmt.Println(string(resp))
+// 		c.Broadcast(broadcastData)
+
+// 		// broadcastMessage := "Data diupdate"
+
+// 		// Broadcast pesan "data diupdate" ke semua klien
+// 		// c.Clients.Range(func(key, value interface{}) bool {
+// 		// 	clientConn, ok := key.(*websocket.Conn)
+// 		// 	if ok {
+// 		// 		err := clientConn.WriteMessage(websocket.TextMessage, []byte(broadcastMessage))
+// 		// 		if err != nil {
+// 		// 			log.Println("Error sending message to client:", err)
+// 		// 		}
+// 		// 	}
+// 		// 	return true
+// 		// })
+// 	}
+// }
 
 // func (c *CommentController) Broadcast(message []byte) {
 // 	c.Clients.Range(func(key, value interface{}) bool {
