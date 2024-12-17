@@ -145,7 +145,15 @@ func (c *UserController) HandleGetUser(ctx *fiber.Ctx) error {
 }
 
 func (c *UserController) Logout(ctx *fiber.Ctx) error {
-	ctx.ClearCookie("auth-token")
+
+	domain := c.Viper.GetString("frontend.domain")
+	cookie := new(fiber.Cookie)
+	cookie.Name = "auth-token"
+	cookie.Expires = time.Now().Add(-1 * time.Second)
+	cookie.HTTPOnly = true
+	cookie.Domain = strings.Split(domain, ":")[0]
+	// cookie.Secure = true
+	ctx.Cookie(cookie)
 
 	return nil
 }
