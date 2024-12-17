@@ -63,7 +63,7 @@ func (p *PictureController) UploadPicture(ctx *fiber.Ctx) error {
 	// Kembalikan respon sukses
 	return ctx.JSON(fiber.Map{
 		"message": "Image uploaded successfully",
-		"link":    fmt.Sprintf("%s://%s/img/%s/", protocol, domain, file.Filename),
+		"link":    fmt.Sprintf("%s://%s/img/%s", protocol, domain, file.Filename),
 		// "link":    "http://127.0.0.1:4000/img/" + file.Filename,
 	})
 }

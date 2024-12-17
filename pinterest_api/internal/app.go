@@ -47,7 +47,7 @@ func Bootstrap(config *BootstrapConfig) {
 
 	postRepository := post.NewPostRepository()
 	postUsecase := post.NewPostUsecase(config.DB, config.Validate, postRepository, userUsecase, userRepository, config.Config, saveUsecase, likePosttUsecase, commentUsecase)
-	postController := post.NewPostController(postUsecase, followUsecase, userUsecase)
+	postController := post.NewPostController(postUsecase, followUsecase, userUsecase, config.Config)
 
 	PictureController := picture.NewPictureController(config.Config)
 	personController := person.NewPersonController(config.DB, config.Validate)

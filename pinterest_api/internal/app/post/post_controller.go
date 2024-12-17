@@ -1,25 +1,29 @@
 package post
 
 import (
+	"fmt"
 	"pinterest_api/internal/app/follow"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/model"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/viper"
 )
 
 type PostController struct {
 	PostUsecase   *PostUsecase
 	FollowUsecase *follow.FollowUsecase
 	UserUsecase   *user.UserUsecase
+	Viper         *viper.Viper
 }
 
-func NewPostController(postUsecase *PostUsecase, followUsecase *follow.FollowUsecase, userUsecase *user.UserUsecase) *PostController {
+func NewPostController(postUsecase *PostUsecase, followUsecase *follow.FollowUsecase, userUsecase *user.UserUsecase, viper *viper.Viper) *PostController {
 	return &PostController{
 		FollowUsecase: followUsecase,
 		PostUsecase:   postUsecase,
 		UserUsecase:   userUsecase,
+		Viper:         viper,
 	}
 }
 
@@ -36,7 +40,10 @@ func (c *PostController) HandleUpload(ctx *fiber.Ctx) error {
 		})
 	}
 
-	if !strings.HasPrefix(request.Image, ctx.Protocol()+"://"+ctx.Hostname()+"/img/") {
+	protocol := c.Viper.GetString("backend.protocol")
+	domain := c.Viper.GetString("backend.domain")
+
+	if !strings.HasPrefix(request.Image, fmt.Sprintf("%s://%s/img/", protocol, domain)) {
 		error := fiber.ErrBadRequest
 		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
 			StatusCode: error.Code,
