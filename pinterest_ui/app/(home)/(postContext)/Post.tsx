@@ -45,6 +45,7 @@ type PostContextType = {
   setPost: React.Dispatch<React.SetStateAction<ListPost[]>>;
   postLoading: boolean;
   moreLoading: boolean;
+  isEmpty: boolean;
   setPostLoading: (postLoading: boolean) => void;
   loadMorePosts: () => Promise<void>;
 };
@@ -55,6 +56,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [post, setPost] = useState<ListPost[]>([]);
   const [postLoading, setPostLoading] = useState<boolean>(true);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
 
   const loadMorePosts = async () => {
     if (post.length == 0) {
@@ -66,9 +68,14 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
         .then(async (response) => {
           const data = await response.json();
           if (response.ok) {
-            setPost(data.data);
-            console.log(data.data);
-            setPostLoading(false);
+            if (data.data.length == 0) {
+              setIsEmpty(true);
+              setPostLoading(false);
+            } else {
+              setPost(data.data);
+              console.log(data.data);
+              setPostLoading(false);
+            }
           }
         })
         .finally(() => setPostLoading(false));
@@ -105,6 +112,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
         setPost,
         postLoading,
         moreLoading,
+        isEmpty,
         setPostLoading,
         loadMorePosts,
       }}

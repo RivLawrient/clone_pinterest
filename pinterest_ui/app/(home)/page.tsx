@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { usePost } from "./(postContext)/Post";
 import Masonry from "./(Component)/(Masonry)/masonry";
 export default function Home() {
-  const { post, setPost, postLoading, moreLoading, loadMorePosts } = usePost();
+  const { post, setPost, postLoading, moreLoading, loadMorePosts, isEmpty } =
+    usePost();
 
   useEffect(() => {
     if (post.length == 0) {
@@ -14,7 +15,7 @@ export default function Home() {
         window.innerHeight + document.documentElement.scrollTop >=
         document.documentElement.offsetHeight - 1
       ) {
-        if (!moreLoading) {
+        if (!moreLoading && !isEmpty) {
           loadMorePosts();
         }
       }
@@ -27,9 +28,10 @@ export default function Home() {
 
   return (
     <>
+      {}
       {postLoading ? (
         <div className="flex w-screen justify-center md:pt-20">LOADING....</div>
-      ) : Array.isArray(post) && post.length == 0 ? (
+      ) : isEmpty ? (
         <div className="mt-20 flex w-screen justify-center">
           Post is not found
         </div>
