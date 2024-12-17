@@ -128,7 +128,9 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 
 var (
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://127.0.0.1:4000/auth/google/callback",
+		// RedirectURL:  fmt.Sprintf("%s://%s/auth/google/callback"),
+		// RedirectURL:  "http://127.0.0.1:4000/auth/google/callback",
+		RedirectURL:  "",
 		ClientID:     "",
 		ClientSecret: "",
 		Scopes: []string{"https://www.googleapis.com/auth/userinfo.email",
@@ -138,6 +140,11 @@ var (
 )
 
 func (u *UserUsecase) GoogleRedirect() string {
+
+	protocol := u.Viper.GetString("backend.protocol")
+	domain := u.Viper.GetString("backend.domain")
+
+	googleOauthConfig.RedirectURL = fmt.Sprintf("%s://%s/auth/google/callback", protocol, domain)
 	googleOauthConfig.ClientID = u.Viper.GetString("google.clientId")
 	googleOauthConfig.ClientSecret = u.Viper.GetString("google.clientSecret")
 	return googleOauthConfig.AuthCodeURL("state")

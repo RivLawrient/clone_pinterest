@@ -1,18 +1,23 @@
 package picture
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/spf13/viper"
 )
 
 type PictureController struct {
+	Viper *viper.Viper
 }
 
-func NewPictureController() *PictureController {
-	return &PictureController{}
+func NewPictureController(viper *viper.Viper) *PictureController {
+	return &PictureController{
+		Viper: viper,
+	}
 }
 
 func (p *PictureController) GetPicture(ctx *fiber.Ctx) error {
@@ -53,10 +58,12 @@ func (p *PictureController) UploadPicture(ctx *fiber.Ctx) error {
 			"error": "Failed to save image",
 		})
 	}
-
+	protocol := p.Viper.GetString("backend.protocol")
+	domain := p.Viper.GetString("backend.domain")
 	// Kembalikan respon sukses
 	return ctx.JSON(fiber.Map{
 		"message": "Image uploaded successfully",
-		"link":    "http://127.0.0.1:4000/img/" + file.Filename,
+		"link":    fmt.Sprintf("%s://%s/img/%s/", protocol, domain, file.Filename),
+		// "link":    "http://127.0.0.1:4000/img/" + file.Filename,
 	})
 }
