@@ -10,6 +10,8 @@ import { LikeBtn } from "./likeBtn";
 import CommentDetail from "./commentList";
 import { ShareBtn } from "../../(Component)/shareBtn";
 import { MoreBtn } from "../../(Component)/moreBtn";
+import Link from "next/link";
+import ProfileImage from "../../(Component)/profileImage";
 
 export interface Sizes {
   height: number;
@@ -142,7 +144,27 @@ export default function PagePost() {
   }
 
   function Mobile() {
-    return <div className={`placeholder: block md:hidden`}></div>;
+    return (
+      <div className={`placeholder: block md:hidden`}>
+        <div className={`flex items-center`}>
+          {post?.user && (
+            <Link href={`/${post.user.username}`}>
+              <ProfileImage user={post?.user} width={24} />
+            </Link>
+          )}
+          <div className={`ml-2 flex flex-col`}>
+            <Link href={`/${post?.user.username}`} className={`leading-none`}>
+              {post?.user.username}
+            </Link>
+            <div className={`text-[14px] leading-none`}>
+              {post?.user.follow?.follower_count
+                ? post?.user.follow.follower_count + " follower"
+                : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
