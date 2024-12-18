@@ -49,6 +49,25 @@ func (r *PostRepository) FindListRandom(db *gorm.DB, list *[]ListPost, userId st
 		Scan(&list).Error
 }
 
+func (r *PostRepository) FindListByUser(db *gorm.DB, result *[]ListPost, userPost string, userId string) *gorm.DB {
+	return db.Raw(`
+SELECT
+	post.id AS id,
+	post.image,
+	CASE
+		WHEN save.id IS NOT NULL THEN TRUE
+		ELSE FALSE
+	END AS status_save
+FROM
+	"post"
+	LEFT JOIN save ON post.id = save.post_id
+	AND save.user_id = ?
+WHERE
+	post.user_id = ?;
+	
+	`, userId, userPost).Scan(result)
+
+}
 func (r *PostRepository) FindDetail(db *gorm.DB, post *DetailPostResult, userId string, postId string) *gorm.DB {
 	// userId := "d393ce27-abe7-46dd-b1d5-f6534e55bd9f"
 	// postId := "a07375d6-8794-40b8-94ce-b3dd663ad6e6"

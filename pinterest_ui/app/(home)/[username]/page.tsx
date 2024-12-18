@@ -2,13 +2,13 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Post, User } from "../(postContext)/Post";
+import { ListPost, Post, User } from "../(postContext)/Post";
 import { useUser } from "@/app/(userContext)/User";
 import ProfileImage from "../(Component)/profileImage";
 import Masonry from "../(Component)/(Masonry)/masonry";
 
 export default function UsernamePage() {
-  const [post, setPost] = useState<Post[]>([]);
+  const [post, setPost] = useState<ListPost[]>([]);
   const [save, setSave] = useState<Post[]>([]);
   const [users, setUsers] = useState<User | null>(null);
 
@@ -31,23 +31,24 @@ export default function UsernamePage() {
           setUsers(data.data);
         }
       })
-      .catch(() => console.log("err"));
-    // fetch(`${process.env.HOST_API_PUBLIC}/posts/${path.slice(1)}`, {
-    //   method: "GET",
-    //   credentials: "include",
-    // })
-    //   .then(async (respons) => {
-    //     const data = await respons.json();
-    //     if (respons.ok) {
-    //       setPost(data.data.posted);
-    //       setSave(data.data.saved);
-    //     }
-    //   })
-    //   .finally(() => setIsLoadingPost(false))
-    //   .catch(() => console.log())
-    //   .finally(() => {
-    //     setIsloading(false);
-    //   });
+      .catch(() => console.log("err"))
+      .finally(() => setIsloading(false));
+    fetch(`${process.env.HOST_API_PUBLIC}/posts/${path.slice(1)}`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (respons) => {
+        const data = await respons.json();
+        if (respons.ok) {
+          setPost(data.data.posted);
+          setSave(data.data.saved);
+        }
+      })
+      .finally(() => setIsLoadingPost(false))
+      .catch(() => console.log())
+      .finally(() => {
+        setIsloading(false);
+      });
   }, []);
 
   const FollowHandle = async () => {
@@ -202,7 +203,7 @@ export default function UsernamePage() {
                     Saved
                   </div>
                 </div>
-                {/* {isLoadingPost ? (
+                {isLoadingPost ? (
                   <div>LOADING...</div>
                 ) : tab == "created" ? (
                   <div className="mt-5 flex w-screen justify-center">
@@ -217,14 +218,15 @@ export default function UsernamePage() {
                 ) : (
                   <div className="mt-5 flex w-screen justify-center">
                     {save && save.length > 0 ? (
-                      <Masonry post={save} setPost={setSave} />
+                      // <Masonry post={save} setPost={setSave} />
+                      <></>
                     ) : (
                       <div className="text-[16px]">
                         someone d hasn't saved any Pins yet
                       </div>
                     )}
                   </div>
-                )} */}
+                )}
               </div>
             )}
           </>

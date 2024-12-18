@@ -258,11 +258,6 @@ func (u *UserUsecase) ShowByUsername(ctx context.Context, token string, username
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
 	}
 
-	_, err := u.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, err
-	}
-
 	user := new(User)
 	if err := u.UserRepository.FindByUsername(tx, user, username); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")

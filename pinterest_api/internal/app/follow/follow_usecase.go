@@ -2,7 +2,6 @@ package follow
 
 import (
 	"context"
-	"fmt"
 
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
@@ -47,14 +46,14 @@ func (f *FollowUsecase) FollowUser(ctx context.Context, token string, username s
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	if err := f.FollowRepository.FindFollow(tx, &Follow{}, user.ID, me.ID); err == nil {
+	if err := f.FollowRepository.FindFollow(tx, &Follow{}, me.ID, user.ID); err == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user already follow")
 	}
 
 	follow := new(Follow)
 	follow.ID = uuid.New().String()
-	follow.FollowerId = user.ID // yang difollow
-	follow.FollowingId = me.ID  // yang ngefollow
+	follow.FollowerId = me.ID    // yang ngefollow
+	follow.FollowingId = user.ID // yang difollow
 
 	if err := f.FollowRepository.Create(tx, follow); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "something error")
@@ -112,40 +111,21 @@ func (f *FollowUsecase) ShowFollowByUsername(ctx context.Context, token string, 
 		return nil, err
 	}
 
-	fmt.Println(username)
 	user := new(user.User)
 	if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
 
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	followResponse := &ShowFollowResponse{
-		Username: &username,
-	}
-
-	followers := make([]Follow, 0)
-	if err := f.FollowRepository.FindFollower(tx, new(Follow), &followers, user.ID); err != nil {
-		followResponse.FollowerCount = 0
-	} else {
-		followResponse.FollowerCount = len(followers)
-	}
-
-	following := make([]Follow, 0)
-	if err := f.FollowRepository.FindFollowing(tx, new(Follow), &following, user.ID); err != nil {
-		followResponse.FollowingCount = 0
-	} else {
-		followResponse.FollowingCount = len(following)
-	}
-
-	if err := f.FollowRepository.FindFollow(tx, new(Follow), user.ID, me.ID); err != nil {
-		followResponse.FollowStatus = false
-	} else {
-		followResponse.FollowStatus = true
+	followResponse := ShowFollowResponse{}
+	query := f.FollowRepository.FindFollowAndStatus(tx, &followResponse, user.ID, me.ID)
+	if query.RowsAffected == 0 {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "seomething error when getting data")
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return followResponse, nil
+	return &followResponse, nil
 }

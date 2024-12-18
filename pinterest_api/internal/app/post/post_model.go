@@ -66,10 +66,10 @@ type DetailPostUser struct {
 // 	CreatedAt time.Time `json:"created_at"`
 // }
 
-// type ListPostandSaved struct {
-// 	Posted []PostResponse `json:"posted"`
-// 	Saved  []PostResponse `json:"saved"`
-// }
+type ListPostandSaved struct {
+	Posted []ListPost     `json:"posted"`
+	Saved  []PostResponse `json:"saved"`
+}
 
 // type ShowProfileResponse struct {
 // 	Username   string          `json:"username"`

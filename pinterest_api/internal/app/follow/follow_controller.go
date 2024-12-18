@@ -85,12 +85,7 @@ func (c *FollowController) HandleShowFollowByUsername(ctx *fiber.Ctx) error {
 			FirstName:  users.FirstName,
 			LastName:   users.LastName,
 			ProfileImg: users.ProfileImg,
-			Follow: ShowFollowResponse{
-				Username:       &username,
-				FollowingCount: response.FollowingCount,
-				FollowerCount:  response.FollowerCount,
-				FollowStatus:   response.FollowStatus,
-			},
+			Follow:     response,
 		},
 	})
 }

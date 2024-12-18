@@ -142,33 +142,32 @@ func (c *PostController) HandleDelete(ctx *fiber.Ctx) error {
 	})
 }
 func (c *PostController) HandleListByUsername(ctx *fiber.Ctx) error {
-	// auth := ctx.Cookies("auth-token")
-	// username := ctx.Params("username")
+	auth := ctx.Cookies("auth-token")
+	username := ctx.Params("username")
 
-	// post, err := c.PostUsecase.ShowListPostByUsername(ctx.UserContext(), username, auth)
-	// if err != nil {
-	// 	return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-	// 		StatusCode: err.Code,
-	// 		Data:       nil,
-	// 		Errors:     err.Message,
-	// 	})
-	// }
+	post, err := c.PostUsecase.ShowListPostByUsername(ctx.UserContext(), username, auth)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
 
-	// saved, err := c.PostUsecase.ShowListSavedByUsername(ctx.UserContext(), username, auth)
-	// if err != nil {
-	// 	return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-	// 		StatusCode: err.Code,
-	// 		Data:       nil,
-	// 		Errors:     err.Message,
-	// 	})
-	// }
+	saved, err := c.PostUsecase.ShowListSavedByUsername(ctx.UserContext(), username, auth)
+	if err != nil {
+		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
+			StatusCode: err.Code,
+			Data:       nil,
+			Errors:     err.Message,
+		})
+	}
 
-	// return ctx.JSON(model.WebResponse[ListPostandSaved]{
-	// 	StatusCode: ctx.Response().StatusCode(),
-	// 	Data: ListPostandSaved{
-	// 		Posted: *post,
-	// 		Saved:  *saved,
-	// 	},
-	// })
-	return fiber.ErrBadRequest
+	return ctx.JSON(model.WebResponse[ListPostandSaved]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data: ListPostandSaved{
+			Posted: *post,
+			Saved:  *saved,
+		},
+	})
 }

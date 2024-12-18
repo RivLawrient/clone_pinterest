@@ -170,23 +170,23 @@ func (p *PostUsecase) Delete(ctx context.Context, token string, postId string) (
 	}, nil
 }
 
-func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
-	// tx := p.DB.WithContext(ctx).Begin()
-	// defer tx.Rollback()
+func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username string, token string) (*[]ListPost, *fiber.Error) {
+	tx := p.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
 
-	// _, err := p.UserUsecase.VerifyToken(ctx, token)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	me, err := p.UserUsecase.VerifyToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
 
 	// if err := p.Validate.Validate.Var(username, "required"); err != nil {
 	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
 	// }
 
-	// user := new(user.User)
-	// if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
-	// }
+	user := new(user.User)
+	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	}
 
 	// post := []Post{}
 	// if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
@@ -210,13 +210,18 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 	// 	}
 	// 	postResponses = append(postResponses, postResponse)
 	// }
+	listPost := []ListPost{}
+	query := p.PostRepository.FindListByUser(tx, &listPost, user.ID, me.ID)
+	if query.RowsAffected == 0 {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something error when getting data")
+	}
 
-	// if err := tx.Commit().Error; err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-	// }
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
 
-	// return &postResponses, nil
-	return nil, nil
+	return &listPost, nil
+	// return nil, nil
 }
 
 func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username string, token string) (*[]PostResponse, *fiber.Error) {
