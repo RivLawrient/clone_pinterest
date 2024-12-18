@@ -34,7 +34,7 @@ export default function MasonryItem({
         </div>
 
         <div
-          className={`absolute bottom-0 right-0 z-[2] m-3 hidden flex-row gap-2 group-hover:flex`}
+          className={`absolute bottom-0 right-0 z-[2] m-3 hidden flex-row gap-2 md:group-hover:flex`}
         >
           <ShareBtn post={eachPost as Post} size={32} />
           <MoreBtn post={eachPost as Post} size={32} isMe={false} />
