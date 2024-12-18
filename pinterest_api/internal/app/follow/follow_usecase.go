@@ -84,7 +84,7 @@ func (f *FollowUsecase) UnFollowUser(ctx context.Context, token string, username
 	}
 
 	follow := new(Follow)
-	if err := f.FollowRepository.FindFollow(tx, follow, user.ID, me.ID); err != nil {
+	if err := f.FollowRepository.FindFollow(tx, follow, me.ID, user.ID); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user not following")
 	}
 
