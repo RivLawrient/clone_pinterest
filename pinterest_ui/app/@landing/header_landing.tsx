@@ -59,7 +59,12 @@ export default function HeaderLanding() {
         </div>
       </div>
       <Modal open={show} setOpen={setShow}>
-        <Form isSignin={isSignin} setIsSignin={setIsSignin} setOpen={setShow} />
+        <Form
+          isSignin={isSignin}
+          setIsSignin={setIsSignin}
+          setOpen={setShow}
+          isPopUp={true}
+        />
       </Modal>
     </>
   );

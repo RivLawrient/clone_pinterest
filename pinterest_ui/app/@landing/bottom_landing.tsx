@@ -105,6 +105,7 @@ export default function BottomLanding() {
               isSignin={isSignin}
               setIsSignin={setIsSignin}
               setOpen={setShow}
+              isPopUp={false}
             />
           )}
         </div>

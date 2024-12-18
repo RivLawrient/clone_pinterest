@@ -5,10 +5,12 @@ export default function Form({
   isSignin,
   setIsSignin,
   setOpen,
+  isPopUp,
 }: {
   isSignin: boolean;
   setIsSignin: React.Dispatch<React.SetStateAction<boolean>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isPopUp: boolean;
 }) {
   return (
     // <>
@@ -20,25 +22,26 @@ export default function Form({
     // </>
     <>
       <div className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] bg-white px-[10px] pb-6 pt-[20px]">
-        <div
-          onClick={() => {
-            setOpen(false);
-          }}
-          className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
-        >
-          <svg
-            aria-hidden="true"
-            aria-label=""
-            className="fill-black"
-            height="18"
-            role="img"
-            viewBox="0 0 24 24"
-            width="18"
+        {isPopUp && (
+          <div
+            onClick={() => {
+              setOpen(false);
+            }}
+            className="absolute right-0 top-0 m-4 flex size-[40px] cursor-pointer items-center justify-center rounded-full hover:bg-slate-100"
           >
-            <path d="m15.18 12 7.16-7.16a2.25 2.25 0 1 0-3.18-3.18L12 8.82 4.84 1.66a2.25 2.25 0 1 0-3.18 3.18L8.82 12l-7.16 7.16a2.25 2.25 0 1 0 3.18 3.18L12 15.18l7.16 7.16a2.24 2.24 0 0 0 3.18 0c.88-.88.88-2.3 0-3.18z"></path>
-          </svg>
-        </div>
-
+            <svg
+              aria-hidden="true"
+              aria-label=""
+              className="fill-black"
+              height="18"
+              role="img"
+              viewBox="0 0 24 24"
+              width="18"
+            >
+              <path d="m15.18 12 7.16-7.16a2.25 2.25 0 1 0-3.18-3.18L12 8.82 4.84 1.66a2.25 2.25 0 1 0-3.18 3.18L8.82 12l-7.16 7.16a2.25 2.25 0 1 0 3.18 3.18L12 15.18l7.16 7.16a2.24 2.24 0 0 0 3.18 0c.88-.88.88-2.3 0-3.18z"></path>
+            </svg>
+          </div>
+        )}
         <div className="my-2">
           <svg
             height="40"

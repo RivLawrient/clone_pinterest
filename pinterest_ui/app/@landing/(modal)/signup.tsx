@@ -175,7 +175,7 @@ export default function SignUp({
       <div className="mb-[24px] text-center text-[12px]">
         Already a member?{" "}
         <span
-          onClick={RegisterHandle}
+          onClick={() => setIsSignin(true)}
           className="cursor-pointer font-bold hover:underline"
         >
           Log in
