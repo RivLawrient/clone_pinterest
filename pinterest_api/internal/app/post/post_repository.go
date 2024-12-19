@@ -57,7 +57,7 @@ SELECT
 	CASE
 		WHEN save.id IS NOT NULL THEN TRUE
 		ELSE FALSE
-	END AS status_save
+	END AS save_status
 FROM
 	"post"
 	LEFT JOIN save ON post.id = save.post_id
@@ -66,8 +66,33 @@ WHERE
 	post.user_id = ?;
 	
 	`, userId, userPost).Scan(result)
-
 }
+
+func (r *PostRepository) FindListSavedByUser(db *gorm.DB, result *[]ListPost, userId string, meId string) *gorm.DB {
+	return db.Raw(`
+SELECT
+	post.id,
+	post.image,
+	CASE
+		WHEN me.id IS NOT NULL THEN TRUE
+		ELSE FALSE
+	END AS save_status	
+FROM
+	post
+	LEFT JOIN save AS me ON post.id = me.post_id
+	AND me.user_id = ?
+WHERE
+	post.id IN (
+		SELECT
+			save.post_id
+		FROM	
+			save
+		WHERE
+			save.user_id = ?
+	);
+	`, meId, userId).Scan(result)
+}
+
 func (r *PostRepository) FindDetail(db *gorm.DB, post *DetailPostResult, userId string, postId string) *gorm.DB {
 	// userId := "d393ce27-abe7-46dd-b1d5-f6534e55bd9f"
 	// postId := "a07375d6-8794-40b8-94ce-b3dd663ad6e6"

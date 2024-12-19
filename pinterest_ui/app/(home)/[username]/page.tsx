@@ -9,7 +9,7 @@ import Masonry from "../(Component)/(Masonry)/masonry";
 
 export default function UsernamePage() {
   const [post, setPost] = useState<ListPost[]>([]);
-  const [save, setSave] = useState<Post[]>([]);
+  const [save, setSave] = useState<ListPost[]>([]);
   const [users, setUsers] = useState<User | null>(null);
 
   const [tab, setTab] = useState<"created" | "saved">("created");
@@ -218,8 +218,7 @@ export default function UsernamePage() {
                 ) : (
                   <div className="mt-5 flex w-screen justify-center">
                     {save && save.length > 0 ? (
-                      // <Masonry post={save} setPost={setSave} />
-                      <></>
+                      <Masonry post={save} setPost={setSave} />
                     ) : (
                       <div className="text-[16px]">
                         someone d hasn't saved any Pins yet

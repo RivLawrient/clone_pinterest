@@ -67,8 +67,8 @@ type DetailPostUser struct {
 // }
 
 type ListPostandSaved struct {
-	Posted []ListPost     `json:"posted"`
-	Saved  []PostResponse `json:"saved"`
+	Posted []ListPost `json:"posted"`
+	Saved  []ListPost `json:"saved"`
 }
 
 // type ShowProfileResponse struct {
