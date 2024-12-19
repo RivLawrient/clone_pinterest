@@ -11,7 +11,7 @@ export default function HeaderLanding() {
   const [isSignin, setIsSignin] = useState<boolean>(true);
   return (
     <>
-      <div className="fixed top-0 z-50 flex h-[80px] w-screen items-center justify-between bg-white p-4">
+      <div className="fixed top-0 z-50 hidden h-[80px] w-screen items-center justify-between bg-white p-4 md:flex">
         <div className="flex flex-row items-center text-center align-middle leading-none">
           <div className="flex items-center px-3">
             <svg

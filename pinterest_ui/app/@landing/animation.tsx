@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export function AnimateText({ step }: { step: number }) {
   const texts = [
@@ -19,7 +19,7 @@ export function AnimateText({ step }: { step: number }) {
   ];
 
   return (
-    <div className="z-30 flex w-full justify-center">
+    <div className="z-30 hidden w-full justify-center md:flex">
       {texts.map((value: string, index: number) => (
         <div
           key={index}
@@ -52,7 +52,7 @@ export function AnimateBtn({ step }: { step: number }) {
           .querySelector(".search-section")
           ?.scrollIntoView({ behavior: "smooth" })
       }
-      className={`size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] flex cursor-pointer items-center justify-center rounded-full`}
+      className={`hidden size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] cursor-pointer items-center justify-center rounded-full md:flex`}
     >
       <svg
         aria-label="Scroll down"
@@ -236,27 +236,44 @@ export function AnimateImg({ step }: { step: number }) {
   return (
     <div className="flex w-full justify-center">
       {images.map((values: string[], indexs: number) => (
-        <div key={indexs} className="absolute w-fit columns-7 gap-3">
+        <div
+          key={indexs}
+          className="absolute w-fit columns-7 gap-3 pt-[20px] md:pt-0"
+        >
           {values.map((imageUrl: string, index: number) => (
-            <div
-              key={index}
-              className={`mb-3 min-w-[236px] max-w-[236px] ${
-                index === 5 || index === 25
-                  ? "pt-[140px]"
-                  : index === 10 || index === 20
-                    ? "pt-[220px]"
-                    : index === 15
-                      ? "pt-[360px]"
-                      : ""
-              }`}
-            >
-              <img
-                src={imageUrl}
-                className={`${
-                  current[indexs] >= index ? "z-[1] animate-img" : "opacity-0"
-                } z-[--1] size-full h-[350px] rounded-2xl object-cover opacity-0`}
-              />
-            </div>
+            <React.Fragment key={index}>
+              <div
+                // key={index}
+                className={`mb-3 hidden min-w-[236px] max-w-[236px] md:block ${
+                  index === 5 || index === 25
+                    ? "pt-[140px]"
+                    : index === 10 || index === 20
+                      ? "pt-[220px]"
+                      : index === 15
+                        ? "pt-[360px]"
+                        : ""
+                }`}
+              >
+                <img
+                  src={imageUrl}
+                  className={`${
+                    current[indexs] >= index ? "z-[1] animate-img" : "opacity-0"
+                  } z-[--1] size-full h-[350px] rounded-2xl object-cover opacity-0`}
+                />
+              </div>
+
+              <div
+                // key={index}
+                className={`mb-3 block min-w-[180px] max-w-[180px] md:hidden`}
+              >
+                <img
+                  src={imageUrl}
+                  className={`${
+                    current[indexs] >= index ? "z-[1] animate-img" : "opacity-0"
+                  } z-[--1] size-full h-[230px] rounded-2xl object-cover opacity-0`}
+                />
+              </div>
+            </React.Fragment>
           ))}
         </div>
       ))}
