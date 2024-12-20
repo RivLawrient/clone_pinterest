@@ -12,7 +12,7 @@ import GoogleLogin from "./(modal)/googleLogin";
 export default function BottomLanding() {
   const { show, setShow } = useModal();
   const [pass, setPass] = useState<string>("password");
-  const [isSignin, setIsSignin] = useState<boolean>(true);
+  const [isSignin, setIsSignin] = useState<boolean>(false);
   const link = "/img/";
   const images: string[] = [
     `${link}e3414b2fcf00375a199ba6964be551af.jpg`,
@@ -68,154 +68,172 @@ export default function BottomLanding() {
   ];
   const route = useRouter();
   return (
-    <div className="relative h-screen w-screen snap-center overflow-hidden">
-      <div className="absolute -z-[1] flex w-full justify-center">
-        <div className="grid h-fit w-fit grid-flow-col grid-rows-5 gap-3">
-          {images.map((value: string, index: number) => (
+    <>
+      <Modal open={show} setOpen={setShow}>
+        <Form
+          isSignin={isSignin}
+          setIsSignin={setIsSignin}
+          setOpen={setShow}
+          isPopUp={true}
+        />
+      </Modal>
+      <div className="relative h-screen w-screen snap-center overflow-hidden">
+        <div className="absolute -z-[1] flex w-full justify-center">
+          <div className="grid h-fit w-fit grid-flow-col grid-rows-5 gap-3">
+            {images.map((value: string, index: number) => (
+              <div
+                key={index}
+                className={`min-w-[180px] max-w-[180px] md:min-w-[236px] md:max-w-[236px] ${
+                  (index >= 5 && index <= 9) || (index >= 25 && index <= 29)
+                    ? "mt-[-160px]"
+                    : (index >= 10 && index <= 14) ||
+                        (index >= 20 && index <= 24)
+                      ? "mt-[-240px]"
+                      : index >= 15 && index <= 19
+                        ? "mt-[-400px]"
+                        : ""
+                }`}
+              >
+                <img
+                  src={value}
+                  alt=""
+                  className="size-full h-[230px] rounded-2xl object-cover md:h-[350px]"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <CoverBtm setOpen={setShow} />
+        <div className="relative hidden h-screen w-screen flex-row bg-black bg-opacity-60 md:flex">
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="w-[450px] font-roboto1 text-[70px] font-semibold leading-tight text-white">
+              Sign up to get your ideas
+            </div>
+          </div>
+          <div className="flex w-full flex-col items-center justify-center">
+            {!show && (
+              <Form
+                isSignin={isSignin}
+                setIsSignin={setIsSignin}
+                setOpen={setShow}
+                isPopUp={false}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="absolute top-[85px] hidden w-full justify-center md:flex">
+          <div
+            onClick={() =>
+              document
+                .querySelector(".home-section")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className={`z-20 mb-[16px] flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-[#940343]`}
+          >
+            <svg
+              aria-label="Scroll down"
+              height="20"
+              role="img"
+              viewBox="0 0 24 24"
+              width="20"
+              className="rotate-180 fill-white"
+            >
+              <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div className="absolute bottom-0 hidden h-[5vh] w-screen flex-row items-center justify-center bg-white md:flex">
+          {text.map((value: string, index: number) => (
             <div
               key={index}
-              className={`min-w-[180px] max-w-[180px] md:min-w-[236px] md:max-w-[236px] ${
-                (index >= 5 && index <= 9) || (index >= 25 && index <= 29)
-                  ? "mt-[-160px]"
-                  : (index >= 10 && index <= 14) || (index >= 20 && index <= 24)
-                    ? "mt-[-240px]"
-                    : index >= 15 && index <= 19
-                      ? "mt-[-400px]"
-                      : ""
-              }`}
+              className="roboto2 mr-2 text-nowrap text-[12px] font-semibold hover:underline"
             >
-              <img
-                src={value}
-                alt=""
-                className="size-full h-[230px] rounded-2xl object-cover md:h-[350px]"
-              />
+              {value}
             </div>
           ))}
         </div>
       </div>
-
-      <CoverBtm />
-      <div className="relative hidden h-screen w-screen flex-row bg-black bg-opacity-60 md:flex">
-        <div className="flex h-full w-full items-center justify-center">
-          <div className="w-[450px] font-roboto1 text-[70px] font-semibold leading-tight text-white">
-            Sign up to get your ideas
-          </div>
-        </div>
-        <div className="flex w-full flex-col items-center justify-center">
-          {!show && (
-            <Form
-              isSignin={isSignin}
-              setIsSignin={setIsSignin}
-              setOpen={setShow}
-              isPopUp={false}
-            />
-          )}
-        </div>
-      </div>
-
-      <div className="absolute top-[85px] hidden w-full justify-center md:flex">
-        <div
-          onClick={() =>
-            document
-              .querySelector(".home-section")
-              ?.scrollIntoView({ behavior: "smooth" })
-          }
-          className={`z-20 mb-[16px] flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-[#940343]`}
-        >
-          <svg
-            aria-label="Scroll down"
-            height="20"
-            role="img"
-            viewBox="0 0 24 24"
-            width="20"
-            className="rotate-180 fill-white"
-          >
-            <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
-          </svg>
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 hidden h-[5vh] w-screen flex-row items-center justify-center bg-white md:flex">
-        {text.map((value: string, index: number) => (
-          <div
-            key={index}
-            className="roboto2 mr-2 text-nowrap text-[12px] font-semibold hover:underline"
-          >
-            {value}
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 }
 
-function CoverBtm() {
+function CoverBtm({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
-    <div
-      className={`absolute z-[2] flex h-full w-full flex-col items-center justify-center bg-black/70 md:hidden`}
-    >
-      <div>
-        <svg
-          aria-label="logo"
-          height="48"
-          role="img"
-          viewBox="0 0 24 24"
-          width="48"
-          className={`fill-white`}
+    <>
+      <div
+        className={`absolute z-[2] flex h-full w-full flex-col items-center justify-center bg-black/70 md:hidden`}
+      >
+        <div>
+          <svg
+            aria-label="logo"
+            height="48"
+            role="img"
+            viewBox="0 0 24 24"
+            width="48"
+            className={`fill-white`}
+          >
+            <path d="M7.54 23.15q-.2-2.05.26-3.93L9 14.04a7 7 0 0 1-.35-2.07c0-1.68.81-2.88 2.09-2.88.88 0 1.53.62 1.53 1.8q0 .57-.23 1.28l-.52 1.72q-.15.5-.15.92c0 1.2.91 1.87 2.08 1.87 2.09 0 3.57-2.16 3.57-4.96 0-3.12-2.04-5.12-5.05-5.12-3.36 0-5.49 2.19-5.49 5.24 0 1.22.38 2.36 1.11 3.14-.24.41-.5.48-.88.48-1.2 0-2.34-1.69-2.34-4 0-4 3.2-7.17 7.68-7.17 4.7 0 7.66 3.29 7.66 7.33s-2.88 7.15-5.98 7.15a3.8 3.8 0 0 1-3.06-1.48l-.62 2.5a11 11 0 0 1-1.62 3.67A11.98 11.98 0 0 0 24 12a11.99 11.99 0 1 0-24 0 12 12 0 0 0 7.54 11.15"></path>
+          </svg>
+        </div>
+        <div
+          className={`mt-3 max-w-[350px] text-center text-[36px] leading-tight text-white`}
         >
-          <path d="M7.54 23.15q-.2-2.05.26-3.93L9 14.04a7 7 0 0 1-.35-2.07c0-1.68.81-2.88 2.09-2.88.88 0 1.53.62 1.53 1.8q0 .57-.23 1.28l-.52 1.72q-.15.5-.15.92c0 1.2.91 1.87 2.08 1.87 2.09 0 3.57-2.16 3.57-4.96 0-3.12-2.04-5.12-5.05-5.12-3.36 0-5.49 2.19-5.49 5.24 0 1.22.38 2.36 1.11 3.14-.24.41-.5.48-.88.48-1.2 0-2.34-1.69-2.34-4 0-4 3.2-7.17 7.68-7.17 4.7 0 7.66 3.29 7.66 7.33s-2.88 7.15-5.98 7.15a3.8 3.8 0 0 1-3.06-1.48l-.62 2.5a11 11 0 0 1-1.62 3.67A11.98 11.98 0 0 0 24 12a11.99 11.99 0 1 0-24 0 12 12 0 0 0 7.54 11.15"></path>
-        </svg>
-      </div>
-      <div
-        className={`mt-3 max-w-[350px] text-center text-[36px] leading-tight text-white`}
-      >
-        Sign up to explore the world's best ideas
-      </div>
-      <div
-        className={`mt-5 min-w-[200px] rounded-full bg-red-600 px-4 py-2 text-center text-[16px] text-white`}
-      >
-        Continue with email
-      </div>
-      <div
-        onClick={GoogleLogin}
-        className={`mt-2 flex min-w-[200px] items-center gap-2 rounded-full bg-white px-3 py-2 text-[16px]`}
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 48 48"
-          width={18}
-          height={18}
+          Sign up to explore the world's best ideas
+        </div>
+        <div
+          onClick={() => setOpen(true)}
+          className={`mt-5 min-w-[200px] rounded-full bg-red-600 px-4 py-2 text-center text-[16px] text-white`}
         >
-          <g>
-            <path
-              fill="#EA4335"
-              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-            ></path>
-            <path
-              fill="#4285F4"
-              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-            ></path>
-            <path
-              fill="#FBBC05"
-              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-            ></path>
-            <path
-              fill="#34A853"
-              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-            ></path>
-            <path fill="none" d="M0 0h48v48H0z"></path>
-          </g>
-        </svg>
-        Continue with Google
+          Continue with email
+        </div>
+        <div
+          onClick={GoogleLogin}
+          className={`mt-2 flex min-w-[200px] items-center gap-2 rounded-full bg-white px-3 py-2 text-[16px]`}
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width={18}
+            height={18}
+          >
+            <g>
+              <path
+                fill="#EA4335"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+              ></path>
+              <path
+                fill="#4285F4"
+                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+              ></path>
+              <path
+                fill="#FBBC05"
+                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+              ></path>
+              <path
+                fill="#34A853"
+                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+              ></path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
+            </g>
+          </svg>
+          Continue with Google
+        </div>
+        <div className={`mt-10 flex flex-row text-[12px] text-white`}>
+          Already a member ? <div> Log in</div>
+        </div>
+        <div className={`mt-10 px-6 text-center text-[12px] text-white`}>
+          By continuing, you agree to Pinterest's Terms of Service and
+          acknowledge you've read our Privacy Policy. Notice at collection.
+        </div>
       </div>
-      <div className={`mt-10 flex flex-row text-[12px] text-white`}>
-        Already a member ? <div> Log in</div>
-      </div>
-      <div className={`mt-10 px-6 text-center text-[12px] text-white`}>
-        By continuing, you agree to Pinterest's Terms of Service and acknowledge
-        you've read our Privacy Policy. Notice at collection.
-      </div>
-    </div>
+    </>
   );
 }

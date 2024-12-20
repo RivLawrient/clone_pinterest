@@ -17,33 +17,6 @@ export default function SignUp({
   const { setMsg, setIsError, triggerNotif } = useNotif();
 
   async function RegisterHandle() {
-    // setIsloading(true);
-    // try {
-    //   await fetch(`${process.env.HOST_API_PUBLIC}/auth/register`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify({
-    //       email: email,
-    //       password: password,
-    //       birth_date: birth,
-    //     }),
-    //   }).then(async (response) => {
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //       window.location.reload();
-    //     } else {
-    //       setMsg(data.errors);
-    //       setIsError(true);
-    //       triggerNotif();
-    //     }
-    //   });
-    // } catch (err) {
-    // } finally {
-    //   setIsloading(false);
-    // }
     setIsloading(true);
     await fetch(`${process.env.HOST_API_PUBLIC}/auth/register`, {
       method: "POST",
@@ -66,6 +39,11 @@ export default function SignUp({
           setIsError(true);
           triggerNotif();
         }
+      })
+      .catch(() => {
+        setMsg("server ofline");
+        setIsError(true);
+        triggerNotif();
       })
       .finally(() => setIsloading(false));
   }
@@ -135,7 +113,7 @@ export default function SignUp({
             }}
             type="date"
             placeholder=""
-            className="rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
+            className="w-full rounded-2xl border-[2px] border-[#cdcdcd] px-4 py-3 text-[16px]"
           />
         </div>
         <div className="">

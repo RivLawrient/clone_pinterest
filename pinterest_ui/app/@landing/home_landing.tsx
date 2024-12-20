@@ -4,10 +4,15 @@ import { useEffect, useState } from "react";
 import { AnimateBtn, AnimateImg, AnimateText } from "./animation";
 import { useRouter } from "next/navigation";
 import GoogleLogin from "./(modal)/googleLogin";
+import { useModal } from "./(modalContext)/Modal";
+import Form from "./(modal)/form";
+import Modal from "./(modal)/modal";
 
 export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const { show, setShow } = useModal();
+  const [isSignin, setIsSignin] = useState<boolean>(false);
 
   useEffect(() => {
     const sections = document.querySelectorAll(".snap-center");
@@ -69,47 +74,61 @@ export default function HomeLanding() {
   }, [step]);
 
   return (
-    <div className="home-section relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline">
-      <div className="md:h-[250px]"></div>
-      <span className="hidden font-roboto2 text-[60px] md:block">
-        Get your next
-      </span>
-      <br className={`hidden md:block`} />
-      <Cover />
-      <AnimateText step={step} />
-      <AnimateImg step={step} />
-      <div className="absolute bottom-0 z-[3] flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent md:to-white">
-        <AnimateBtn step={step} />
-        <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">
-          <div
-            onClick={() =>
-              document
-                .querySelector(".search-section")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="flex cursor-pointer gap-2 font-roboto text-[16px]"
-          >
-            Here’s how it works
-            <div className="flex items-center justify-center">
-              <svg
-                aria-label="arrow down icon"
-                className="fill-black"
-                height="12"
-                role="img"
-                viewBox="0 0 24 24"
-                width="12"
-              >
-                <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
-              </svg>
+    <>
+      <Modal open={show} setOpen={setShow}>
+        <Form
+          isSignin={isSignin}
+          setIsSignin={setIsSignin}
+          setOpen={setShow}
+          isPopUp={true}
+        />
+      </Modal>
+      <div className="home-section relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline">
+        <div className="md:h-[250px]"></div>
+        <span className="hidden font-roboto2 text-[60px] md:block">
+          Get your next
+        </span>
+        <br className={`hidden md:block`} />
+        <Cover setOpen={setShow} />
+        <AnimateText step={step} />
+        <AnimateImg step={step} />
+        <div className="absolute bottom-0 z-[3] flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent md:to-white">
+          <AnimateBtn step={step} />
+          <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">
+            <div
+              onClick={() =>
+                document
+                  .querySelector(".search-section")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="flex cursor-pointer gap-2 font-roboto text-[16px]"
+            >
+              Here’s how it works
+              <div className="flex items-center justify-center">
+                <svg
+                  aria-label="arrow down icon"
+                  className="fill-black"
+                  height="12"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="12"
+                >
+                  <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
-function Cover() {
+function Cover({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <div
       className={`absolute z-[2] flex h-full w-full flex-col items-center justify-center bg-black/70 md:hidden`}
@@ -132,6 +151,7 @@ function Cover() {
         Welcome to Pinterest
       </div>
       <div
+        onClick={() => setOpen(true)}
         className={`mt-5 min-w-[200px] rounded-full bg-red-600 px-4 py-2 text-center text-[16px] text-white`}
       >
         Continue with email

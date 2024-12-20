@@ -21,7 +21,7 @@ export default function Form({
     //   )}
     // </>
     <>
-      <div className="relative flex h-fit w-[484px] flex-col items-center justify-center rounded-[32px] bg-white px-[10px] pb-6 pt-[20px]">
+      <div className="relative flex h-screen w-screen flex-col items-center justify-center bg-white px-[10px] pb-6 pt-[20px] md:h-fit md:w-[484px] md:rounded-[32px]">
         {isPopUp && (
           <div
             onClick={() => {

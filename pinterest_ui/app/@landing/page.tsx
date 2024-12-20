@@ -15,7 +15,7 @@ export default function Landing() {
         <SearchLanding />
         <SaveLandig />
         <ShopLanding />
-        <HolidayLanding />
+        {/* <HolidayLanding /> */}
         <BottomLanding />
       </div>
     </>

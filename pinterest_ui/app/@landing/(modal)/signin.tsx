@@ -12,7 +12,39 @@ export default function SingIn({
   const [pass, setPass] = useState<string>("password");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isloading, setIsloading] = useState<boolean>(false);
   const { setMsg, setIsError, triggerNotif } = useNotif();
+
+  async function LoginHandle() {
+    setIsloading(true);
+    await fetch(`${process.env.HOST_API_PUBLIC}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          setMsg(data.errors);
+          setIsError(true);
+          triggerNotif();
+        }
+      })
+      .catch(() => {
+        setMsg("server ofline");
+        setIsError(true);
+        triggerNotif();
+      })
+      .finally(() => setIsloading(false));
+  }
 
   return (
     <>
@@ -79,7 +111,7 @@ export default function SingIn({
         </div>
         <div className="">
           <div
-            onClick={() => console.log(email, password)}
+            onClick={() => !isloading && LoginHandle()}
             className="cursor-pointer rounded-full bg-[#e60023] py-2 text-center text-white hover:bg-[#B60000] active:bg-[#8c1818]"
           >
             Log in
