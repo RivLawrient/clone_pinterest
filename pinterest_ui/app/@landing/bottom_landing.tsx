@@ -69,14 +69,6 @@ export default function BottomLanding() {
   const route = useRouter();
   return (
     <>
-      <Modal open={show} setOpen={setShow}>
-        <Form
-          isSignin={isSignin}
-          setIsSignin={setIsSignin}
-          setOpen={setShow}
-          isPopUp={true}
-        />
-      </Modal>
       <div className="relative h-screen w-screen snap-center overflow-hidden">
         <div className="absolute -z-[1] flex w-full justify-center">
           <div className="grid h-fit w-fit grid-flow-col grid-rows-5 gap-3">
@@ -104,7 +96,7 @@ export default function BottomLanding() {
           </div>
         </div>
 
-        <CoverBtm setOpen={setShow} />
+        <CoverBtm />
         <div className="relative hidden h-screen w-screen flex-row bg-black bg-opacity-60 md:flex">
           <div className="flex h-full w-full items-center justify-center">
             <div className="w-[450px] font-roboto1 text-[70px] font-semibold leading-tight text-white">
@@ -160,11 +152,8 @@ export default function BottomLanding() {
   );
 }
 
-function CoverBtm({
-  setOpen,
-}: {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+function CoverBtm() {
+  const { show, setShow } = useModal();
   return (
     <>
       <div
@@ -188,7 +177,7 @@ function CoverBtm({
           Sign up to explore the world's best ideas
         </div>
         <div
-          onClick={() => setOpen(true)}
+          onClick={() => setShow(true)}
           className={`mt-5 min-w-[200px] rounded-full bg-red-600 px-4 py-2 text-center text-[16px] text-white`}
         >
           Continue with email
