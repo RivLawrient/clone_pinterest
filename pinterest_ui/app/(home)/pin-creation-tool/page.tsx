@@ -1,6 +1,199 @@
 "use client";
 
 import { useState } from "react";
+import { BackBtn } from "../pin/[idPost]/backBtn";
+import { useNotif } from "@/app/(notifContext)/Notif";
+
+export default function Create() {
+  const [image, setImage] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [publishing, setPublishing] = useState<boolean>(false);
+  const { setIsError, setMsg, triggerNotif } = useNotif();
+
+  function Mobile() {
+    return (
+      <div
+        className={`fixed flex h-screen w-screen flex-col items-center bg-white md:hidden`}
+      >
+        <BackBtn />
+        <div className={`flex h-[60px] items-center font-semibold`}>
+          Create Pin
+        </div>
+        <Image image={image} setImage={setImage} />
+        <div className="relative mt-[20px] flex w-[400px] flex-col">
+          <div
+            hidden={image != ""}
+            className="absolute size-full bg-white opacity-70"
+          ></div>
+          <div className="mb-6 flex flex-col">
+            <div className="pb-2 text-[12px]">Title</div>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              maxLength={100}
+              placeholder="Add a title"
+              className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
+            />
+          </div>
+          <div className="flex flex-col">
+            <div className="pb-2 text-[12px]">Description</div>
+            <textarea
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              placeholder="Add a detailed description"
+              maxLength={100}
+              className="h-[164px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3"
+            />
+          </div>
+        </div>
+        <div className={`mt-[20px] flex w-full items-center justify-center`}>
+          {image ? (
+            publishing ? (
+              <div className="w-fit select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20">
+                Publishing...
+              </div>
+            ) : (
+              <div
+                onClick={async () => {
+                  setPublishing(true);
+                  await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                      title: title,
+                      description: desc,
+                      image: image,
+                    }),
+                  })
+                    .then(async (response) => {
+                      if (response.ok) {
+                        setImage("");
+                        setTitle("");
+                        setDesc("");
+                        setPublishing(false);
+                        setMsg("Your pin has been published");
+                        setIsError(false);
+                        triggerNotif();
+                      } else {
+                        setMsg("Failed to publish. Please try again.");
+                        setIsError(true);
+                        triggerNotif();
+                      }
+                    })
+                    .catch(() => {
+                      setMsg("Failed to publish. Please try again.");
+                      setIsError(true);
+                      triggerNotif();
+                    });
+                }}
+                className={`w-fit cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
+              >
+                Publish
+              </div>
+            )
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Mobile />
+      <div className="mt-[80px] hidden w-screen flex-col items-center justify-center md:flex">
+        <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
+          <span className="text-[20px] font-semibold">Create pin</span>
+          {image ? (
+            publishing ? (
+              <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20">
+                Publishing...
+              </div>
+            ) : (
+              <div
+                onClick={async () => {
+                  setPublishing(true);
+                  await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                      title: title,
+                      description: desc,
+                      image: image,
+                    }),
+                  })
+                    .then(async (response) => {
+                      if (response.ok) {
+                        setImage("");
+                        setTitle("");
+                        setDesc("");
+                        setPublishing(false);
+                        setMsg("Your pin has been published");
+                        setIsError(false);
+                        triggerNotif();
+                      } else {
+                        setMsg("Failed to publish. Please try again.");
+                        setIsError(true);
+                        triggerNotif();
+                      }
+                    })
+                    .catch(() => {
+                      setMsg("Failed to publish. Please try again.");
+                      setIsError(true);
+                      triggerNotif();
+                    });
+                }}
+                className={`cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
+              >
+                Publish
+              </div>
+            )
+          ) : null}
+        </div>
+
+        <div className="my-6 flex flex-col gap-10 lg:flex-row">
+          <div>
+            <Image image={image} setImage={setImage} />
+          </div>
+          <div className="relative flex w-[584px] flex-col">
+            <div
+              hidden={image != ""}
+              className="absolute size-full bg-white opacity-70"
+            ></div>
+            <div className="mb-6 flex flex-col">
+              <div className="pb-2 text-[12px]">Title</div>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={100}
+                placeholder="Add a title"
+                className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
+              />
+            </div>
+            <div className="flex flex-col">
+              <div className="pb-2 text-[12px]">Description</div>
+              <textarea
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                placeholder="Add a detailed description"
+                maxLength={100}
+                className="h-[164px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 function Image({
   image,
@@ -10,16 +203,20 @@ function Image({
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
+  const { setIsError, setMsg, triggerNotif } = useNotif();
+
   return (
     <>
       {image != "" ? (
         <img
           src={image}
           alt=""
-          className="max-h-[600px] min-w-[323px] max-w-[420px] rounded-[32px] object-cover"
+          className="max-h-[365px] max-w-[400px] rounded-[32px] object-cover md:max-h-[600px] md:min-w-[323px] md:max-w-[420px]"
         />
       ) : (
-        <div className={`relative h-[453px] w-[375px]`}>
+        <div
+          className={`relative h-[365px] w-[268px] lg:h-[453px] lg:w-[375px]`}
+        >
           <input
             type="file"
             accept="image/jpg"
@@ -36,7 +233,16 @@ function Image({
 
                   if (response.ok) {
                     setImage(data.link);
+                  } else {
+                    setMsg("Failed to publish. Please try again.");
+                    setIsError(true);
+                    triggerNotif();
                   }
+                })
+                .catch(() => {
+                  setMsg("Failed to publish. Please try again.");
+                  setIsError(true);
+                  triggerNotif();
                 })
                 .finally(() => setLoading(false));
             }}
@@ -71,123 +277,5 @@ function Image({
         </div>
       )}
     </>
-  );
-}
-
-export default function Create() {
-  const [image, setImage] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const [publishing, setPublishing] = useState<boolean>(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const [showFail, setShowfail] = useState(false);
-
-  // Function to trigger the success message
-  const triggerMessage = () => {
-    setShowMessage(true);
-    setTimeout(() => {
-      setShowMessage(false);
-    }, 5000); //
-  };
-
-  const triggerFali = () => {
-    setShowfail(true);
-    setTimeout(() => {
-      setShowfail(false);
-    }, 5000); //
-  };
-
-  return (
-    <div className="mt-[80px] flex w-screen flex-col items-center justify-center">
-      <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
-        <span className="text-[20px] font-semibold">Create pin</span>
-        {image ? (
-          publishing ? (
-            <div className="select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20">
-              Publishing...
-            </div>
-          ) : (
-            <div
-              onClick={async () => {
-                setPublishing(true);
-                try {
-                  await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({
-                      title: title,
-                      description: desc,
-                      image: image,
-                    }),
-                  }).then(async (response) => {
-                    if (response.ok) {
-                      setImage("");
-                      setTitle("");
-                      setDesc("");
-                    } else {
-                      throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                  });
-                  triggerMessage();
-                } catch (err) {
-                  triggerFali();
-                } finally {
-                  setPublishing(false);
-                }
-              }}
-              className={`cursor-pointer select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
-            >
-              Publish
-            </div>
-          )
-        ) : null}
-      </div>
-
-      <div className="my-6 flex flex-col gap-10 lg:flex-row">
-        <div>
-          <Image image={image} setImage={setImage} />
-        </div>
-        <div className="relative flex w-[584px] flex-col">
-          <div
-            hidden={image != ""}
-            className="absolute size-full bg-white opacity-70"
-          ></div>
-          <div className="mb-6 flex flex-col">
-            <div className="pb-2 text-[12px]">Title</div>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={100}
-              placeholder="Add a title"
-              className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
-            />
-          </div>
-          <div className="flex flex-col">
-            <div className="pb-2 text-[12px]">Description</div>
-            <textarea
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              placeholder="Add a detailed description"
-              maxLength={100}
-              className="h-[164px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3"
-            />
-          </div>
-        </div>
-      </div>
-      {showMessage && (
-        <div className="absolute bottom-0 mb-5 rounded-xl bg-black p-3 text-[16px] text-white">
-          Your pin has been published
-        </div>
-      )}
-      {showFail && (
-        <div className="absolute bottom-0 mb-5 rounded-xl bg-red-600 p-3 text-[16px] text-white">
-          Failed to publish. Please try again.
-        </div>
-      )}
-    </div>
   );
 }

@@ -137,7 +137,7 @@ function BirthDateForm({ user }: { user: User | null }) {
     <>
       {user && (
         <div className="fixed bottom-0 left-0 right-0 top-0 z-[52] flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col items-center justify-center rounded-[32px] bg-white p-5 px-12 text-center">
+          <div className="flex h-screen w-screen flex-col items-center justify-center bg-white p-5 px-12 text-center md:h-fit md:w-fit md:rounded-[32px]">
             <div className="text-[50px]">🎂</div>
             <div className="text-[36px] font-semibold">
               Enter your birthdate
