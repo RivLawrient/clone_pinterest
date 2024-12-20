@@ -11,8 +11,8 @@ type UnFollowResponse struct {
 }
 
 type ShowFollowResponse struct {
-	Username       *string `json:"username"`
-	FollowingCount int     `json:"following_count"`
-	FollowerCount  int     `json:"follower_count"`
-	FollowStatus   bool    `json:"follow_status"`
+	Username       string `json:"username"`
+	FollowingCount int    `json:"following_count"`
+	FollowerCount  int    `json:"follower_count"`
+	FollowStatus   bool   `json:"follow_status"`
 }

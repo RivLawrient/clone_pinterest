@@ -4,7 +4,6 @@ import (
 	"context"
 	"pinterest_api/internal/app/user"
 	"pinterest_api/internal/config"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -61,7 +60,7 @@ func (l *LikePostUsecase) LikeaPost(ctx context.Context, token string, postId st
 	return &LikeaPostResponse{
 		ID:        likePost.ID,
 		PostId:    likePost.PostId,
-		CreatedAt: time.UnixMilli(likePost.CreatedAt),
+		CreatedAt: "",
 	}, nil
 }
 
@@ -94,7 +93,7 @@ func (l *LikePostUsecase) UnLikeaPost(ctx context.Context, token string, postId 
 	return &LikeaPostResponse{
 		ID:        likePost.ID,
 		PostId:    likePost.PostId,
-		CreatedAt: time.UnixMilli(likePost.CreatedAt),
+		CreatedAt: "",
 	}, nil
 }
 

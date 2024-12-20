@@ -35,6 +35,6 @@ func UserToUserResponse(user *User) *UserResponse {
 		BirthDate:  birth,
 		ProfileImg: *user.ProfileImg,
 		Token:      user.Token,
-		CreatedAt:  user.CreatedAt,
+		CreatedAt:  user.CreatedAt.String(),
 	}
 }

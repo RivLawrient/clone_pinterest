@@ -107,16 +107,10 @@ func (f *FollowUsecase) ShowFollowByUsername(ctx context.Context, token string, 
 	defer tx.Rollback()
 
 	me, err := f.UserUsecase.VerifyToken(ctx, token)
+
 	if err != nil {
 		return nil, err
 	}
-
-	// user := new(user.User)
-	// if err := f.UserRepository.FindByUsername(tx, user, username); err != nil {
-
-	// 	return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
-
-	// }
 
 	queryUsername := f.UserRepository.FindOtherByUsername(tx, username)
 	if queryUsername == nil {
@@ -138,6 +132,6 @@ func (f *FollowUsecase) ShowFollowByUsername(ctx context.Context, token string, 
 		FirstName:  queryUsername.FirstName,
 		LastName:   queryUsername.LastName,
 		ProfileImg: queryUsername.ProfileImg,
-		Follow:     query,
+		Follow:     followResponse,
 	}, nil
 }

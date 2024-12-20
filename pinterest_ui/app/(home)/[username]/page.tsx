@@ -20,7 +20,7 @@ export default function UsernamePage() {
   const [followBtn, setFollowBtn] = useState<boolean>(false);
 
   useEffect(() => {
-    // setIsloading(true);
+    setIsloading(true);
     fetch(`${process.env.HOST_API_PUBLIC}/user/${path.slice(1)}`, {
       method: "GET",
       credentials: "include",

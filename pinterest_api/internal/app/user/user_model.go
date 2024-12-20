@@ -40,17 +40,17 @@ type GoogleUser struct {
 }
 
 type UserResponse struct {
-	Id         string    `json:"id,omitempty"`
-	Username   string    `json:"username,"`
-	FirstName  string    `json:"first_name"`
-	LastName   string    `json:"last_name"`
-	Email      string    `json:"email"`
-	IsGoogle   bool      `json:"is_google"`
-	IsFacebook bool      `json:"is_facebook"`
-	BirthDate  *string   `json:"birth_date"`
-	ProfileImg string    `json:"profile_img"`
-	Token      string    `json:"token,omitempty"`
-	CreatedAt  time.Time `json:"created_at"`
+	Id         string  `json:"id,omitempty"`
+	Username   string  `json:"username,"`
+	FirstName  string  `json:"first_name"`
+	LastName   string  `json:"last_name"`
+	Email      string  `json:"email"`
+	IsGoogle   bool    `json:"is_google"`
+	IsFacebook bool    `json:"is_facebook"`
+	BirthDate  *string `json:"birth_date"`
+	ProfileImg string  `json:"profile_img"`
+	Token      string  `json:"token,omitempty"`
+	CreatedAt  string  `json:"created_at"`
 }
 
 type UserOtherResult struct {
@@ -61,11 +61,11 @@ type UserOtherResult struct {
 	ProfileImg string `json:"profile_img"`
 }
 type UserOtherResponse struct {
-	Username   string `json:"username,"`
+	Username   string `json:"username"`
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
-	ProfileImg string `json:"profile_img,"`
-	Follow     any    `json:"follow,omitempty"`
-	// Post       any    `json:"post,omitempty"`
-	// Saved      any    `json:"saved,omitempty"`
+	ProfileImg string `json:"profile_img"`
+	Follow     any    `json:"follow"`
+	Post       any    `json:"post,omitempty"`
+	Saved      any    `json:"saved,omitempty"`
 }

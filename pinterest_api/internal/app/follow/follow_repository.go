@@ -65,7 +65,7 @@ SELECT
 FROM
 	users
 WHERE
-	users.id = ?;
+	users.id = ?
 	`, followingUserId, followingUserId, userId, followingUserId, followingUserId).
 		Scan(result)
 }
