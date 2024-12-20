@@ -91,7 +91,7 @@ func (r *UserRepository) FindAllByToken(db *gorm.DB, token string) *User {
 
 func (r *UserRepository) FindOtherByUsername(db *gorm.DB, username string) *UserOtherResult {
 	data := new(UserOtherResult)
-	query := db.Raw(`SELECT users.id, users.username, users.profile_img FROM users WHERE users.username = ?`, username).Scan(data)
+	query := db.Raw(`SELECT users.id, users.username, users.first_name, users.last_name users.profile_img FROM users WHERE users.username = ?`, username).Scan(data)
 
 	if query.RowsAffected == 0 {
 		return nil
