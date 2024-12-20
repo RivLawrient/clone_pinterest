@@ -17,20 +17,47 @@ export default function SignUp({
   const { setMsg, setIsError, triggerNotif } = useNotif();
 
   async function RegisterHandle() {
+    // setIsloading(true);
+    // try {
+    //   await fetch(`${process.env.HOST_API_PUBLIC}/auth/register`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     credentials: "include",
+    //     body: JSON.stringify({
+    //       email: email,
+    //       password: password,
+    //       birth_date: birth,
+    //     }),
+    //   }).then(async (response) => {
+    //     const data = await response.json();
+    //     if (response.ok) {
+    //       window.location.reload();
+    //     } else {
+    //       setMsg(data.errors);
+    //       setIsError(true);
+    //       triggerNotif();
+    //     }
+    //   });
+    // } catch (err) {
+    // } finally {
+    //   setIsloading(false);
+    // }
     setIsloading(true);
-    try {
-      await fetch(`${process.env.HOST_API_PUBLIC}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          birth_date: birth,
-        }),
-      }).then(async (response) => {
+    await fetch(`${process.env.HOST_API_PUBLIC}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        birth_date: birth,
+      }),
+    })
+      .then(async (response) => {
         const data = await response.json();
         if (response.ok) {
           window.location.reload();
@@ -39,11 +66,8 @@ export default function SignUp({
           setIsError(true);
           triggerNotif();
         }
-      });
-    } catch (err) {
-    } finally {
-      setIsloading(false);
-    }
+      })
+      .finally(() => setIsloading(false));
   }
 
   return (

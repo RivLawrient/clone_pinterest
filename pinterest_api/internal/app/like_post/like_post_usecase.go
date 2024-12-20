@@ -40,13 +40,13 @@ func (l *LikePostUsecase) LikeaPost(ctx context.Context, token string, postId st
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, l.Validate.TranslateErrors(err))
 	}
 
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, new(LikePost), me.ID, postId); err == nil {
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, new(LikePost), me.Id, postId); err == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "post already liked")
 	}
 
 	likePost := &LikePost{
 		ID:     uuid.New().String(),
-		UserId: me.ID,
+		UserId: me.Id,
 		PostId: postId,
 	}
 
@@ -79,7 +79,7 @@ func (l *LikePostUsecase) UnLikeaPost(ctx context.Context, token string, postId 
 	}
 
 	likePost := new(LikePost)
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.ID, postId); err != nil {
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.Id, postId); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "post is not liked")
 	}
 
@@ -112,7 +112,7 @@ func (l *LikePostUsecase) StatusLike(ctx context.Context, token string, postId s
 	}
 
 	likePost := new(LikePost)
-	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.ID, postId); err != nil {
+	if err := l.LikePostRepository.FindByUserIdAndPostId(tx, likePost, me.Id, postId); err != nil {
 		return false
 	}
 

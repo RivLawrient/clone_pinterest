@@ -7,8 +7,8 @@ import GoogleLogin from "./(modal)/googleLogin";
 
 export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
-
   const [isPaused, setIsPaused] = useState<boolean>(false);
+
   useEffect(() => {
     const sections = document.querySelectorAll(".snap-center");
     const observerCallback = (entries: any) => {
@@ -64,10 +64,10 @@ export default function HomeLanding() {
           setStep(nextStep);
         }
       }, 5400);
-
       return () => clearTimeout(timer);
     }
   }, [step]);
+
   return (
     <div className="home-section relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline">
       <div className="md:h-[250px]"></div>

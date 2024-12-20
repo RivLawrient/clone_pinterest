@@ -3,6 +3,7 @@ package post
 import (
 	"context"
 	"fmt"
+	"log"
 	"pinterest_api/internal/app/comment"
 	likePost "pinterest_api/internal/app/like_post"
 	"pinterest_api/internal/app/save"
@@ -64,7 +65,7 @@ func (p *PostUsecase) Upload(ctx context.Context, token string, request UploadPo
 	fmt.Println("done", errs)
 	post := &Post{
 		ID:          uuid.New().String(),
-		UserId:      me.ID,
+		UserId:      me.Id,
 		Title:       request.Title,
 		Description: request.Description,
 		Image:       request.Image,
@@ -100,7 +101,7 @@ func (p *PostUsecase) ShowDetail(ctx context.Context, postId string, token strin
 	}
 
 	post := DetailPostResult{}
-	if query := p.PostRepository.FindDetail(tx, &post, me.ID, postId); query.RowsAffected == 0 {
+	if query := p.PostRepository.FindDetail(tx, &post, me.Id, postId); query.RowsAffected == 0 {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "something wrong, when getting data")
 	}
 	comment := []comment.ListComment{}
@@ -135,7 +136,7 @@ func (p *PostUsecase) ShowRandomList(ctx context.Context, token string) (*[]List
 		return nil, err
 	}
 	post := []ListPost{}
-	if err := p.PostRepository.FindListRandom(tx, &post, me.ID); err != nil {
+	if err := p.PostRepository.FindListRandom(tx, &post, me.Id); err != nil {
 		return &[]ListPost{}, nil
 	}
 
@@ -155,7 +156,7 @@ func (p *PostUsecase) Delete(ctx context.Context, token string, postId string) (
 		return nil, err
 	}
 
-	query := p.PostRepository.RemoveById(tx, me.ID, postId)
+	query := p.PostRepository.RemoveById(tx, me.Id, postId)
 
 	if query.RowsAffected == 0 {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
@@ -179,40 +180,17 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 		return nil, err
 	}
 
-	// if err := p.Validate.Validate.Var(username, "required"); err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	// }
-
 	user := new(user.User)
 	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
+		log.Println(err)
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
 	}
 
-	// post := []Post{}
-	// if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
-	// 	return &[]PostResponse{}, nil
-	// }
-
-	// postResponses := []PostResponse{}
-	// for _, posts := range post {
-
-	// 	save := p.SaveUsecase.StatusSave(ctx, token, posts.ID)
-	// 	like := p.LikePostUsecase.StatusLike(ctx, token, posts.ID)
-
-	// 	postResponse := PostResponse{
-	// 		Id:          posts.ID,
-	// 		Title:       posts.Title,
-	// 		Description: posts.Description,
-	// 		SaveStatus:  &save,
-	// 		LikeStatus:  &like,
-	// 		Image:       posts.Image,
-	// 		CreatedAt:   posts.CreatedAt,
-	// 	}
-	// 	postResponses = append(postResponses, postResponse)
-	// }
+	log.Println(user.ID)
 	listPost := []ListPost{}
-	query := p.PostRepository.FindListByUser(tx, &listPost, user.ID, me.ID)
+	query := p.PostRepository.FindListByUser(tx, &listPost, user.ID, me.Id)
 	if query.RowsAffected == 0 {
+		log.Println(err)
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something error when getting data")
 	}
 
@@ -221,7 +199,6 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 	}
 
 	return &listPost, nil
-	// return nil, nil
 }
 
 func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username string, token string) (*[]ListPost, *fiber.Error) {
@@ -233,52 +210,23 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 		return nil, err
 	}
 
-	// if err := p.Validate.Validate.Var(username, "required"); err != nil {
-	// 	return nil, fiber.NewError(fiber.ErrBadRequest.Code, p.Validate.TranslateErrors(err))
-	// }
-
 	user := new(user.User)
 	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
 	}
 
 	listPost := []ListPost{}
-	query := p.PostRepository.FindListSavedByUser(tx, &listPost, user.ID, me.ID)
+	query := p.PostRepository.FindListSavedByUser(tx, &listPost, user.ID, me.Id)
 	if query.RowsAffected == 0 {
+		log.Println(query.RowsAffected)
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something error when getting data")
 	}
-
-	// post := []Post{}
-	// if err := p.PostRepository.ListByUser(tx, new(Post), &post, user.ID); err != nil {
-	// 	return &[]PostResponse{}, nil
-	// }
-
-	// saveList := p.SaveUsecase.ShowSaveByUser(ctx, user.ID)
-
-	// saveResponses := []PostResponse{}
-	// for _, save := range *saveList {
-	// 	postSave := new(Post)
-	// 	p.PostRepository.FindById(tx, postSave, save.PostId)
-
-	// 	saveStatus := p.SaveUsecase.StatusSave(ctx, token, save.PostId)
-
-	// 	saveResponse := PostResponse{
-	// 		Id:          save.PostId,
-	// 		Title:       postSave.Title,
-	// 		Description: postSave.Description,
-	// 		Image:       postSave.Image,
-	// 		SaveStatus:  &saveStatus,
-	// 		CreatedAt:   postSave.CreatedAt,
-	// 	}
-	// 	saveResponses = append(saveResponses, saveResponse)
-	// }
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
 	return &listPost, nil
-	// return nil, nil
 }
 
 // func (p *PostUsecase) PList(ctx context.Context) []PostResult {

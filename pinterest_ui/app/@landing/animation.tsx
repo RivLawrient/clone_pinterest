@@ -243,7 +243,6 @@ export function AnimateImg({ step }: { step: number }) {
           {values.map((imageUrl: string, index: number) => (
             <React.Fragment key={index}>
               <div
-                // key={index}
                 className={`mb-3 hidden min-w-[236px] max-w-[236px] md:block ${
                   index === 5 || index === 25
                     ? "pt-[140px]"
@@ -263,7 +262,6 @@ export function AnimateImg({ step }: { step: number }) {
               </div>
 
               <div
-                // key={index}
                 className={`mb-3 block min-w-[180px] max-w-[180px] md:hidden`}
               >
                 <img

@@ -61,14 +61,6 @@ func (c *FollowController) HandleShowFollowByUsername(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 	username := ctx.Params("username")
 
-	users, err := c.UserUsecase.ShowByUsername(ctx.UserContext(), auth, username)
-	if err != nil {
-		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
-			StatusCode: err.Code,
-			Data:       nil,
-			Errors:     err.Message,
-		})
-	}
 	response, err := c.FollowUsecase.ShowFollowByUsername(ctx.UserContext(), auth, username)
 	if err != nil {
 		return ctx.Status(err.Code).JSON(model.WebResponse[any]{
@@ -80,12 +72,6 @@ func (c *FollowController) HandleShowFollowByUsername(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(model.WebResponse[user.UserOtherResponse]{
 		StatusCode: ctx.Response().StatusCode(),
-		Data: user.UserOtherResponse{
-			Username:   users.Username,
-			FirstName:  users.FirstName,
-			LastName:   users.LastName,
-			ProfileImg: users.ProfileImg,
-			Follow:     response,
-		},
+		Data:       *response,
 	})
 }

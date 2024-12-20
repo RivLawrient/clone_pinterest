@@ -45,7 +45,7 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
 	}
 
-	if err := u.UserRepository.FindByEmail(tx, new(User), request.Email); err == nil {
+	if query := u.UserRepository.FindIdByEmail(tx, request.Email); query != "" {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "email is already used")
 	}
 
@@ -59,7 +59,7 @@ func (u *UserUsecase) RegisterByEmail(ctx context.Context, request *RegisterUser
 	baseUsername := strings.Split(request.Email, "@")[0]
 	username := baseUsername
 	counter := 1
-	for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
+	for u.UserRepository.FindIdByUsername(tx, username) != "" {
 		username = fmt.Sprintf("%s%d", baseUsername, counter)
 		counter++
 	}
@@ -100,8 +100,8 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
 	}
 
-	user := new(User)
-	if err := u.UserRepository.FindByEmail(tx, user, request.Email); err != nil {
+	user := u.UserRepository.FindAllByEmail(tx, request.Email)
+	if user == nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "email or password is invalid")
 	}
 
@@ -128,8 +128,6 @@ func (u *UserUsecase) LoginByEmail(ctx context.Context, request *LoginUserByEmai
 
 var (
 	googleOauthConfig = &oauth2.Config{
-		// RedirectURL:  fmt.Sprintf("%s://%s/auth/google/callback"),
-		// RedirectURL:  "http://127.0.0.1:4000/auth/google/callback",
 		RedirectURL:  "",
 		ClientID:     "",
 		ClientSecret: "",
@@ -140,7 +138,6 @@ var (
 )
 
 func (u *UserUsecase) GoogleRedirect() string {
-
 	protocol := u.Viper.GetString("backend.protocol")
 	domain := u.Viper.GetString("backend.domain")
 
@@ -166,26 +163,25 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*UserRes
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "failed to read response body: "+err.Error())
 	}
 
-	// fmt.Println(string(body))
 	var googleUser GoogleUser
 	json.Unmarshal(body, &googleUser)
 
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	user := new(User)
-	if err := u.UserRepository.FindByEmail(tx, user, googleUser.Email); err != nil { //kalau gada di db
-
+	queryUser := u.UserRepository.FindAllByEmail(tx, googleUser.Email)
+	if queryUser == nil { //kalau gada di db
 		baseUsername := strings.Split(googleUser.Email, "@")[0]
 		re := regexp.MustCompile(`[^a-zA-Z0-9]+`)
 		username := re.ReplaceAllString(baseUsername, "")
 		counter := 1
 
-		for u.UserRepository.FindByUsername(tx, new(User), username) == nil {
+		for u.UserRepository.FindIdByUsername(tx, username) != "" {
 			username = fmt.Sprintf("%s%d", baseUsername, counter)
 			counter++
 		}
 
+		user := new(User)
 		user.ID = uuid.New().String()
 		user.Username = username
 		user.FirstName = googleUser.GivenName
@@ -207,9 +203,9 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*UserRes
 		return UserToUserResponse(user), nil
 	}
 
-	user.Token = uuid.New().String()
+	queryUser.Token = uuid.New().String()
 
-	if err := u.UserRepository.Update(tx, user); err != nil {
+	if err := u.UserRepository.Update(tx, queryUser); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, strings.Split(err.Error(), ": ")[1])
 	}
 
@@ -217,82 +213,71 @@ func (u *UserUsecase) GoogleCallback(ctx context.Context, code string) (*UserRes
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return UserToUserResponse(user), nil
+	return UserToUserResponse(queryUser), nil
 }
 
-func (u *UserUsecase) VerifyToken(ctx context.Context, token string) (*User, *fiber.Error) {
+type result struct {
+	Id string
+}
+
+func (u *UserUsecase) VerifyToken(ctx context.Context, token string) (*result, *fiber.Error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
+
+	if token == "" {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "auth-token is required")
+	}
 
 	if err := u.Validate.Validate.Var(token, "required,uuid"); err != nil {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
 	}
 
-	user := &User{}
-	err := u.UserRepository.FindyByToken(tx, user, token)
-	if err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong when getting data")
+	query := u.UserRepository.FindIdByToken(tx, token)
+	if query == "" {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "token is invalid")
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return user, nil
+	return &result{
+		Id: query,
+	}, nil
 }
 
 func (u *UserUsecase) GetUser(ctx context.Context, token string) (*UserResponse, *fiber.Error) {
-	user, err := u.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, err
-	}
-
-	return UserToUserResponse(user), nil
-}
-
-func (u *UserUsecase) ShowByUsername(ctx context.Context, token string, username string) (*UserOtherResponse, *fiber.Error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	if err := u.Validate.Validate.Var(username, "required"); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
-	}
-
-	user := new(User)
-	if err := u.UserRepository.FindByUsername(tx, user, username); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	query := u.UserRepository.FindAllByToken(tx, token)
+	if query == nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "token is invalid")
 	}
 
 	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong show by username")
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &UserOtherResponse{
-		Username:   user.Username,
-		FirstName:  user.FirstName,
-		LastName:   *user.LastName,
-		ProfileImg: *user.ProfileImg,
-	}, nil
-
+	return UserToUserResponse(query), nil
 }
 
-func (u *UserUsecase) UpdateBirthDate(ctx context.Context, token string, birthDate int64) (*UserResponse, *fiber.Error) {
+func (u *UserUsecase) UpdateBirthDate(ctx context.Context, token string, birthDate int64) (*bool, *fiber.Error) {
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
-
-	if err := u.Validate.Validate.Var(birthDate, "required,numeric"); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
-	}
 
 	me, err := u.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	birth := time.UnixMilli(birthDate)
-	me.BirthDate = &birth
+	if err := u.Validate.Validate.Var(birthDate, "required,numeric"); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
+	}
 
-	if err := u.UserRepository.Update(tx, me); err != nil {
+	birth := time.UnixMilli(birthDate)
+
+	if update := u.UserRepository.UpdateBirthDateById(tx, me.Id, birth.Format("2006-01-02")); update.RowsAffected == 0 {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong when updating data")
 	}
 
@@ -300,5 +285,6 @@ func (u *UserUsecase) UpdateBirthDate(ctx context.Context, token string, birthDa
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return UserToUserResponse(me), nil
+	result := true
+	return &result, nil
 }

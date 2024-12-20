@@ -53,12 +53,19 @@ type UserResponse struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
+type UserOtherResult struct {
+	Id         string `json:"id"`
+	Username   string `json:"username"`
+	FirstName  string `json:"first_name"`
+	LastName   string `json:"last_name"`
+	ProfileImg string `json:"profile_img"`
+}
 type UserOtherResponse struct {
 	Username   string `json:"username,"`
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 	ProfileImg string `json:"profile_img,"`
 	Follow     any    `json:"follow,omitempty"`
-	Post       any    `json:"post,omitempty"`
-	Saved      any    `json:"saved,omitempty"`
+	// Post       any    `json:"post,omitempty"`
+	// Saved      any    `json:"saved,omitempty"`
 }

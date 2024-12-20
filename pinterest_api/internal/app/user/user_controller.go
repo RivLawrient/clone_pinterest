@@ -49,8 +49,7 @@ func (c *UserController) HandleRegisterByEmail(ctx *fiber.Ctx) error {
 	cookie.Value = response.Token
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
-	cookie.Domain = domain
-	cookie.Secure = true
+	cookie.Domain = strings.Split(domain, ":")[0]
 	ctx.Cookie(cookie)
 
 	return ctx.JSON(model.WebResponse[*RegisterUserResponse]{
@@ -87,7 +86,6 @@ func (c *UserController) HandleLoginByEmail(ctx *fiber.Ctx) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
 	cookie.Domain = strings.Split(domain, ":")[0]
-	// cookie.Secure = true
 	ctx.Cookie(cookie)
 
 	return ctx.JSON(model.WebResponse[*UserResponse]{
@@ -118,7 +116,6 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HTTPOnly = true
 	cookie.Domain = strings.Split(domain, ":")[0]
-	// cookie.Secure = true
 	ctx.Cookie(cookie)
 
 	return ctx.Redirect(fmt.Sprintf("%s://%s", protocol, domain))
@@ -126,6 +123,15 @@ func (c *UserController) HandleGoogleCallback(ctx *fiber.Ctx) error {
 
 func (c *UserController) HandleGetUser(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
+
+	if auth == "" {
+		error := fiber.ErrBadRequest
+		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
+			StatusCode: error.Code,
+			Data:       nil,
+			Errors:     "auth-token cannot be empty",
+		})
+	}
 
 	response, err := c.UserUsecase.GetUser(ctx.UserContext(), auth)
 	if err != nil {
@@ -152,7 +158,6 @@ func (c *UserController) Logout(ctx *fiber.Ctx) error {
 	cookie.Expires = time.Now().Add(-1 * time.Second)
 	cookie.HTTPOnly = true
 	cookie.Domain = strings.Split(domain, ":")[0]
-	// cookie.Secure = true
 	ctx.Cookie(cookie)
 
 	return nil
@@ -179,8 +184,8 @@ func (c *UserController) HandleUpdateBirthDate(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(model.WebResponse[UserResponse]{
+	return ctx.JSON(model.WebResponse[*bool]{
 		StatusCode: ctx.Response().StatusCode(),
-		Data:       *response,
+		Data:       response,
 	})
 }

@@ -43,7 +43,7 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	comment := &Comment{
 		ID:      uuid.New().String(),
 		Comment: request.Comment,
-		UserId:  me.ID,
+		UserId:  me.Id,
 		PostId:  postId,
 	}
 
@@ -56,11 +56,11 @@ func (c *CommentUsecase) AddComment(ctx context.Context, token string, postId st
 	}
 
 	return &CommentResponse{
-		Id:         comment.ID,
-		Comment:    comment.Comment,
-		Username:   me.Username,
-		ProfileImg: *me.ProfileImg,
-		CreatedAt:  comment.CreatedAt,
+		Id:      comment.ID,
+		Comment: comment.Comment,
+		// Username:   me.Username,/
+		// ProfileImg: *me.ProfileImg,
+		CreatedAt: comment.CreatedAt,
 	}, nil
 }
 

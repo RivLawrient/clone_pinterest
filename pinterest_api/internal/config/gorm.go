@@ -2,11 +2,14 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func NewDatabase(viper *viper.Viper) *gorm.DB {
@@ -40,7 +43,17 @@ func NewDatabase(viper *viper.Viper) *gorm.DB {
 			host, username, password, database, port, "disable",
 		)
 	}
-	db, err := gorm.Open(postgres.Open(dsn))
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // Output log ke stdout
+		logger.Config{
+			SlowThreshold:             time.Second, // Threshold untuk query lambat
+			LogLevel:                  logger.Info, // Level log (Info, Warn, Error, Silent)
+			IgnoreRecordNotFoundError: true,        // Abaikan error "record not found"
+			Colorful:                  true,        // Warna pada output log
+		},
+	)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		fmt.Println("failed to connect database:", err)
 	}
