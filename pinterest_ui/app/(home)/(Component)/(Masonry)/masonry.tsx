@@ -30,7 +30,7 @@ export default function Masonry({
 
   return (
     <>
-      <div ref={ref} className="flex w-screen justify-center">
+      <div ref={ref} className="mb-20 flex w-screen justify-center md:mb-0">
         <div className="flex flex-row gap-4">
           {result.map((value, index) => (
             <div
