@@ -11,7 +11,7 @@ export default function HeaderMbl() {
     <>
       <SettingModal setShowSetting={setShowSetting} showSetting={showSetting} />
       <div
-        className={`fixed ${showSetting ? "hidden" : "block"} left-0 right-0 top-0 flex h-[50px] flex-row items-center justify-between px-5 md:hidden`}
+        className={`absolute ${showSetting ? "hidden" : "block"} left-0 right-0 top-0 flex h-[50px] flex-row items-center justify-between px-5 md:hidden`}
       >
         <Link
           href={"/pin-creation-tool"}
@@ -94,7 +94,7 @@ function SettingModal({
         <div className={`my-5 text-[20px] font-semibold`}>Settings</div>
       </div>
       <div
-        className={`flex h-full flex-col gap-4 bg-slate-400 px-4 text-[20px] font-semibold`}
+        className={`flex h-full flex-col gap-4 px-4 text-[20px] font-semibold`}
       >
         <div className={``}>
           <div className={`text-[16px] font-normal`}>Account</div>
