@@ -163,6 +163,12 @@ export default function PagePost() {
             </div>
           </div>
         </div>
+        <div className={`flex w-full justify-center`}>
+          <SaveBtn
+            post={post as Post}
+            setPost={setPost as React.Dispatch<React.SetStateAction<Post>>}
+          />
+        </div>
       </div>
     );
   }
