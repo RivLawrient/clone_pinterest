@@ -219,6 +219,7 @@ export function Mobile({
           >
             Download image
           </a>
+          <input type="text" placeholder="asku" className="bg-lime-600" />
         </div>
       </div>
     );
