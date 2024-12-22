@@ -277,7 +277,7 @@ export default function CommentDetail({
               );
               setComment("");
             }}
-            className={`z-[3] flex size-[32px] cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
+            className={`z-[3] flex size-[32px] flex-none cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
           >
             <svg
               aria-hidden="true"

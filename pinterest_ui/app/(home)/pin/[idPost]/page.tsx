@@ -145,7 +145,7 @@ export default function PagePost() {
 
   function Mobile() {
     return (
-      <div className={`flex h-full flex-col justify-between py-3 md:hidden`}>
+      <div className={`flex flex-col justify-between py-3 md:hidden`}>
         <div className={`flex items-center px-3`}>
           {post?.user && (
             <Link href={`/${post.user.username}`}>
@@ -166,7 +166,7 @@ export default function PagePost() {
             </div>
           </div>
         </div>
-        <div className={`flex w-full items-stretch justify-around`}>
+        <div className={`flex w-full items-stretch justify-around py-3`}>
           <div className={`flex size-[48px] items-center justify-center`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +216,7 @@ export default function PagePost() {
           <>
             <BackBtn />
             <div
-              className={`flex h-screen flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:h-fit md:flex-row md:overflow-hidden md:rounded-[32px]`}
+              className={`flex flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:flex-row md:overflow-hidden md:rounded-[32px]`}
             >
               <div className={`relative`}>
                 <div
