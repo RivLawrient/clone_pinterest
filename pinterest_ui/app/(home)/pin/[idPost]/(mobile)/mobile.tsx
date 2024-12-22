@@ -132,6 +132,7 @@ export function Mobile({
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+                  if (e.target !== e.currentTarget) return;
                   setComment(e.target.value);
                 }}
                 max={100}
