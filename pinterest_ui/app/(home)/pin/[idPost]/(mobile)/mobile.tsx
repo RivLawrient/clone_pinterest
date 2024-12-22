@@ -26,17 +26,17 @@ export function Mobile({
     setPost,
   );
 
-  useEffect(() => {
-    if (showMore || showMsg) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      // Bersihkan efek ketika komponen dilepas
-      document.body.style.overflow = "";
-    };
-  }, [showMore, showMsg]);
+  // useEffect(() => {
+  //   if (showMore || showMsg) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+  //   return () => {
+  //     // Bersihkan efek ketika komponen dilepas
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [showMore, showMsg]);
 
   const handleDownload = async () => {
     try {
@@ -73,7 +73,7 @@ export function Mobile({
     return (
       <div
         // onClick={() => setShowMsg(false)}
-        className={`flex h-full w-screen bg-black/80 md:hidden`}
+        className={`flex w-screen bg-black/80 md:hidden`}
       >
         <input type="text" className="bg-yellow-500" placeholder="popu" />
         <div
@@ -228,6 +228,7 @@ export function Mobile({
     <>
       {showMsg && <Msg />}
       {showMore && <More />}
+      <input type="text" placeholder="asdklfjasdf" className="bg-red-50" />
       {!showMore && (
         <div
           onClick={() => setShowMore(true)}
@@ -247,6 +248,7 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
+        <input type="text" placeholder="s......." className="bg-red-50" />
         <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
             <div className={`flex items-center`}>
@@ -327,7 +329,6 @@ export function Mobile({
           </div>
         </div>
       </div>
-      <input type="text" placeholder="asdklfjasdf" className="bg-red-50" />
     </>
   );
 }
