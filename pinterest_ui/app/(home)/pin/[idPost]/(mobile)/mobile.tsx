@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Post } from "../../../(postContext)/Post";
 import ProfileImage from "../../../(Component)/profileImage";
 import SaveBtn from "../../../(Component)/saveBtn";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNotif } from "@/app/(notifContext)/Notif";
 import { useUser } from "@/app/(userContext)/User";
 import { LikeBtn } from "../likeBtn";
@@ -19,6 +19,18 @@ export function Mobile({
   const { setMsg, setIsError, triggerNotif } = useNotif();
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUser();
+
+  useEffect(() => {
+    if (showMore || showMsg) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      // Bersihkan efek ketika komponen dilepas
+      document.body.style.overflow = "";
+    };
+  }, [showMore, showMsg]);
 
   const handleDownload = async () => {
     try {
