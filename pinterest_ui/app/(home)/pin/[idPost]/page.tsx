@@ -12,6 +12,7 @@ import { ShareBtn } from "../../(Component)/shareBtn";
 import { MoreBtn } from "../../(Component)/moreBtn";
 import Link from "next/link";
 import ProfileImage from "../../(Component)/profileImage";
+import { Mobile } from "./mobile";
 
 export interface Sizes {
   height: number;
@@ -143,69 +144,6 @@ export default function PagePost() {
     );
   }
 
-  function Mobile() {
-    return (
-      <div className={`flex flex-col justify-between py-3 md:hidden`}>
-        <div className={`flex items-center px-3`}>
-          {post?.user && (
-            <Link href={`/${post.user.username}`}>
-              <ProfileImage user={post?.user} width={48} />
-            </Link>
-          )}
-          <div className={`ml-2 flex flex-col`}>
-            <Link
-              href={`/${post?.user.username}`}
-              className={`text-[16px] leading-none`}
-            >
-              {post?.user.username}
-            </Link>
-            <div className={`text-[16px] leading-none`}>
-              {post?.user.follow?.follower_count
-                ? post?.user.follow.follower_count + " follower"
-                : ""}
-            </div>
-          </div>
-        </div>
-        <div className={`flex w-full items-stretch justify-around py-3`}>
-          <div className={`flex size-[48px] items-center justify-center`}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              id="message"
-              width="24"
-              height="24"
-            >
-              <g>
-                <g>
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="16" cy="12" r="1"></circle>
-                  <circle cx="8" cy="12" r="1"></circle>
-                  <path d="M19.07 4.93a10 10 0 0 0-16.28 11 1.06 1.06 0 0 1 .09.64L2 20.8a1 1 0 0 0 .27.91A1 1 0 0 0 3 22h.2l4.28-.86a1.26 1.26 0 0 1 .64.09 10 10 0 0 0 11-16.28zm.83 8.36a8 8 0 0 1-11 6.08 3.26 3.26 0 0 0-1.25-.26 3.43 3.43 0 0 0-.56.05l-2.82.57.57-2.82a3.09 3.09 0 0 0-.21-1.81 8 8 0 0 1 6.08-11 8 8 0 0 1 9.19 9.19z"></path>
-                </g>
-              </g>
-            </svg>
-          </div>
-          <SaveBtn
-            post={post as Post}
-            setPost={setPost as React.Dispatch<React.SetStateAction<Post>>}
-          />
-          <div className={`flex size-[48px] items-center justify-center`}>
-            <svg
-              aria-hidden="true"
-              aria-label=""
-              height="20"
-              role="img"
-              viewBox="0 0 24 24"
-              width="20"
-            >
-              <path d="M19 16c-1.03 0-1.96.4-2.67 1.04L8.92 12.8a4 4 0 0 0 0-1.6l7.41-4.24A3.97 3.97 0 0 0 23 4a4 4 0 1 0-7.92.8L7.67 9.04A3.97 3.97 0 0 0 1 12a4 4 0 0 0 6.67 2.96l7.41 4.24q-.08.4-.08.8a4 4 0 1 0 4-4"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <FullImage />
@@ -215,20 +153,7 @@ export default function PagePost() {
         ) : post ? (
           <div className={`flex flex-col`}>
             <BackBtn />
-            <div
-              className={`absolute right-0 z-[4] m-2 flex size-[48px] flex-none items-center justify-center rounded-full bg-slate-50/50`}
-            >
-              <svg
-                aria-hidden="true"
-                aria-label=""
-                height="20"
-                role="img"
-                viewBox="0 0 24 24"
-                width="20"
-              >
-                <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
-              </svg>
-            </div>
+
             <div
               className={`flex flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:flex-row md:overflow-hidden md:rounded-[32px]`}
             >
@@ -264,7 +189,10 @@ export default function PagePost() {
                 />
               </div>
               <Desktop />
-              <Mobile />
+              <Mobile
+                post={post}
+                setPost={setPost as React.Dispatch<React.SetStateAction<Post>>}
+              />
             </div>
             <div className={`h-[2000px]`}>aku</div>
           </div>
