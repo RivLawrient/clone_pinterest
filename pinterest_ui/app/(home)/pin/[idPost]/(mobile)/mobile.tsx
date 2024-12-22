@@ -26,17 +26,17 @@ export function Mobile({
     setPost,
   );
 
-  // useEffect(() => {
-  //   if (showMore || showMsg) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "";
-  //   }
-  //   return () => {
-  //     // Bersihkan efek ketika komponen dilepas
-  //     document.body.style.overflow = "";
-  //   };
-  // }, [showMore, showMsg]);
+  useEffect(() => {
+    if (showMore || showMsg) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      // Bersihkan efek ketika komponen dilepas
+      document.body.style.overflow = "";
+    };
+  }, [showMore, showMsg]);
 
   const handleDownload = async () => {
     try {
@@ -71,103 +71,102 @@ export function Mobile({
       return `${days} hari lalu`;
     }
     return (
-      <div
-        // onClick={() => setShowMsg(false)}
-        className={`flex w-screen bg-black/80 md:hidden`}
-      >
-        <input type="text" className="bg-yellow-500" placeholder="popu" />
-        <div
-          // onClick={(e) => e.stopPropagation()}
-          className={`flex h-[500px] w-screen flex-col justify-start rounded-t-[32px] bg-white pb-4 pt-8`}
-        >
-          <div
-            className={`flex w-full justify-center text-center text-[18px] font-semibold`}
-          >
-            Comment
-          </div>
-          <div className={`w-full overflow-x-hidden px-4`}>
-            {post.comment?.length != 0 ? (
-              post.comment?.map((value, index) => (
-                <div key={index} className={`my-2 flex w-full gap-2`}>
-                  <Link href={`/${value.username}`} className={`flex-none`}>
-                    <ProfileImage
-                      user={{
-                        first_name: "",
-                        follow: null,
-                        last_name: "",
-                        profile_img: value.profile_img,
-                        username: value.username,
-                      }}
-                      width={32}
-                    />
-                  </Link>
-                  <div className={`h-auto flex-col text-wrap leading-none`}>
-                    <Link
-                      href={`/${value.username}`}
-                      className={`mr-2 text-[16px] font-semibold`}
-                    >
-                      {value.username}
-                    </Link>
-                    {value.comment}
-                    <div className={`mt-1 text-[14px] text-[#767676]`}>
-                      {getRelativeTime(value.created_at)}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={`flex w-full justify-center`}>
-                No comments yet! Add one to start a conversation.
-              </div>
-            )}
-          </div>
+      <input type="text" placeholder="akuinput" className="bg-red-600" />
+      // <div
+      //   onClick={() => setShowMsg(false)}
+      //   className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
+      // >
+      //   <div
+      //     onClick={(e) => e.stopPropagation()}
+      //     className={`flex h-[500px] w-screen flex-col justify-start rounded-t-[32px] bg-white pb-4 pt-8`}
+      //   >
+      //     <div
+      //       className={`flex w-full justify-center text-center text-[18px] font-semibold`}
+      //     >
+      //       Comment
+      //     </div>
+      //     <div className={`w-full overflow-x-hidden px-4`}>
+      //       {post.comment?.length != 0 ? (
+      //         post.comment?.map((value, index) => (
+      //           <div key={index} className={`my-2 flex w-full gap-2`}>
+      //             <Link href={`/${value.username}`} className={`flex-none`}>
+      //               <ProfileImage
+      //                 user={{
+      //                   first_name: "",
+      //                   follow: null,
+      //                   last_name: "",
+      //                   profile_img: value.profile_img,
+      //                   username: value.username,
+      //                 }}
+      //                 width={32}
+      //               />
+      //             </Link>
+      //             <div className={`h-auto flex-col text-wrap leading-none`}>
+      //               <Link
+      //                 href={`/${value.username}`}
+      //                 className={`mr-2 text-[16px] font-semibold`}
+      //               >
+      //                 {value.username}
+      //               </Link>
+      //               {value.comment}
+      //               <div className={`mt-1 text-[14px] text-[#767676]`}>
+      //                 {getRelativeTime(value.created_at)}
+      //               </div>
+      //             </div>
+      //           </div>
+      //         ))
+      //       ) : (
+      //         <div className={`flex w-full justify-center`}>
+      //           No comments yet! Add one to start a conversation.
+      //         </div>
+      //       )}
+      //     </div>
 
-          <div
-            className={`fixed bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
-          >
-            <div
-              className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
-            >
-              <input
-                value={comment}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (e.target !== e.currentTarget) return;
-                  setComment(e.target.value);
-                }}
-                max={100}
-                type="text"
-                placeholder="Add a comment"
-                className={`z-[2] grow leading-none outline-none`}
-              />
-              <div
-                onClick={() => {
-                  sendMessage(
-                    JSON.stringify({
-                      comment: comment,
-                    }),
-                  );
-                  setComment("");
-                }}
-                className={`z-[3] flex size-[32px] flex-none cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
-              >
-                <svg
-                  aria-hidden="true"
-                  aria-label=""
-                  height="16"
-                  role="img"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  className={`fill-white`}
-                >
-                  <path d="m.46 2.43-.03.03c-.4.42-.58 1.06-.28 1.68L3 10.5 16 12 3 13.5.15 19.86c-.3.62-.13 1.26.27 1.67l.05.05c.4.38 1 .56 1.62.3l20.99-8.5q.28-.12.47-.3l.04-.04c.68-.71.51-2-.51-2.42L2.09 2.12Q1.79 2 1.49 2q-.61.01-1.03.43"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      //     <div
+      //       className={`fixed bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+      //     >
+      //       <div
+      //         className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
+      //       >
+      //         <input
+      //           value={comment}
+      //           onChange={(e) => {
+      //             e.stopPropagation();
+      //             e.preventDefault();
+      //             setComment(e.target.value);
+      //           }}
+      //           max={100}
+      //           type="text"
+      //           placeholder="Add a comment"
+      //           className={`z-[2] grow leading-none outline-none`}
+      //         />
+      //         <div
+      //           onClick={() => {
+      //             sendMessage(
+      //               JSON.stringify({
+      //                 comment: comment,
+      //               }),
+      //             );
+      //             setComment("");
+      //           }}
+      //           className={`z-[3] flex size-[32px] flex-none cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
+      //         >
+      //           <svg
+      //             aria-hidden="true"
+      //             aria-label=""
+      //             height="16"
+      //             role="img"
+      //             viewBox="0 0 24 24"
+      //             width="16"
+      //             className={`fill-white`}
+      //           >
+      //             <path d="m.46 2.43-.03.03c-.4.42-.58 1.06-.28 1.68L3 10.5 16 12 3 13.5.15 19.86c-.3.62-.13 1.26.27 1.67l.05.05c.4.38 1 .56 1.62.3l20.99-8.5q.28-.12.47-.3l.04-.04c.68-.71.51-2-.51-2.42L2.09 2.12Q1.79 2 1.49 2q-.61.01-1.03.43"></path>
+      //           </svg>
+      //         </div>
+      //       </div>
+      //     </div>
+      //   </div>
+      // </div>
     );
   }
 
@@ -219,7 +218,6 @@ export function Mobile({
           >
             Download image
           </a>
-          <input type="text" placeholder="asku" className="bg-lime-600" />
         </div>
       </div>
     );
@@ -227,8 +225,8 @@ export function Mobile({
 
   return (
     <>
+      {showMsg && <Msg />}
       {showMore && <More />}
-      <input type="text" placeholder="asdklfjasdf" className="bg-red-50" />
       {!showMore && (
         <div
           onClick={() => setShowMore(true)}
@@ -248,7 +246,6 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
-        <input type="text" placeholder="s......." className="bg-red-50" />
         <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
             <div className={`flex items-center`}>
@@ -329,7 +326,6 @@ export function Mobile({
           </div>
         </div>
       </div>
-      {showMsg && <Msg />}
     </>
   );
 }
