@@ -73,11 +73,11 @@ export function Mobile({
     return (
       <div
         // onClick={() => setShowMsg(false)}
-        className={`fixed z-[5] flex h-full w-screen items-end bg-black/80 md:hidden`}
+        className={`flex h-full w-screen bg-black/80 md:hidden`}
       >
         <input type="text" className="bg-yellow-500" placeholder="popu" />
         <div
-          onClick={(e) => e.stopPropagation()}
+          // onClick={(e) => e.stopPropagation()}
           className={`flex h-[500px] w-screen flex-col justify-start rounded-t-[32px] bg-white pb-4 pt-8`}
         >
           <div
