@@ -73,7 +73,7 @@ export function Mobile({
     return (
       <div
         onClick={() => setShowMsg(false)}
-        className={`absolute inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
+        className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
       >
         <div
           onClick={(e) => e.stopPropagation()}
