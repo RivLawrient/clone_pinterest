@@ -122,7 +122,7 @@ export function Mobile({
           </div>
 
           <div
-            className={`fixed bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+            className={`absolute bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
           >
             <input
               value={comment}
