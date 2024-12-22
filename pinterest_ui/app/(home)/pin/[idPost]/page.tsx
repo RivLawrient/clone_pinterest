@@ -152,7 +152,6 @@ export default function PagePost() {
           <div>LOADING ...</div>
         ) : post ? (
           <div className={`flex flex-col`}>
-            <Mobile post={post} setPost={setPost} />
             <BackBtn />
 
             <div
@@ -190,8 +189,9 @@ export default function PagePost() {
                 />
               </div>
               <Desktop />
+              <Mobile post={post} setPost={setPost} />
             </div>
-            {/* <div className={`h-[2000px]`}>aku</div> */}
+            <div className={`h-[2000px]`}>aku</div>
           </div>
         ) : (
           <div>SOMETHING ERROR WHEN GETTING DATA</div>

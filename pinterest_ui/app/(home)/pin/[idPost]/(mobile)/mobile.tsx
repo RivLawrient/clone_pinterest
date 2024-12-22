@@ -26,17 +26,17 @@ export function Mobile({
     setPost,
   );
 
-  useEffect(() => {
-    if (showMore || showMsg) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      // Bersihkan efek ketika komponen dilepas
-      document.body.style.overflow = "";
-    };
-  }, [showMore, showMsg]);
+  // useEffect(() => {
+  //   if (showMore || showMsg) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+  //   return () => {
+  //     // Bersihkan efek ketika komponen dilepas
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [showMore, showMsg]);
 
   const handleDownload = async () => {
     try {
@@ -73,7 +73,7 @@ export function Mobile({
     return (
       <div
         onClick={() => setShowMsg(false)}
-        className={`inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
+        className={`fixed inset-0 z-[5] flex h-full w-screen overflow-hidden bg-black/80 md:hidden`}
       >
         <div
           onClick={(e) => e.stopPropagation()}
