@@ -70,9 +70,14 @@ export function Mobile({
       if (hours < 24) return `${hours} jam lalu`;
       return `${days} hari lalu`;
     }
-    if (!showMsg) return null;
+    // if (!showMsg) return null;
     return (
-      <input type="text" placeholder="akuinput" className="bg-red-600" />
+      <input
+        hidden={!showMsg}
+        type="text"
+        placeholder="akuinput"
+        className="bg-red-600"
+      />
       // <div
       //   onClick={() => setShowMsg(false)}
       //   className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
