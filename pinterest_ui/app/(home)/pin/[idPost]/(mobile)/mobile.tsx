@@ -27,7 +27,7 @@ export function Mobile({
   );
 
   useEffect(() => {
-    if (showMsg) {
+    if (showMore) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
