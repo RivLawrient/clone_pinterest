@@ -14,7 +14,7 @@ export default function Create() {
   function Mobile() {
     return (
       <div
-        className={`fixed flex h-screen w-screen flex-col items-center bg-white md:hidden`}
+        className={`fixed flex h-screen w-screen flex-col items-center bg-white pb-16 md:hidden`}
       >
         <BackBtn />
         <div className={`flex h-[60px] items-center font-semibold`}>
@@ -44,7 +44,7 @@ export default function Create() {
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Add a detailed description"
               maxLength={100}
-              className="h-[164px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3"
+              className="h-[130px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3 md:h-[164px]"
             />
           </div>
         </div>

@@ -74,7 +74,7 @@ export default function PagePost() {
           >
             <div
               onClick={() => setIsFullscreen(false)}
-              className="absolute top-0 m-4 flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-white p-4"
+              className="absolute top-0 m-2 flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-white p-4"
             >
               <svg
                 aria-hidden="true"
@@ -213,8 +213,22 @@ export default function PagePost() {
         {loadingPost ? (
           <div>LOADING ...</div>
         ) : post ? (
-          <>
+          <div className={`flex flex-col`}>
             <BackBtn />
+            <div
+              className={`absolute right-0 z-[4] m-2 flex size-[48px] flex-none items-center justify-center rounded-full bg-slate-50/50`}
+            >
+              <svg
+                aria-hidden="true"
+                aria-label=""
+                height="20"
+                role="img"
+                viewBox="0 0 24 24"
+                width="20"
+              >
+                <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6m18 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6"></path>
+              </svg>
+            </div>
             <div
               className={`flex flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:flex-row md:overflow-hidden md:rounded-[32px]`}
             >
@@ -252,7 +266,8 @@ export default function PagePost() {
               <Desktop />
               <Mobile />
             </div>
-          </>
+            <div className={`h-[2000px]`}>aku</div>
+          </div>
         ) : (
           <div>SOMETHING ERROR WHEN GETTING DATA</div>
         )}
