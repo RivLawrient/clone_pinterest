@@ -1,3 +1,7 @@
 export default function SearchPage() {
-  return <div>search</div>;
+  return (
+    <div>
+      <input type="text" className="bg-black" placeholder="ini input" />
+    </div>
+  );
 }
