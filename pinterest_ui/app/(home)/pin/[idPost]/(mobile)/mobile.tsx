@@ -26,17 +26,17 @@ export function Mobile({
     setPost,
   );
 
-  // useEffect(() => {
-  //   if (showMore || showMsg) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "";
-  //   }
-  //   return () => {
-  //     // Bersihkan efek ketika komponen dilepas
-  //     document.body.style.overflow = "";
-  //   };
-  // }, [showMore, showMsg]);
+  useEffect(() => {
+    if (showMore || showMsg) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      // Bersihkan efek ketika komponen dilepas
+      document.body.style.overflow = "";
+    };
+  }, [showMore, showMsg]);
 
   const handleDownload = async () => {
     try {
@@ -73,7 +73,7 @@ export function Mobile({
     return (
       <div
         onClick={() => setShowMsg(false)}
-        className={`fixed inset-0 z-[5] flex h-full w-screen overflow-hidden bg-black/80 md:hidden`}
+        className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
       >
         <div
           onClick={(e) => e.stopPropagation()}
@@ -122,48 +122,16 @@ export function Mobile({
           </div>
 
           <div
-            className={`bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+            className={`fixed bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
           >
-            <input type="text" placeholder=" ini input" className="bg-black" />
-            {/* <input
-              value={comment}
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
-              max={100}
-              type="text"
-              placeholder="Add a comment"
-              className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
-            />
             <div
-              onClick={() => {
-                sendMessage(
-                  JSON.stringify({
-                    comment: comment,
-                  }),
-                );
-                setComment("");
-              }}
-              className={`z-[3] mr-2 flex size-[32px] flex-none cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
-            >
-              <svg
-                aria-hidden="true"
-                aria-label=""
-                height="16"
-                role="img"
-                viewBox="0 0 24 24"
-                width="16"
-                className={`fill-white`}
-              >
-                <path d="m.46 2.43-.03.03c-.4.42-.58 1.06-.28 1.68L3 10.5 16 12 3 13.5.15 19.86c-.3.62-.13 1.26.27 1.67l.05.05c.4.38 1 .56 1.62.3l20.99-8.5q.28-.12.47-.3l.04-.04c.68-.71.51-2-.51-2.42L2.09 2.12Q1.79 2 1.49 2q-.61.01-1.03.43"></path>
-              </svg>
-            </div> */}
-            {/* <div
               className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
             >
               <input
                 value={comment}
                 onChange={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   setComment(e.target.value);
                 }}
                 max={100}
@@ -194,7 +162,7 @@ export function Mobile({
                   <path d="m.46 2.43-.03.03c-.4.42-.58 1.06-.28 1.68L3 10.5 16 12 3 13.5.15 19.86c-.3.62-.13 1.26.27 1.67l.05.05c.4.38 1 .56 1.62.3l20.99-8.5q.28-.12.47-.3l.04-.04c.68-.71.51-2-.51-2.42L2.09 2.12Q1.79 2 1.49 2q-.61.01-1.03.43"></path>
                 </svg>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
