@@ -12,7 +12,7 @@ import { ShareBtn } from "../../(Component)/shareBtn";
 import { MoreBtn } from "../../(Component)/moreBtn";
 import Link from "next/link";
 import ProfileImage from "../../(Component)/profileImage";
-import { Mobile } from "./mobile";
+import { Mobile } from "./(mobile)/mobile";
 
 export interface Sizes {
   height: number;

@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Post } from "../../(postContext)/Post";
-import ProfileImage from "../../(Component)/profileImage";
-import SaveBtn from "../../(Component)/saveBtn";
-import { useState } from "react";
+import { Post } from "../../../(postContext)/Post";
+import ProfileImage from "../../../(Component)/profileImage";
+import SaveBtn from "../../../(Component)/saveBtn";
+import React, { useRef, useState } from "react";
 import { useNotif } from "@/app/(notifContext)/Notif";
 import { useUser } from "@/app/(userContext)/User";
+import { LikeBtn } from "../likeBtn";
 
 export function Mobile({
   post,
@@ -14,6 +15,7 @@ export function Mobile({
   setPost: React.Dispatch<React.SetStateAction<Post>>;
 }) {
   const [showMore, setShowMore] = useState<boolean>(false);
+  const [showMsg, setShowMsg] = useState<boolean>(false);
   const { setMsg, setIsError, triggerNotif } = useNotif();
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUser();
@@ -30,6 +32,22 @@ export function Mobile({
       link.click();
     } catch (err) {}
   };
+
+  function Msg() {
+    return (
+      <div
+        onClick={() => setShowMsg(false)}
+        className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={`flex w-screen flex-col rounded-t-[32px] bg-white pb-4 pt-8`}
+        >
+          msg
+        </div>
+      </div>
+    );
+  }
 
   function More() {
     const handleDelete = async () => {
@@ -55,12 +73,14 @@ export function Mobile({
         })
         .finally(() => setLoading(false));
     };
+
     return (
       <div
         onClick={() => setShowMore(false)}
-        className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80`}
+        className={`fixed inset-0 z-[5] flex h-full w-screen items-end overflow-hidden bg-black/80 md:hidden`}
       >
         <div
+          onClick={(e) => e.stopPropagation()}
           className={`flex w-screen flex-col rounded-t-[32px] bg-white pb-4 pt-8`}
         >
           {user?.username == post.user.username && (
@@ -84,6 +104,7 @@ export function Mobile({
 
   return (
     <>
+      {showMsg && <Msg />}
       {showMore && <More />}
       {!showMore && (
         <div
@@ -104,28 +125,40 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
-        <div className={`flex items-center px-3`}>
+        <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
-            <Link href={`/${post.user.username}`}>
-              <ProfileImage user={post?.user} width={48} />
-            </Link>
-          )}
-          <div className={`ml-2 flex flex-col`}>
-            <Link
-              href={`/${post?.user.username}`}
-              className={`text-[16px] leading-none`}
-            >
-              {post?.user.username}
-            </Link>
-            <div className={`text-[16px] leading-none`}>
-              {post?.user.follow?.follower_count
-                ? post?.user.follow.follower_count + " follower"
-                : ""}
+            <div className={`flex items-center`}>
+              <Link href={`/${post.user.username}`}>
+                <ProfileImage user={post?.user} width={48} />
+              </Link>
+              <div className={`ml-2 flex flex-col`}>
+                <Link
+                  href={`/${post?.user.username}`}
+                  className={`text-[16px] leading-none`}
+                >
+                  {post?.user.username}
+                </Link>
+                <div className={`text-[16px] leading-none`}>
+                  {post?.user.follow?.follower_count
+                    ? post?.user.follow.follower_count + " follower"
+                    : ""}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          <LikeBtn
+            post={post}
+            setPost={
+              setPost as React.Dispatch<React.SetStateAction<Post | null>>
+            }
+          />
         </div>
         <div className={`flex w-full items-stretch justify-around py-3`}>
-          <div className={`flex size-[48px] items-center justify-center`}>
+          <div
+            onClick={() => setShowMsg(true)}
+            className={`flex size-[48px] items-center justify-center`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -147,7 +180,18 @@ export function Mobile({
             post={post as Post}
             setPost={setPost as React.Dispatch<React.SetStateAction<Post>>}
           />
-          <div className={`flex size-[48px] items-center justify-center`}>
+
+          <div
+            onClick={() =>
+              navigator.clipboard
+                .writeText(`${window.location.href}/pin/${post.id}`)
+                .finally(() => {
+                  setMsg("Link Coppied");
+                  triggerNotif();
+                })
+            }
+            className={`flex size-[48px] items-center justify-center`}
+          >
             <svg
               aria-hidden="true"
               aria-label=""
