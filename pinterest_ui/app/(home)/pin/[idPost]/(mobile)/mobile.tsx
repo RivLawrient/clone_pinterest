@@ -6,19 +6,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNotif } from "@/app/(notifContext)/Notif";
 import { useUser } from "@/app/(userContext)/User";
 import { LikeBtn } from "../likeBtn";
+import { useWebSocket } from "../commentList";
 
 export function Mobile({
   post,
   setPost,
 }: {
   post: Post;
-  setPost: React.Dispatch<React.SetStateAction<Post>>;
+  setPost: React.Dispatch<React.SetStateAction<Post | undefined>>;
 }) {
   const [showMore, setShowMore] = useState<boolean>(false);
   const [showMsg, setShowMsg] = useState<boolean>(false);
   const { setMsg, setIsError, triggerNotif } = useNotif();
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUser();
+  const { sendMessage } = useWebSocket(
+    `${process.env.HOST_WS_PUBLIC}/ws/comment/${post.id}`,
+    post,
+    setPost,
+  );
 
   useEffect(() => {
     if (showMore || showMsg) {
@@ -46,6 +52,24 @@ export function Mobile({
   };
 
   function Msg() {
+    const [comment, setComment] = useState<string>("");
+
+    function getRelativeTime(isoDateString: string): string {
+      const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
+      const now = new Date(nowUTC); // Objek Date berdasarkan UTC
+      const date = new Date(isoDateString); // Waktu respons server (sudah UTC)
+
+      const diffMs = Math.abs(now.getTime() - date.getTime()); // Selisih waktu absolut
+      const seconds = Math.floor(diffMs / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      if (seconds < 60) return `${seconds} detik lalu`;
+      if (minutes < 60) return `${minutes} menit lalu`;
+      if (hours < 24) return `${hours} jam lalu`;
+      return `${days} hari lalu`;
+    }
     return (
       <div
         onClick={() => setShowMsg(false)}
@@ -53,9 +77,91 @@ export function Mobile({
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`flex w-screen flex-col rounded-t-[32px] bg-white pb-4 pt-8`}
+          className={`flex h-[500px] w-screen flex-col justify-start rounded-t-[32px] bg-white pb-4 pt-8`}
         >
-          msg
+          <div
+            className={`flex w-full justify-center text-center text-[18px] font-semibold`}
+          >
+            Comment
+          </div>
+          <div className={`w-full overflow-x-hidden px-4`}>
+            {post.comment?.length != 0 ? (
+              post.comment?.map((value, index) => (
+                <div key={index} className={`my-2 flex w-full gap-2`}>
+                  <Link href={`/${value.username}`} className={`flex-none`}>
+                    <ProfileImage
+                      user={{
+                        first_name: "",
+                        follow: null,
+                        last_name: "",
+                        profile_img: value.profile_img,
+                        username: value.username,
+                      }}
+                      width={32}
+                    />
+                  </Link>
+                  <div className={`h-auto flex-col text-wrap leading-none`}>
+                    <Link
+                      href={`/${value.username}`}
+                      className={`mr-2 text-[16px] font-semibold`}
+                    >
+                      {value.username}
+                    </Link>
+                    {value.comment}
+                    <div className={`mt-1 text-[14px] text-[#767676]`}>
+                      {getRelativeTime(value.created_at)}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={`flex w-full justify-center`}>
+                No comments yet! Add one to start a conversation.
+              </div>
+            )}
+          </div>
+
+          <div
+            className={`fixed bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+          >
+            <div
+              className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
+            >
+              <input
+                value={comment}
+                onChange={(e) => {
+                  setComment(e.currentTarget.value);
+                }}
+                max={100}
+                type="text"
+                placeholder="Add a comment"
+                className={`grow leading-none outline-none`}
+              />
+              <div
+                onClick={() => {
+                  sendMessage(
+                    JSON.stringify({
+                      comment: comment,
+                    }),
+                  );
+                  setComment("");
+                }}
+                className={`z-[3] flex size-[32px] flex-none cursor-pointer items-center justify-center rounded-full bg-[#e60023] hover:bg-red-800`}
+              >
+                <svg
+                  aria-hidden="true"
+                  aria-label=""
+                  height="16"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  className={`fill-white`}
+                >
+                  <path d="m.46 2.43-.03.03c-.4.42-.58 1.06-.28 1.68L3 10.5 16 12 3 13.5.15 19.86c-.3.62-.13 1.26.27 1.67l.05.05c.4.38 1 .56 1.62.3l20.99-8.5q.28-.12.47-.3l.04-.04c.68-.71.51-2-.51-2.42L2.09 2.12Q1.79 2 1.49 2q-.61.01-1.03.43"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -97,7 +203,7 @@ export function Mobile({
         >
           {user?.username == post.user.username && (
             <a
-              onClick={handleDownload}
+              onClick={handleDelete}
               className={`w-full cursor-pointer rounded-lg p-4 py-2 text-start text-[16px] font-semibold hover:bg-black/40 active:bg-black/50`}
             >
               Delete post

@@ -19,14 +19,6 @@ export const useWebSocket = (
       console.log(`Connected to WebSocket: ${url}`);
     };
 
-    // socket.onerror = (error) => {
-    //   console.error("WebSocket error:", error);
-    // };
-
-    // socket.onclose = () => {
-    //   console.log(`WebSocket connection closed: ${url}`);
-    // };
-
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setPost((prevPost) => {
@@ -37,10 +29,6 @@ export const useWebSocket = (
           comment: data, // Menambahkan komentar baru ke array comment
         };
       });
-      // event.data.jso.map((val: any) => {
-      //   console.log(val);
-      // });
-      // console.log(event.data);
       console.log(data);
     };
 
@@ -78,21 +66,6 @@ export default function CommentDetail({
     setPost,
   );
 
-  // const getRelativeTime = (timestamp: string): string => {
-  //   const now = new Date();
-  //   const targetDate = new Date(timestamp);
-  //   const diff = now.getTime() - targetDate.getTime(); // Selisih waktu dalam milidetik
-
-  //   const minutes = Math.floor(diff / (1000 * 60));
-  //   const hours = Math.floor(diff / (1000 * 60 * 60));
-  //   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  //   const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
-
-  //   if (minutes < 60) return `${minutes} menit lalu`;
-  //   if (hours < 24) return `${hours} jam lalu`;
-  //   if (days < 30) return `${days} hari lalu`;
-  //   return `${months} bulan lalu`;
-  // };
   function getRelativeTime(isoDateString: string): string {
     const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
     const now = new Date(nowUTC); // Objek Date berdasarkan UTC
@@ -174,23 +147,6 @@ export default function CommentDetail({
               </div>
             </div>
           </div>
-
-          {/* <div className={``}>
-            {post?.user.username == user?.username ? null : post?.user.follow
-                ?.follow_status ? (
-              <div
-                className={`cursor-pointer rounded-full border bg-white px-4 py-3 hover:bg-slate-100`}
-              >
-                Following
-              </div>
-            ) : (
-              <div
-                className={`cursor-pointer rounded-full border bg-white px-4 py-3 hover:bg-slate-100`}
-              >
-                Follow
-              </div>
-            )}
-          </div> */}
         </div>
         {post?.comment && post.comment.length > 0 ? (
           <>

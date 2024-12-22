@@ -189,10 +189,7 @@ export default function PagePost() {
                 />
               </div>
               <Desktop />
-              <Mobile
-                post={post}
-                setPost={setPost as React.Dispatch<React.SetStateAction<Post>>}
-              />
+              <Mobile post={post} setPost={setPost} />
             </div>
             <div className={`h-[2000px]`}>aku</div>
           </div>
