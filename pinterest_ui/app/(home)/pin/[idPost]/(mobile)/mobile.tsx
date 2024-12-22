@@ -130,6 +130,7 @@ export function Mobile({
               <input
                 value={comment}
                 onChange={(e) => {
+                  e.preventDefault();
                   setComment(e.currentTarget.value);
                 }}
                 max={100}
