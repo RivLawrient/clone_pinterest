@@ -135,7 +135,7 @@ export function Mobile({
                 max={100}
                 type="text"
                 placeholder="Add a comment"
-                className={`grow leading-none outline-none`}
+                className={`z-[2] grow leading-none outline-none`}
               />
               <div
                 onClick={() => {
