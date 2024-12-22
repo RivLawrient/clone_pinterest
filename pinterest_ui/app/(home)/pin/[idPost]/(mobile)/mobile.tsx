@@ -226,7 +226,6 @@ export function Mobile({
 
   return (
     <>
-      {showMsg && <Msg />}
       {showMore && <More />}
       <input type="text" placeholder="asdklfjasdf" className="bg-red-50" />
       {!showMore && (
@@ -329,6 +328,7 @@ export function Mobile({
           </div>
         </div>
       </div>
+      {showMsg && <Msg />}
     </>
   );
 }
