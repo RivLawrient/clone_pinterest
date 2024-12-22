@@ -70,6 +70,7 @@ export function Mobile({
       if (hours < 24) return `${hours} jam lalu`;
       return `${days} hari lalu`;
     }
+    if (!showMsg) return null;
     return (
       <input type="text" placeholder="akuinput" className="bg-red-600" />
       // <div
@@ -225,7 +226,8 @@ export function Mobile({
 
   return (
     <>
-      {showMsg && <Msg />}
+      {/* {showMsg && <Msg />} */}
+      <Msg />
       {showMore && <More />}
       {!showMore && (
         <div
