@@ -232,7 +232,7 @@ export function Mobile({
   return (
     <>
       {/* {showMsg && <Msg />} */}
-      <Msg />
+
       {showMore && <More />}
       {!showMore && (
         <div
@@ -253,6 +253,7 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
+        <Msg />
         <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
             <div className={`flex items-center`}>
