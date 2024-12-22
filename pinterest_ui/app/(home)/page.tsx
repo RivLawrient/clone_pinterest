@@ -28,7 +28,6 @@ export default function Home() {
 
   return (
     <>
-      {}
       {postLoading ? (
         <div className="flex w-screen justify-center md:pt-20">LOADING....</div>
       ) : isEmpty ? (
@@ -36,7 +35,7 @@ export default function Home() {
           Post is not found
         </div>
       ) : (
-        <div className="md:pt-20">
+        <div className="overflow-clip md:pt-20">
           <Masonry post={post} setPost={setPost} />
         </div>
       )}
