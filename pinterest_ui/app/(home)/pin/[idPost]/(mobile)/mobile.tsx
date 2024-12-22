@@ -122,7 +122,7 @@ export function Mobile({
           </div>
 
           <div
-            className={`absolute bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+            className={`bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
           >
             <input type="text" placeholder=" ini input" className="bg-black" />
             {/* <input
