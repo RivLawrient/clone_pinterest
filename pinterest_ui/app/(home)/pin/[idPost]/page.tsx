@@ -190,8 +190,8 @@ export default function PagePost() {
               </div>
               <Desktop />
               <Mobile post={post} setPost={setPost} />
+              <input type="text" placeholder="aku" className="bg-black" />
             </div>
-            <input type="text" placeholder="aku" className="bg-black" />
             <div className={`h-[2000px]`}>aku</div>
           </div>
         ) : (
