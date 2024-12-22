@@ -192,6 +192,7 @@ export default function PagePost() {
               <Mobile post={post} setPost={setPost} />
               <input type="text" placeholder="aku" className="bg-black" />
             </div>
+            <input type="text" placeholder="luarrsjl" className="bg-blue-300" />
             <div className={`h-[2000px]`}>aku</div>
           </div>
         ) : (

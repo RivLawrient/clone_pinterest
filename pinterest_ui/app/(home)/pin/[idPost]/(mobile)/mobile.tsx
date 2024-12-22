@@ -326,6 +326,7 @@ export function Mobile({
           </div>
         </div>
       </div>
+      <input type="text" placeholder="asdklfjasdf" className="bg-red-50" />
     </>
   );
 }
