@@ -60,6 +60,11 @@ export function Mobile({
         inputRef.current.blur(); // Menghapus fokus dari input
       }
     }
+    useEffect(() => {
+      if (showMsg && inputRef.current) {
+        inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
+      }
+    }, [showMsg]);
 
     function getRelativeTime(isoDateString: string): string {
       const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
