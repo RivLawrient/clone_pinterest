@@ -52,7 +52,7 @@ export function Mobile({
   };
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const Msg = () => {
+  const Msgs = () => {
     const [comment, setComment] = useState<string>("");
 
     function getRelativeTime(isoDateString: string): string {
@@ -346,6 +346,19 @@ export function Mobile({
           </div>
         </div>
       </div>
+    </>
+  );
+}
+
+function Msg() {
+  return (
+    <>
+      <input
+        // hidden={!showMsg}
+        type="text"
+        // placeholder="akuinput"
+        className={`flex bg-fuchsia-800`}
+      />
     </>
   );
 }
