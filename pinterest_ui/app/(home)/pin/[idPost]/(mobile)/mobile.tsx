@@ -51,20 +51,15 @@ export function Mobile({
     } catch (err) {}
   };
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    if (showMsg && inputRef.current) {
-      inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
-    }
-  }, []);
   function Msg() {
     const [comment, setComment] = useState<string>("");
 
-    function handleBlur() {
-      if (inputRef.current) {
-        inputRef.current.blur(); // Menghapus fokus dari input
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    useEffect(() => {
+      if (showMsg && inputRef.current) {
+        inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
       }
-    }
+    }, [showMsg]);
 
     function getRelativeTime(isoDateString: string): string {
       const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
