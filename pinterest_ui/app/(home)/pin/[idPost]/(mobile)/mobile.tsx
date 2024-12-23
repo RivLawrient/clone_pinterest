@@ -51,20 +51,20 @@ export function Mobile({
     } catch (err) {}
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (showMsg && inputRef.current) {
+      inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
+    }
+  }, []);
   function Msg() {
     const [comment, setComment] = useState<string>("");
-    const inputRef = useRef<HTMLInputElement | null>(null);
 
     function handleBlur() {
       if (inputRef.current) {
         inputRef.current.blur(); // Menghapus fokus dari input
       }
     }
-    useEffect(() => {
-      if (showMsg && inputRef.current) {
-        inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
-      }
-    }, [showMsg]);
 
     function getRelativeTime(isoDateString: string): string {
       const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
@@ -93,12 +93,6 @@ export function Mobile({
           onChange={(e) => setComment(e.target.value)}
           className={`bg-fuchsia-800 ${showMsg ? "flex" : "hidden"}`}
         />
-        <button
-          onClick={handleBlur}
-          className="absolute right-2 top-2 rounded bg-gray-200 p-1"
-        >
-          Tutup Keyboard
-        </button>
       </>
 
       // <div
