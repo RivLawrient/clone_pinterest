@@ -259,7 +259,7 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
-        <div className={`relative`}>{showMsg && <Msg />}</div>
+        <Msg />
 
         <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
