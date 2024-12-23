@@ -52,7 +52,7 @@ export function Mobile({
   };
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  function Msg() {
+  const Msg = () => {
     const [comment, setComment] = useState<string>("");
 
     function getRelativeTime(isoDateString: string): string {
@@ -180,7 +180,7 @@ export function Mobile({
       //   </div>
       // </div>
     );
-  }
+  };
 
   function More() {
     const handleDelete = async () => {
