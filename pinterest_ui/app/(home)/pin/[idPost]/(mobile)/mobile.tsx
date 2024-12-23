@@ -50,6 +50,7 @@ export function Mobile({
       link.click();
     } catch (err) {}
   };
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   function Msg() {
     const [comment, setComment] = useState<string>("");
@@ -75,7 +76,7 @@ export function Mobile({
       <>
         <input
           // hidden={!showMsg}
-
+          ref={inputRef}
           type="text"
           // placeholder="akuinput"
           onChange={(e) => setComment(e.target.value)}
@@ -291,7 +292,12 @@ export function Mobile({
         </div>
         <div className={`flex w-full items-stretch justify-around py-3`}>
           <div
-            onClick={() => setShowMsg(true)}
+            onClick={() => {
+              setShowMsg(true);
+              if (inputRef.current) {
+                inputRef.current.focus();
+              }
+            }}
             className={`flex size-[48px] items-center justify-center`}
           >
             <svg
