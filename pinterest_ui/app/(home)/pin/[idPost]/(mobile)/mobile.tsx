@@ -77,7 +77,7 @@ export function Mobile({
           // hidden={!showMsg}
 
           type="text"
-          placeholder="akuinput"
+          // placeholder="akuinput"
           onChange={(e) => setComment(e.target.value)}
           className={`flex bg-fuchsia-800`}
         />
