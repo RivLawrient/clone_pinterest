@@ -56,7 +56,9 @@ function SettingModal({
 }) {
   if (!showSetting) return null;
   return (
-    <div className={`fixed z-[40] flex h-screen w-screen flex-col bg-white`}>
+    <div
+      className={`fixed z-[40] flex h-screen w-screen flex-col bg-white md:hidden`}
+    >
       {/* <div
         onClick={() => setShowSetting(false)}
         className={`flex size-[36px] items-center justify-center rounded-full`}

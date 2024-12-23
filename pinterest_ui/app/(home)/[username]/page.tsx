@@ -123,7 +123,7 @@ export default function UsernamePage() {
               <>
                 <ProfileImage user={users} width={120} />
 
-                <div className="text-[36px]">
+                <div className="text-center text-[36px]">
                   {users.first_name} {users.last_name}
                 </div>
                 <div className="flex items-center gap-1 text-[14px] text-[#767676]">
@@ -140,7 +140,7 @@ export default function UsernamePage() {
                   {users.username}
                 </div>
 
-                <div className="text-[16px]">
+                <div className="text-center text-[16px]">
                   {users.follow?.follower_count} followers ·{" "}
                   {users.follow?.following_count} following
                 </div>
