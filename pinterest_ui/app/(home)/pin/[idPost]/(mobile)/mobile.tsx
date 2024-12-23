@@ -54,13 +54,6 @@ export function Mobile({
   function Msg() {
     const [comment, setComment] = useState<string>("");
 
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    useEffect(() => {
-      if (showMsg && inputRef.current) {
-        inputRef.current.focus(); // Fokus otomatis saat `showMsg` diaktifkan
-      }
-    }, [showMsg]);
-
     function getRelativeTime(isoDateString: string): string {
       const nowUTC = new Date().toISOString(); // Waktu sekarang dalam UTC
       const now = new Date(nowUTC); // Objek Date berdasarkan UTC
@@ -82,11 +75,11 @@ export function Mobile({
       <>
         <input
           // hidden={!showMsg}
-          ref={inputRef}
+
           type="text"
           placeholder="akuinput"
           onChange={(e) => setComment(e.target.value)}
-          className={`bg-fuchsia-800 ${showMsg ? "flex" : "hidden"}`}
+          className={`flex bg-fuchsia-800`}
         />
       </>
 
@@ -265,7 +258,8 @@ export function Mobile({
       )}
 
       <div className={`flex flex-col justify-between py-3 md:hidden`}>
-        <Msg />
+        <div className={`relative`}>{showMsg && <Msg />}</div>
+
         <div className={`flex w-full items-center justify-between px-3`}>
           {post?.user && (
             <div className={`flex items-center`}>
