@@ -58,7 +58,7 @@ export default function CommentDetail({
   setPost: React.Dispatch<React.SetStateAction<Post | undefined>>;
 }) {
   const { user } = useUser();
-  const [hiddenComment, setHiddenComment] = useState<boolean>(true);
+  const [hiddenComment, setHiddenComment] = useState<boolean>(false);
   const [comment, setComment] = useState<string>("");
   const { sendMessage } = useWebSocket(
     `${process.env.HOST_WS_PUBLIC}/ws/comment/${post.id}`,
@@ -77,10 +77,10 @@ export default function CommentDetail({
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (seconds < 60) return `${seconds} detik lalu`;
-    if (minutes < 60) return `${minutes} menit lalu`;
-    if (hours < 24) return `${hours} jam lalu`;
-    return `${days} hari lalu`;
+    if (seconds < 60) return `${seconds} second ago`;
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
+    return `${days} days ago`;
   }
 
   async function handleComment() {
@@ -126,100 +126,95 @@ export default function CommentDetail({
 
   return (
     <>
-      <div
-        className={`mx-4 grow ${!hiddenComment ? "overflow-hidden" : "overflow-y-scroll"}`}
-      >
-        <div className={`mb-8 mt-4 flex w-full justify-between`}>
-          <div className={`flex items-center`}>
-            {post?.user && (
-              <Link href={`/${post.user.username}`}>
-                <ProfileImage user={post?.user} width={24} />
-              </Link>
-            )}
-            <div className={`ml-2 flex flex-col`}>
-              <Link href={`/${post?.user.username}`} className={`leading-none`}>
-                {post?.user.username}
-              </Link>
-              <div className={`text-[14px] leading-none`}>
-                {post?.user.follow?.follower_count
-                  ? post?.user.follow.follower_count + " follower"
-                  : ""}
-              </div>
-            </div>
+      <div className={`mx-4 my-8 flex items-center`}>
+        {post?.user && (
+          <Link href={`/${post.user.username}`}>
+            <ProfileImage user={post?.user} width={24} />
+          </Link>
+        )}
+        <div className={`ml-2 flex flex-col`}>
+          <Link href={`/${post?.user.username}`} className={`leading-none`}>
+            {post?.user.username}
+          </Link>
+          <div className={`text-[14px] leading-none`}>
+            {post?.user.follow?.follower_count
+              ? post?.user.follow.follower_count + " follower"
+              : ""}
           </div>
         </div>
-        {post?.comment && post.comment.length > 0 ? (
-          <>
-            <div
-              onClick={() => setHiddenComment(!hiddenComment)}
-              className="flex cursor-pointer select-none items-center justify-between text-[16px] font-semibold"
-            >
-              {post.comment.length} Comments{" "}
-              <svg
-                aria-label="Perluas ikon"
-                height="16"
-                role="img"
-                viewBox="0 0 24 24"
-                width="16"
-                className={`duration-200 ${hiddenComment ? "rotate-180" : null}`}
-              >
-                <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
-              </svg>
-            </div>
-            {hiddenComment && (
-              <div className={`pr-2`}>
-                {post.comment.map((value: Comment, index: number) => (
-                  <div key={index} className={`my-2 flex w-full gap-2`}>
-                    <Link href={`/${value.username}`} className={`flex-none`}>
-                      <ProfileImage
-                        user={{
-                          first_name: "",
-                          follow: null,
-                          last_name: "",
-                          profile_img: value.profile_img,
-                          username: value.username,
-                        }}
-                        width={32}
-                      />
+      </div>
+      <div className="mx-4 flex flex-col">
+        <div
+          onClick={() => setHiddenComment(!hiddenComment)}
+          className="flex cursor-pointer select-none items-center justify-between text-[16px] font-semibold"
+        >
+          {post.comment?.length} Comments{" "}
+          <svg
+            aria-label="Perluas ikon"
+            height="16"
+            role="img"
+            viewBox="0 0 24 24"
+            width="16"
+            className={`duration-200 ${hiddenComment ? "rotate-180" : null}`}
+          >
+            <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
+          </svg>
+        </div>
+        {!hiddenComment && (
+          <div className="">
+            {post.comment?.length != 0 ? (
+              post.comment?.map((value, index) => (
+                <div
+                  key={index}
+                  className="my-2 grid grid-cols-[fit-content(32px)_1fr]"
+                >
+                  <Link href={`/${value.username}`} className="mt-1">
+                    <ProfileImage
+                      user={{
+                        first_name: "",
+                        follow: null,
+                        last_name: "",
+                        profile_img: value.profile_img,
+                        username: value.username,
+                      }}
+                      width={32}
+                    />
+                  </Link>
+                  <div className="ml-2 break-all text-[16px]">
+                    <Link href={`/${value.username}`} className="font-semibold">
+                      {value.username}{" "}
                     </Link>
-                    <div className={`h-auto flex-col text-wrap leading-none`}>
-                      <Link
-                        href={`/${value.username}`}
-                        className={`mr-2 text-[16px] font-semibold`}
-                      >
-                        {value.username}
-                      </Link>
-                      {value.comment}
-                      <div className={`mt-1 text-[14px] text-[#767676]`}>
-                        {getRelativeTime(value.created_at)}
-                      </div>
+                    {value.comment}
+                    <div className={`text-[14px] leading-none text-[#767676]`}>
+                      {getRelativeTime(value.created_at)}
                     </div>
                   </div>
-                ))}
+                </div>
+              ))
+            ) : (
+              <div className={`flex grow flex-col text-center text-[16px]`}>
+                {/* <div className={`my-2 font-semibold`}>No comments yet</div> */}
+                <div className={`my-2 text-[#767676]`}>
+                  No comments yet! Add one to start a conversation.
+                </div>
               </div>
             )}
-          </>
-        ) : (
-          <>
-            <div className={`flex grow flex-col text-[16px]`}>
-              <div className={`my-2 font-semibold`}>No comments yet</div>
-              <div className={`my-2 text-[#767676]`}>
-                No comments yet! Add one to start a conversation.
-              </div>
-            </div>
-          </>
+          </div>
         )}
       </div>
-      <div className={`m-2 flex items-center gap-1`}>
+
+      <div
+        className={`absolute bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
+      >
         <div
-          className={`flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
+          className={`mx-2 mr-2 flex w-full items-center gap-2 rounded-full border px-4 py-2 text-[16px] text-black`}
         >
           <input
             value={comment}
             onChange={(e) => {
               setComment(e.currentTarget.value);
             }}
-            max={100}
+            maxLength={80}
             type="text"
             placeholder="Add a comment"
             className={`grow leading-none outline-none`}

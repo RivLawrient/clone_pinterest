@@ -16,7 +16,7 @@ export default function Create() {
       <>
         {image && (
           <div
-            className={`pointer-events-none fixed bottom-0 z-[11] my-2 flex w-full justify-center bg-transparent`}
+            className={`pointer-events-none fixed bottom-0 z-[11] my-2 flex w-full justify-center bg-transparent md:hidden`}
           >
             <div
               onClick={async () => {

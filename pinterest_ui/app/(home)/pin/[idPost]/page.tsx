@@ -108,7 +108,7 @@ export default function PagePost() {
           width: `calc(${size.width}px)`,
           maxHeight: `calc(${size.height}px)`,
         }}
-        className={`hidden flex-col border-l md:flex md:min-w-[30vw]`}
+        className={`relative hidden flex-col break-words border-l md:flex md:min-w-[30vw]`}
       >
         {/* // top */}
         <div className={`m-2 flex justify-between`}>
@@ -135,9 +135,12 @@ export default function PagePost() {
           </div>
         </div>
         {/* detail */}
-        <div className={`mx-4`}>
-          <div className={`text-[28px] font-semibold`}>{post?.title}</div>
-          <div className={`text-[14px]`}>{post?.description}</div>
+        {/* <p className="break-words">{post?.description}</p> */}
+        <div className={`mx-4 flex w-fit break-words`}>
+          <div className={`text-wrap text-[28px] font-semibold`}>
+            {post?.title}
+          </div>
+          <div className={`text-wrap text-[14px]`}>{post?.description}</div>
         </div>
         <CommentDetail post={post as Post} setPost={setPost} />
       </div>

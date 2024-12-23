@@ -233,10 +233,10 @@ function Msg({
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (seconds < 60) return `${seconds} detik lalu`;
-    if (minutes < 60) return `${minutes} menit lalu`;
-    if (hours < 24) return `${hours} jam lalu`;
-    return `${days} hari lalu`;
+    if (seconds < 60) return `${seconds} second ago`;
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
+    return `${days} days ago`;
   }
   return (
     <div
@@ -255,8 +255,11 @@ function Msg({
         <div className={`w-full overflow-x-hidden px-4`}>
           {post.comment?.length != 0 ? (
             post.comment?.map((value, index) => (
-              <div key={index} className={`my-2 flex w-full gap-2`}>
-                <Link href={`/${value.username}`} className={`flex-none`}>
+              <div
+                key={index}
+                className="my-2 grid grid-cols-[fit-content(32px)_1fr]"
+              >
+                <Link href={`/${value.username}`} className="mt-1">
                   <ProfileImage
                     user={{
                       first_name: "",
@@ -268,15 +271,12 @@ function Msg({
                     width={32}
                   />
                 </Link>
-                <div className={`h-auto flex-col text-wrap leading-none`}>
-                  <Link
-                    href={`/${value.username}`}
-                    className={`mr-2 text-[16px] font-semibold`}
-                  >
-                    {value.username}
+                <div className="ml-2 break-all text-[16px]">
+                  <Link href={`/${value.username}`} className="font-semibold">
+                    {value.username}{" "}
                   </Link>
                   {value.comment}
-                  <div className={`mt-1 text-[14px] text-[#767676]`}>
+                  <div className={`text-[14px] leading-none text-[#767676]`}>
                     {getRelativeTime(value.created_at)}
                   </div>
                 </div>
@@ -300,7 +300,7 @@ function Msg({
               onChange={(e) => {
                 setComment(e.currentTarget.value);
               }}
-              max={100}
+              maxLength={80}
               type="text"
               placeholder="Add a comment"
               className={`grow leading-none outline-none`}

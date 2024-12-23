@@ -15,12 +15,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <ModalProvider>
-        <NotifProvider>
-          <body>{token ? children : landing}</body>
-        </NotifProvider>
-      </ModalProvider>
+      <body>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ModalProvider>
+          <NotifProvider>{token ? children : landing}</NotifProvider>
+        </ModalProvider>
+      </body>
     </html>
   );
 }
