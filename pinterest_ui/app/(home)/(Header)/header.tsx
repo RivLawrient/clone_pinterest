@@ -7,6 +7,7 @@ import { useUser } from "../../(userContext)/User";
 import DropdownDetail from "./dropdownDetail";
 import DropdownNotif from "./dropdownNotif";
 import ProfileImage from "../(Component)/profileImage";
+import DropDownMsg from "./dropdownMsg";
 
 function PageButton({
   destination,
@@ -35,13 +36,15 @@ export default function HeaderHome() {
   const { user } = useUser();
   const path = usePathname();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [showNotif, setShowNotif] = useState<boolean>(false);
+  const [showMsg, setShowMsg] = useState<boolean>(false);
+  // const [showNotif, setShowNotif] = useState<boolean>(false);
   const route = useRouter();
 
   return (
     <>
-      <DropdownNotif isVisible={showNotif} setIsVisible={setShowNotif} />
+      {/* <DropdownNotif isVisible={showNotif} setIsVisible={setShowNotif} /> */}
       <DropdownDetail isVisible={showDetail} setIsVisible={setShowDetail} />
+      {/* <DropDownMsg isVisible={showMsg} setIsVisible={setShowMsg} /> */}
       <div
         className={`fixed top-0 z-10 hidden h-[80px] w-screen items-center bg-white px-4 py-1 md:flex ${path === "/pin-creation-tool" ? "border border-[#cdcdcd]" : null}`}
       >
@@ -82,9 +85,9 @@ export default function HeaderHome() {
 
         <div
           onClick={() => {
-            setShowNotif(!showNotif);
+            // setShowNotif(!showNotif);
           }}
-          className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-[#f1f1f1]"
+          className="flex size-[48px] cursor-not-allowed items-center justify-center rounded-full hover:bg-[#f1f1f1]"
         >
           <svg
             aria-hidden="true"
@@ -98,7 +101,10 @@ export default function HeaderHome() {
             <path d="M19 7v6.17A10 10 0 0 1 22 19H2a10 10 0 0 1 3-5.83V7a7 7 0 1 1 14 0m-4 14a3 3 0 1 1-6 0z"></path>
           </svg>
         </div>
-        <div className="flex size-[48px] cursor-pointer items-center justify-center rounded-full hover:bg-[#f1f1f1]">
+        <div
+          // onClick={() => setShowMsg(!showMsg)}
+          className="flex size-[48px] cursor-not-allowed items-center justify-center rounded-full hover:bg-[#f1f1f1]"
+        >
           <svg
             aria-hidden="true"
             aria-label=""

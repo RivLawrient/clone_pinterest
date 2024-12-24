@@ -1,3 +1,7 @@
 export default function NotifPage() {
-  return <div>notif</div>;
+  return (
+    <div className="flex h-screen w-screen items-center justify-center">
+      <span>there isn't any yet</span>
+    </div>
+  );
 }

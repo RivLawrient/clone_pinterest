@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Logout from "../(Header)/logout";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HeaderMbl() {
   const [showSetting, setShowSetting] = useState<boolean>(false);
@@ -54,6 +55,7 @@ function SettingModal({
   showSetting: boolean;
   setShowSetting: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
   if (!showSetting) return null;
   return (
     <div
@@ -100,7 +102,10 @@ function SettingModal({
       >
         <div className={``}>
           <div className={`text-[16px] font-normal`}>Account</div>
-          <div className={`flex items-center justify-between`}>
+          <div
+            onClick={() => router.push("/settings")}
+            className={`flex items-center justify-between`}
+          >
             Edit profile
             <Arrow />
           </div>

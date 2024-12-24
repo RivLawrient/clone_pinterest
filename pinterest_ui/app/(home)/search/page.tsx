@@ -1,7 +1,7 @@
 export default function SearchPage() {
   return (
-    <div>
-      <input type="text" className="bg-black" placeholder="ini input" />
+    <div className="flex h-screen w-screen items-center justify-center">
+      <span>there isn't any yet</span>
     </div>
   );
 }

@@ -15,6 +15,7 @@ export default function UsernamePage() {
   const [tab, setTab] = useState<"created" | "saved">("created");
   const [isloading, setIsloading] = useState<boolean>(true);
   const [isLoadingPost, setIsLoadingPost] = useState<boolean>(true);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
   const { user } = useUser();
   const path = usePathname();
   const [followBtn, setFollowBtn] = useState<boolean>(false);
@@ -29,6 +30,8 @@ export default function UsernamePage() {
         const data = await respons.json();
         if (respons.ok) {
           setUsers(data.data);
+        } else {
+          setIsNotFound(true);
         }
       })
       .catch(() => console.log("err"))
@@ -115,7 +118,7 @@ export default function UsernamePage() {
       <div className="flex w-screen select-none flex-col items-center justify-center overflow-clip pt-3 md:pt-20">
         {isloading ? (
           <>
-            <div>loading...</div>
+            <div>LOADING...</div>
           </>
         ) : (
           <>
@@ -204,7 +207,7 @@ export default function UsernamePage() {
                   </div>
                 </div>
                 {isLoadingPost ? (
-                  <div>LOADING...</div>
+                  <div className="flex justify-center">LOADING...</div>
                 ) : tab == "created" ? (
                   <div className="mt-5 flex w-screen justify-center">
                     {post && post.length > 0 ? (
@@ -228,53 +231,15 @@ export default function UsernamePage() {
                 )}
               </div>
             )}
+            {isNotFound && (
+              <div className="flex h-screen items-center justify-center gap-1">
+                <span className="font-semibold">{path.slice(1)} </span>
+                is not Found
+              </div>
+            )}
           </>
         )}
       </div>
-
-      {/* {isloading ? (
-        <div>LOADING...</div>
-      ) : (
-        users && (
-          <div>
-            <div className="mt-8 flex w-screen items-center justify-center gap-4 text-[16px] font-semibold">
-              <div
-                onClick={() => setTab("created")}
-                className={`${tab == "created" ? "ml-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:bg-[#e1e1e1]"} cursor-pointer py-2`}
-              >
-                Created
-              </div>
-              <div
-                onClick={() => setTab("saved")}
-                className={`${tab == "saved" ? "mr-3 border-b-4 border-black" : "mb-1 rounded-lg px-3 hover:bg-[#F1F1F1] active:bg-[#e1e1e1]"} cursor-pointer py-2`}
-              >
-                Saved
-              </div>
-            </div>
-            {tab == "created" ? (
-              <div className="mt-5 flex w-screen justify-center">
-                {post && post.length > 0 ? (
-                  <Masonry post={post} setPost={setPost} />
-                ) : (
-                  <div className="text-[16px]">
-                    No Pins yet, but there's tons of potential
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="mt-5 flex w-screen justify-center">
-                {save && save.length > 0 ? (
-                  <Masonry post={save} setPost={setSave} />
-                ) : (
-                  <div className="text-[16px]">
-                    someone d hasn't saved any Pins yet
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )
-      )} */}
     </>
   );
 }

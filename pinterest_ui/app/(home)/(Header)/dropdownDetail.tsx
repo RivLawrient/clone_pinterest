@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useUser } from "@/app/(userContext)/User";
 import Logout from "./logout";
 import ProfileImage from "../(Component)/profileImage";
+import { useRouter } from "next/navigation";
 
 export default function DropdownDetail({
   isVisible,
@@ -12,6 +13,7 @@ export default function DropdownDetail({
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const { user } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,7 +42,10 @@ export default function DropdownDetail({
       >
         <div>
           <div className="p-2 text-[12px]">Currently in</div>
-          <div className="flex cursor-pointer items-center rounded-lg p-2 pr-8 hover:bg-slate-200">
+          <div
+            onClick={() => router.push(`/${user?.username}`)}
+            className="flex cursor-pointer items-center rounded-lg p-2 pr-8 hover:bg-slate-200"
+          >
             <div className="mr-2">
               {user && (
                 <ProfileImage
@@ -68,6 +73,12 @@ export default function DropdownDetail({
         </div>
         <div>
           <div className="p-2 text-[12px]">More options</div>
+          <div
+            onClick={() => router.push("/settings")}
+            className="flex cursor-pointer rounded-lg p-2 text-[16px] font-semibold hover:bg-slate-200"
+          >
+            Edit profile
+          </div>
           <div
             onClick={Logout}
             className="flex cursor-pointer rounded-lg p-2 text-[16px] font-semibold hover:bg-slate-200"
