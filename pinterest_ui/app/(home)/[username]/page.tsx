@@ -119,7 +119,9 @@ export default function UsernamePage() {
       <div className="flex w-screen select-none flex-col items-center justify-center overflow-clip pt-3 md:pt-20">
         {isloading ? (
           <>
-            <div>LOADING...</div>
+            <div className="flex h-screen items-center justify-center">
+              LOADING...
+            </div>
           </>
         ) : (
           <>
