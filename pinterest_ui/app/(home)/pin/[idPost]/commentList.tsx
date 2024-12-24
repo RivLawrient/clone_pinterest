@@ -143,7 +143,7 @@ export default function CommentDetail({
           </div>
         </div>
       </div>
-      <div className="mx-4 flex flex-col">
+      <div className="mx-4 flex flex-col overflow-y-scroll">
         <div
           onClick={() => setHiddenComment(!hiddenComment)}
           className="flex cursor-pointer select-none items-center justify-between text-[16px] font-semibold"
@@ -202,6 +202,7 @@ export default function CommentDetail({
           </div>
         )}
       </div>
+      <div className="relative h-[50px]"></div>
 
       <div
         className={`absolute bottom-0 my-2 flex w-full items-center gap-1 bg-white`}
