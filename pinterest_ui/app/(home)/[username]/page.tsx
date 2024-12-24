@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ListPost, Post, User } from "../(postContext)/Post";
@@ -19,6 +19,7 @@ export default function UsernamePage() {
   const { user } = useUser();
   const path = usePathname();
   const [followBtn, setFollowBtn] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsloading(true);
@@ -153,7 +154,10 @@ export default function UsernamePage() {
                     <div className="cursor-pointer rounded-full bg-[#f1f1f1] px-4 py-3 hover:bg-[#E1E1E1]">
                       Share
                     </div>
-                    <div className="cursor-pointer rounded-full bg-[#f1f1f1] px-4 py-3 hover:bg-[#E1E1E1]">
+                    <div
+                      onClick={() => router.push("/settings")}
+                      className="cursor-pointer rounded-full bg-[#f1f1f1] px-4 py-3 hover:bg-[#E1E1E1]"
+                    >
                       Edit profile
                     </div>
                   </div>
