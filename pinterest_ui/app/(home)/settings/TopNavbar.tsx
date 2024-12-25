@@ -21,7 +21,7 @@ export function TopNavbar() {
         </svg>
       </div>
       <span className="text-[20px] font-semibold">Edit profile</span>
-      <Btn disabled={true} text="Done" />
+      <Btn text="Done" />
     </div>
   );
 }

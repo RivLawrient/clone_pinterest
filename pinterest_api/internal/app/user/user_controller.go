@@ -189,3 +189,40 @@ func (c *UserController) HandleUpdateBirthDate(ctx *fiber.Ctx) error {
 		Data:       response,
 	})
 }
+
+func (c *UserController) HandleUpdateUser(ctx *fiber.Ctx) error {
+	auth := ctx.Cookies("auth-token")
+	request := new(UpdateUserRequest)
+
+	if err := ctx.BodyParser(request); err != nil {
+		error := fiber.ErrBadRequest
+		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+			StatusCode: error.Code,
+			Errors:     "invalid body request",
+		})
+	}
+	protocol := c.Viper.GetString("backend.protocol")
+	domain := c.Viper.GetString("backend.domain")
+
+	if !strings.HasPrefix(request.ProfileImg, fmt.Sprintf("%s://%s/img/", protocol, domain)) {
+		error := fiber.ErrBadRequest
+		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
+			StatusCode: error.Code,
+			Errors:     "image is invalids",
+		})
+	}
+
+	response, error := c.UserUsecase.UpdateUser(ctx.UserContext(), auth, *request)
+	if error != nil {
+		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
+			StatusCode: error.Code,
+			Data:       nil,
+			Errors:     error.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[UserResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}

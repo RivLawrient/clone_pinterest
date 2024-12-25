@@ -66,6 +66,13 @@ type UserOtherResponse struct {
 	LastName   string `json:"last_name"`
 	ProfileImg string `json:"profile_img"`
 	Follow     any    `json:"follow"`
-	Post       any    `json:"post,omitempty"`
-	Saved      any    `json:"saved,omitempty"`
+	// Post       any    `json:"post,omitempty"`
+	// Saved      any    `json:"saved,omitempty"`
+}
+
+type UpdateUserRequest struct {
+	Username   string `json:"username" validate:"required"`
+	FirstName  string `json:"first_name" validate:"required"`
+	LastName   string `json:"last_name"`
+	ProfileImg string `json:"profile_img" validate:"required"`
 }

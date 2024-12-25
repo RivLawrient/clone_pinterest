@@ -58,6 +58,7 @@ func (c *RouteConfig) SetupGuestRoute() {
 
 	c.App.Get("/user", c.UserController.HandleGetUser)
 	c.App.Put("/user/update_birth/:birth_date", c.UserController.HandleUpdateBirthDate)
+	c.App.Put("/user/update", c.UserController.HandleUpdateUser)
 
 	c.App.Get("/img/:filename", c.PictureController.GetPicture)
 	c.App.Post("/img", c.PictureController.UploadPicture)

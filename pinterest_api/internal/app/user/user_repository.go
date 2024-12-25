@@ -109,3 +109,16 @@ func (r *UserRepository) FindOtherByUsername(db *gorm.DB, username string) *User
 func (r *UserRepository) UpdateBirthDateById(db *gorm.DB, userId string, birthDate string) *gorm.DB {
 	return db.Exec(`UPDATE users SET birth_date = ? WHERE id = ?`, birthDate, userId)
 }
+
+func (r *UserRepository) UpdateUserById(db *gorm.DB, userId string, request UpdateUserRequest) *gorm.DB {
+	return db.Exec(`
+	UPDATE users
+SET 
+    username = ?,
+    first_name = ?,
+    last_name = ?,
+    profile_img = ?
+WHERE id = ?;
+
+	`, request.Username, request.FirstName, request.LastName, request.ProfileImg, userId)
+}

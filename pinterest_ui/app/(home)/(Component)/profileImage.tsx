@@ -16,8 +16,11 @@ export default function ProfileImage({
         <img
           src={user?.profile_img}
           alt=""
-          width={width}
-          className="rounded-full"
+          className="rounded-full object-cover"
+          style={{
+            width: `${width}px`,
+            height: `${width}px`,
+          }}
         />
       ) : (
         <svg width={width} height={width} xmlns="http://www.w3.org/2000/svg">

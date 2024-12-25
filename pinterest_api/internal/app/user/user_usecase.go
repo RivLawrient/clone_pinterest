@@ -288,3 +288,38 @@ func (u *UserUsecase) UpdateBirthDate(ctx context.Context, token string, birthDa
 	result := true
 	return &result, nil
 }
+
+func (u *UserUsecase) UpdateUser(ctx context.Context, token string, request UpdateUserRequest) (*UserResponse, *fiber.Error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	if err := u.Validate.Validate.Struct(request); err != nil {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, u.Validate.TranslateErrors(err))
+	}
+
+	me, err := u.VerifyToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
+	querUsername := u.UserRepository.FindIdByUsername(tx, request.Username)
+	if querUsername != "" {
+		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "username is already used")
+	}
+
+	insertUser := u.UserRepository.UpdateUserById(tx, me.Id, request)
+	if insertUser.RowsAffected == 0 {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong when updating data")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &UserResponse{
+		Id:        me.Id,
+		Username:  request.Username,
+		FirstName: request.FirstName,
+		LastName:  request.LastName,
+	}, nil
+}
