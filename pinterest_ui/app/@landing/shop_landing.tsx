@@ -35,7 +35,7 @@ export default function ShopLanding() {
         className={`flex basis-2/5 flex-col items-center justify-center md:mt-20 md:basis-1/2`}
       >
         <div
-          className={`w-[300px] text-center text-[28px] font-bold text-[#C32F00] md:w-[420px] md:text-[60px] md:leading-[71px]`}
+          className={`w-[250px] text-center text-[28px] font-bold text-[#C32F00] md:w-[420px] md:text-[60px] md:leading-[71px]`}
         >
           See it, make it, try it, do it
         </div>
