@@ -22,7 +22,9 @@ export function Btn({ text }: { text: string }) {
         if (response.ok) {
           setMsg("success update data");
           triggerNotif();
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
         } else {
           setMsg(data.errors);
           setIsError(true);
