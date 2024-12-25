@@ -5,11 +5,7 @@ import { AnimateBtn, AnimateImg, AnimateText } from "./animation";
 import GoogleLogin from "./(modal)/googleLogin";
 import { useModal } from "./(modalContext)/Modal";
 
-export default function HomeLanding({
-  setTranslate,
-}: {
-  setTranslate: React.Dispatch<React.SetStateAction<number>>;
-}) {
+export default function HomeLanding() {
   const [step, setStep] = useState<number>(-1);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -84,12 +80,14 @@ export default function HomeLanding({
         <AnimateText step={step} />
         <AnimateImg step={step} />
         <div className="absolute bottom-0 z-[3] flex h-[200px] w-full flex-col items-center justify-end bg-gradient-to-b from-transparent md:to-white">
-          <AnimateBtn step={step} setTranslate={setTranslate} />
+          <AnimateBtn step={step} />
           <div className="flex h-[60px] w-full items-center justify-center bg-[#FFFD92]">
             <div
-              onClick={() => {
-                setTranslate(window.innerHeight);
-              }}
+              onClick={() =>
+                document
+                  .querySelector(".search-section")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
               className="flex cursor-pointer gap-2 font-roboto text-[16px]"
             >
               Here’s how it works

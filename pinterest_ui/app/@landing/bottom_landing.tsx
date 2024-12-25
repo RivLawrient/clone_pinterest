@@ -9,11 +9,7 @@ import Modal from "./(modal)/modal";
 import Form from "./(modal)/form";
 import GoogleLogin from "./(modal)/googleLogin";
 
-export default function BottomLanding({
-  setTranslate,
-}: {
-  setTranslate: React.Dispatch<React.SetStateAction<number>>;
-}) {
+export default function BottomLanding() {
   const { show, setShow } = useModal();
   const [pass, setPass] = useState<string>("password");
   const [isSignin, setIsSignin] = useState<boolean>(false);
@@ -121,7 +117,11 @@ export default function BottomLanding({
 
         <div className="absolute top-[85px] hidden w-full justify-center md:flex">
           <div
-            onClick={() => setTranslate(0)}
+            onClick={() =>
+              document
+                .querySelector(".home-section")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
             className={`z-20 mb-[16px] flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-[#940343]`}
           >
             <svg

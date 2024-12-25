@@ -9,11 +9,7 @@ import SearchLanding from "./search_landing";
 import ShopLanding from "./shop_landing";
 
 export default function Landing() {
-  const [translate, setTranslate] = useState<number>(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [startTouch, setStartTouch] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -44,88 +40,14 @@ export default function Landing() {
   }
   return (
     <>
-      {/* <HeaderLanding /> */}
-      {/* <div className="fixed h-screen snap-y snap-mandatory overflow-x-hidden overflow-y-scroll scroll-smooth break-keep"> */}
-      {/* <HomeLanding /> */}
-      {/* <SearchLanding /> */}
-      {/* <SaveLandig /> */}
-      {/* <ShopLanding /> */}
-      {/* <HolidayLanding /> */}
-      {/* <BottomLanding /> */}
-      {/* </div> */}
-      {/* <div
-        style={{
-          scrollbarWidth: "none",
-          scrollBehavior: "smooth",
-          transform: `translate3d(0px, ${y}px, 0px)`,
-          height: "100%",
-        }}
-        onScroll={(e: any) => setY(-e.target.clientHeight)}
-        className="absolute w-full overflow-y-scroll transition"
-      >
-        <HeaderLanding />
-        
-      </div> */}
+      <HeaderLanding />
+      <div className="fixed h-screen snap-y snap-mandatory overflow-x-hidden overflow-y-scroll scroll-smooth break-keep">
+        <HomeLanding />
+        <SearchLanding />
+        <SaveLandig />
+        <ShopLanding />
 
-      <div ref={ref} className="fixed overflow-hidden">
-        <HeaderLanding />
-        <div
-          style={{
-            transform: `translate3d(0px, -${translate}px, 0px)`,
-            transition: "700ms",
-            width: "100vw",
-            height: "100vh",
-          }}
-          onWheel={(e) => {
-            if (isLocked) return;
-
-            const height = ref.current?.clientHeight as number;
-
-            console.log(e.deltaY);
-            if (e.deltaY > 1 && e.deltaY < 101) {
-              console.log("Scroll ke bawah");
-              translate <= height * 3 && setTranslate((prev) => prev + height);
-            } else if (e.deltaY < 0 && e.deltaY > -101) {
-              console.log("Scroll ke atas");
-              translate >= 0 && setTranslate((prev) => prev - height);
-            }
-
-            setIsLocked(true);
-            setTimeout(() => {
-              setIsLocked(false);
-            }, 1000);
-          }}
-          onTouchStart={(e) => {
-            setStartTouch(e.touches[0].clientY);
-          }}
-          onTouchMove={(e) => {
-            const touchMove = e.touches[0].clientY; // Mendapatkan posisi sentuhan saat bergerak
-            const diff = startTouch - touchMove; // Menghitung perbedaan posisi sentuhan
-
-            if (isLocked) return;
-
-            const height = ref.current?.clientHeight as number;
-
-            if (diff > 1 && diff < 101) {
-              console.log("Scroll ke bawah");
-              translate <= height * 3 && setTranslate((prev) => prev + height);
-            } else if (diff < 0 && diff > -101) {
-              console.log("Scroll ke atas");
-              translate >= 0 && setTranslate((prev) => prev - height);
-            }
-
-            setIsLocked(true);
-            setTimeout(() => {
-              setIsLocked(false);
-            }, 1000);
-          }}
-        >
-          <HomeLanding setTranslate={setTranslate} />
-          <SearchLanding />
-          <SaveLandig />
-          <ShopLanding />
-          <BottomLanding setTranslate={setTranslate} />
-        </div>
+        <BottomLanding />
       </div>
     </>
   );
