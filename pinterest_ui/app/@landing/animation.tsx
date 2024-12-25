@@ -36,7 +36,13 @@ export function AnimateText({ step }: { step: number }) {
   );
 }
 
-export function AnimateBtn({ step }: { step: number }) {
+export function AnimateBtn({
+  step,
+  setTranslate,
+}: {
+  step: number;
+  setTranslate: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const color: string[] = [
     "bg-[#C28B00]",
     "bg-[#618C7B]",
@@ -47,11 +53,13 @@ export function AnimateBtn({ step }: { step: number }) {
 
   return (
     <div
-      onClick={() =>
-        document
-          .querySelector(".search-section")
-          ?.scrollIntoView({ behavior: "smooth" })
-      }
+      onClick={() => {
+        // document
+        //   .querySelector(".search-section")
+        //   ?.scrollIntoView({ behavior: "smooth" })
+        console.log(window.innerHeight);
+        setTranslate(window.innerHeight);
+      }}
       className={`hidden size-[48px] animate-bounce ${color[step]} z-20 mb-[16px] cursor-pointer items-center justify-center rounded-full md:flex`}
     >
       <svg
