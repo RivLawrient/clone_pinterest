@@ -13,6 +13,7 @@ export default function Landing() {
   const ref = useRef<HTMLDivElement>(null);
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [startTouch, setStartTouch] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -80,10 +81,35 @@ export default function Landing() {
 
             const height = ref.current?.clientHeight as number;
 
-            if (e.deltaY > 0) {
+            console.log(e.deltaY);
+            if (e.deltaY > 1 && e.deltaY < 101) {
               console.log("Scroll ke bawah");
               translate <= height * 3 && setTranslate((prev) => prev + height);
-            } else if (e.deltaY < 0) {
+            } else if (e.deltaY < 0 && e.deltaY > -101) {
+              console.log("Scroll ke atas");
+              translate >= 0 && setTranslate((prev) => prev - height);
+            }
+
+            setIsLocked(true);
+            setTimeout(() => {
+              setIsLocked(false);
+            }, 1000);
+          }}
+          onTouchStart={(e) => {
+            setStartTouch(e.touches[0].clientY);
+          }}
+          onTouchMove={(e) => {
+            const touchMove = e.touches[0].clientY; // Mendapatkan posisi sentuhan saat bergerak
+            const diff = startTouch - touchMove; // Menghitung perbedaan posisi sentuhan
+
+            if (isLocked) return;
+
+            const height = ref.current?.clientHeight as number;
+
+            if (diff > 1 && diff < 101) {
+              console.log("Scroll ke bawah");
+              translate <= height * 3 && setTranslate((prev) => prev + height);
+            } else if (diff < 0 && diff > -101) {
               console.log("Scroll ke atas");
               translate >= 0 && setTranslate((prev) => prev - height);
             }
@@ -99,11 +125,6 @@ export default function Landing() {
           <SaveLandig />
           <ShopLanding />
           <BottomLanding setTranslate={setTranslate} />
-          {/* <div className="h-screen w-full bg-red-500"></div> */}
-          {/* <div className="h-screen w-full bg-blue-500"></div>
-          <div className="h-screen w-full bg-yellow-500"></div>
-          <div className="h-screen w-full bg-green-500"></div>
-          <div className="h-screen w-full bg-purple-500"></div> */}
         </div>
       </div>
     </>
