@@ -15,7 +15,7 @@ export default function SettingsPage() {
   return (
     <>
       <div className="fixed z-[11] flex h-screen w-screen overflow-y-scroll md:z-0 md:mt-20 md:flex-row">
-        <div className="mt-[65px] flex h-[2000px] w-full justify-center bg-white md:basis-2/3 md:justify-end lg:basis-1/2">
+        <div className="mt-[65px] flex w-full justify-center bg-white md:basis-2/3 md:justify-end lg:basis-1/2">
           <TopNavbar />
           <div className="flex w-full flex-col justify-start px-[24px] md:max-w-[488px] md:px-0">
             <div className="hidden flex-col gap-1 pb-8 md:flex">
