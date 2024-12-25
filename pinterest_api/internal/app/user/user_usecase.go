@@ -303,7 +303,7 @@ func (u *UserUsecase) UpdateUser(ctx context.Context, token string, request Upda
 	}
 
 	querUsername := u.UserRepository.FindIdByUsername(tx, request.Username)
-	if querUsername != "" {
+	if querUsername != "" && querUsername != me.Id {
 		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "username is already used")
 	}
 
