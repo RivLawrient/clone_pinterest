@@ -204,7 +204,7 @@ func (c *UserController) HandleUpdateUser(ctx *fiber.Ctx) error {
 	protocol := c.Viper.GetString("backend.protocol")
 	domain := c.Viper.GetString("backend.domain")
 
-	if !strings.HasPrefix(request.ProfileImg, fmt.Sprintf("%s://%s/img/", protocol, domain)) {
+	if !strings.HasPrefix(request.ProfileImg, fmt.Sprintf("%s://%s/img/", protocol, domain)) && strings.HasPrefix(request.ProfileImg, "https://lh3.googleusercontent.com") {
 		error := fiber.ErrBadRequest
 		return ctx.Status(error.Code).JSON(model.WebResponse[string]{
 			StatusCode: error.Code,
