@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import BottomLanding from "./bottom_landing";
 import HeaderLanding from "./header_landing";
-import HolidayLanding from "./holiday_landing";
 import HomeLanding from "./home_landing";
 import SaveLandig from "./save_landing";
 import SearchLanding from "./search_landing";
@@ -46,7 +45,6 @@ export default function Landing() {
         <SearchLanding />
         <SaveLandig />
         <ShopLanding />
-
         <BottomLanding />
       </div>
     </>
