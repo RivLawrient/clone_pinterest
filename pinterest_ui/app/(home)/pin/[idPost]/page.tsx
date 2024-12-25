@@ -195,7 +195,7 @@ export default function PagePost() {
               <Mobile post={post} setPost={setPost} />
             </div>
 
-            <div className={`h-[2000px]`}>aku</div>
+            {/* <div className={`h-[2000px]`}>aku</div> */}
           </div>
         ) : (
           <div>SOMETHING ERROR WHEN GETTING DATA</div>

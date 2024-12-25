@@ -20,6 +20,7 @@ export function Btn({ text }: { text: string }) {
       .then(async (response) => {
         const data = await response.json();
         if (response.ok) {
+          setIsError(false);
           setMsg("success update data");
           triggerNotif();
           setTimeout(() => {
