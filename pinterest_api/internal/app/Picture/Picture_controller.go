@@ -43,14 +43,14 @@ func (p *PictureController) UploadPicture(ctx *fiber.Ctx) error {
 	}
 
 	ext := strings.ToLower(filepath.Ext(file.Filename)) // Ambil ekstensi file (misal .jpg)
-	if ext != ".jpg" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Only .jpg files are allowed",
-		})
-	}
+	// if ext != ".jpg" {
+	// 	return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "Only .jpg files are allowed",
+	// 	})
+	// }
 
-	file.Filename = uuid.New().String() + ".jpg"
-	savePath := "./external/img/" + file.Filename
+	file.Filename = uuid.New().String()
+	savePath := "./external/img/" + file.Filename + ext
 
 	// Simpan file
 	if err := ctx.SaveFile(file, savePath); err != nil {

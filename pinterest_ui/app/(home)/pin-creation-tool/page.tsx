@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { BackBtn } from "../pin/[idPost]/backBtn";
 import { useNotif } from "@/app/(notifContext)/Notif";
 
@@ -10,6 +10,7 @@ export default function Create() {
   const [desc, setDesc] = useState<string>("");
   const [publishing, setPublishing] = useState<boolean>(false);
   const { setIsError, setMsg, triggerNotif } = useNotif();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>
@@ -25,7 +26,10 @@ export default function Create() {
         setIsError={setIsError}
         setMsg={setMsg}
         triggerNotif={triggerNotif}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
+
       <div className="mt-[80px] hidden w-screen flex-col items-center justify-center md:flex">
         <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
           <span className="text-[20px] font-semibold">Create pin</span>
@@ -81,7 +85,12 @@ export default function Create() {
 
         <div className="my-6 flex flex-col gap-10 lg:flex-row">
           <div>
-            <Image image={image} setImage={setImage} />
+            <Image
+              image={image}
+              setImage={setImage}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+            />
           </div>
           <div className="relative flex w-[584px] flex-col">
             <div
@@ -119,9 +128,13 @@ export default function Create() {
 function Image({
   image,
   setImage,
+  isLoading,
+  setIsLoading,
 }: {
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const { setIsError, setMsg, triggerNotif } = useNotif();
@@ -185,7 +198,9 @@ function Image({
             </div>
             <div className="flex max-w-[220px] justify-center">
               <span className="text-center text-[16px] leading-tight">
-                Choose a file or drag and drop it here
+                {loading
+                  ? "LOADING..."
+                  : " Choose a file or drag and drop it here"}
               </span>
             </div>
             {/* <div className="absolute bottom-0 flex justify-center px-6 py-8">
@@ -213,6 +228,8 @@ function Mobile({
   setIsError,
   setMsg,
   triggerNotif,
+  isLoading,
+  setIsLoading,
 }: {
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
@@ -225,6 +242,8 @@ function Mobile({
   setIsError: (value: boolean) => void;
   setMsg: (value: string) => void;
   triggerNotif: () => void;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <>
@@ -282,7 +301,12 @@ function Mobile({
         <div className={`flex h-[60px] items-center font-semibold`}>
           Create Pin
         </div>
-        <Image image={image} setImage={setImage} />
+        <Image
+          image={image}
+          setImage={setImage}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
+        />
         <div className="relative mt-[20px] flex w-[400px] flex-col">
           <div
             hidden={image != ""}
