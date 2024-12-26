@@ -11,116 +11,21 @@ export default function Create() {
   const [publishing, setPublishing] = useState<boolean>(false);
   const { setIsError, setMsg, triggerNotif } = useNotif();
 
-  function Mobile() {
-    return (
-      <>
-        {image && (
-          <div
-            className={`pointer-events-none fixed bottom-0 z-[11] my-2 flex w-full justify-center bg-transparent md:hidden`}
-          >
-            <div
-              onClick={async () => {
-                setPublishing(true);
-                await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  credentials: "include",
-                  body: JSON.stringify({
-                    title: title,
-                    description: desc,
-                    image: image,
-                  }),
-                })
-                  .then(async (response) => {
-                    if (response.ok) {
-                      setImage("");
-                      setTitle("");
-                      setDesc("");
-                      setPublishing(false);
-                      setMsg("Your pin has been published");
-                      setIsError(false);
-                      triggerNotif();
-                    } else {
-                      setMsg("Failed to publish. Please try again.");
-                      setIsError(true);
-                      triggerNotif();
-                    }
-                  })
-                  .catch(() => {
-                    setMsg("Failed to publish. Please try again.");
-                    setIsError(true);
-                    triggerNotif();
-                  });
-              }}
-              className={`${publishing ? "pointer-events-none bg-[#fb6e83]" : "pointer-events-auto bg-[#e60023]"} select-none rounded-full px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
-            >
-              {publishing ? <>Publishing</> : <>Publish</>}
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`fixed flex h-screen w-screen flex-col items-center bg-white pb-16 md:hidden`}
-        >
-          <BackBtn />
-          <div className={`flex h-[60px] items-center font-semibold`}>
-            Create Pin
-          </div>
-          <Image image={image} setImage={setImage} />
-          <div className="relative mt-[20px] flex w-[400px] flex-col">
-            <div
-              hidden={image != ""}
-              className="absolute size-full bg-white opacity-70"
-            ></div>
-            <div className="mb-6 flex flex-col">
-              <div className="pb-2 text-[12px]">Title</div>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                maxLength={100}
-                placeholder="Add a title"
-                className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="pb-2 text-[12px]">Description</div>
-              <textarea
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
-                placeholder="Add a detailed description"
-                maxLength={100}
-                className="h-[130px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3 md:h-[164px]"
-              />
-            </div>
-          </div>
-
-          {/* <div
-          className={`w-fit select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20`}
-        >
-          {image ? (
-            publishing ? (
-              <div className="">Publishing...</div>
-            ) : (
-              <div
-                
-                className={``}
-              >
-                Publish
-              </div>
-            )
-          ) : null}
-        </div> */}
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
-      <Mobile />
+      <Mobile
+        image={image}
+        setImage={setImage}
+        title={title}
+        setTitle={setTitle}
+        desc={desc}
+        setDesc={setDesc}
+        publishing={publishing}
+        setPublishing={setPublishing}
+        setIsError={setIsError}
+        setMsg={setMsg}
+        triggerNotif={triggerNotif}
+      />
       <div className="mt-[80px] hidden w-screen flex-col items-center justify-center md:flex">
         <div className="flex h-[80px] w-full items-center justify-between border-b border-[#cdcdcd] px-7">
           <span className="text-[20px] font-semibold">Create pin</span>
@@ -292,6 +197,137 @@ function Image({
           </div>
         </div>
       )}
+    </>
+  );
+}
+
+function Mobile({
+  image,
+  setImage,
+  title,
+  setTitle,
+  desc,
+  setDesc,
+  publishing,
+  setPublishing,
+  setIsError,
+  setMsg,
+  triggerNotif,
+}: {
+  image: string;
+  setImage: React.Dispatch<React.SetStateAction<string>>;
+  title: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  desc: string;
+  setDesc: React.Dispatch<React.SetStateAction<string>>;
+  publishing: boolean;
+  setPublishing: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsError: (value: boolean) => void;
+  setMsg: (value: string) => void;
+  triggerNotif: () => void;
+}) {
+  return (
+    <>
+      {image && (
+        <div
+          className={`pointer-events-none fixed bottom-0 z-[11] my-2 flex w-full justify-center bg-transparent md:hidden`}
+        >
+          <div
+            onClick={async () => {
+              setPublishing(true);
+              await fetch(`${process.env.HOST_API_PUBLIC}/post`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                  title: title,
+                  description: desc,
+                  image: image,
+                }),
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    setImage("");
+                    setTitle("");
+                    setDesc("");
+                    setPublishing(false);
+                    setMsg("Your pin has been published");
+                    setIsError(false);
+                    triggerNotif();
+                  } else {
+                    setMsg("Failed to publish. Please try again.");
+                    setIsError(true);
+                    triggerNotif();
+                  }
+                })
+                .catch(() => {
+                  setMsg("Failed to publish. Please try again.");
+                  setIsError(true);
+                  triggerNotif();
+                });
+            }}
+            className={`${publishing ? "pointer-events-none bg-[#fb6e83]" : "pointer-events-auto bg-[#e60023]"} select-none rounded-full px-4 py-3 text-[16px] text-white hover:bg-[#c9001e] active:scale-90`}
+          >
+            {publishing ? <>Publishing</> : <>Publish</>}
+          </div>
+        </div>
+      )}
+
+      <div
+        className={`fixed flex h-screen w-screen flex-col items-center bg-white pb-16 md:hidden`}
+      >
+        <BackBtn />
+        <div className={`flex h-[60px] items-center font-semibold`}>
+          Create Pin
+        </div>
+        <Image image={image} setImage={setImage} />
+        <div className="relative mt-[20px] flex w-[400px] flex-col">
+          <div
+            hidden={image != ""}
+            className="absolute size-full bg-white opacity-70"
+          ></div>
+          <div className="mb-6 flex flex-col">
+            <div className="pb-2 text-[12px]">Title</div>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              maxLength={100}
+              placeholder="Add a title"
+              className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
+            />
+          </div>
+          <div className="flex flex-col">
+            <div className="pb-2 text-[12px]">Description</div>
+            <textarea
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              placeholder="Add a detailed description"
+              maxLength={100}
+              className="h-[130px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3 md:h-[164px]"
+            />
+          </div>
+        </div>
+
+        {/* <div
+        className={`w-fit select-none rounded-full bg-[#e60023] px-4 py-3 text-[16px] text-white opacity-20`}
+      >
+        {image ? (
+          publishing ? (
+            <div className="">Publishing...</div>
+          ) : (
+            <div
+              
+              className={``}
+            >
+              Publish
+            </div>
+          )
+        ) : null}
+      </div> */}
+      </div>
     </>
   );
 }
