@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { User } from "../(postContext)/Post";
 import Link from "next/link";
 import { useUser } from "@/app/(userContext)/User";
@@ -29,7 +29,7 @@ export function Search() {
 
   const [listUser, setListUser] = useState<User[]>([]);
 
-  const GetData = async (e) => {
+  const GetData = async (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     await fetch(`${process.env.HOST_API_PUBLIC}/users/${e.target.value}`, {
       method: "GET",
