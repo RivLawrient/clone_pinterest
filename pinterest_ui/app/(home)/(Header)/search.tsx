@@ -8,6 +8,7 @@ export function Search() {
   const [focus, setFocus] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,17 +32,23 @@ export function Search() {
 
   const GetData = async (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    await fetch(`${process.env.HOST_API_PUBLIC}/users/${e.target.value}`, {
-      method: "GET",
-    })
+    setIsLoading(true);
+    await fetch(
+      `${process.env.HOST_API_PUBLIC}/users/${e.target.value.toLocaleLowerCase()}`,
+      {
+        method: "GET",
+      },
+    )
       .then(async (response) => {
         const data = await response.json();
         if (response.ok) {
           setListUser(data.data);
         } else {
+          setListUser([]);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -75,6 +82,7 @@ export function Search() {
           setFocus={setFocus}
           search={search}
           setSearch={setSearch}
+          isLoading={isLoading}
         />
       </div>
       {focus && (
@@ -90,17 +98,21 @@ function ContentSearch({
   setFocus,
   search,
   setSearch,
+  isLoading,
 }: {
   list: User[];
   focus: boolean;
   setFocus: React.Dispatch<React.SetStateAction<boolean>>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean;
 }) {
   return (
     <>
       {focus && (
-        <div className="absolute left-0 right-0 top-12 flex h-[400px] origin-top justify-center rounded-b-2xl bg-white">
+        <div
+          className={`absolute left-0 right-0 top-12 flex ${list && list.length > 0 ? "h-fit" : "h-[400px]"} origin-top justify-center overflow-y-scroll rounded-b-2xl bg-white`}
+        >
           {!search ? (
             <span className="my-20 text-[16px] font-semibold">
               Can only search for other users
@@ -113,9 +125,17 @@ function ContentSearch({
               }}
               className="flex w-full flex-col justify-start py-8"
             >
-              {list.map((value, index) => (
-                <ListUser user={value} key={index} />
-              ))}
+              {isLoading ? (
+                <div className="flex w-full justify-center py-3">
+                  LOADING...
+                </div>
+              ) : list && list.length > 0 ? (
+                list.map((value, index) => (
+                  <ListUser user={value} key={index} />
+                ))
+              ) : (
+                <div className="flex w-full justify-center py-3">Not Found</div>
+              )}
             </div>
           )}
         </div>

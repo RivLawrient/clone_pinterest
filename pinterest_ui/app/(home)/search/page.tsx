@@ -1,17 +1,24 @@
 "use client";
-import { useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { ListUser, Search } from "../(Header)/search";
 import { useUser } from "@/app/(userContext)/User";
+import { User } from "../(postContext)/Post";
 
 export default function SearchPage() {
   const [search, setSearch] = useState("");
-  const { user } = useUser();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [listUser, setListUser] = useState<User[]>([]);
 
   return (
     <div className="flex w-screen justify-center md:items-center">
       <span className="hidden md:block">there isn't any yet</span>
       <div className="block w-full pt-2 md:hidden">
-        <SearchInput search={search} setSearch={setSearch} />
+        <SearchInput
+          setListUser={setListUser}
+          search={search}
+          setSearch={setSearch}
+          setIsLoading={setIsLoading}
+        />
         {!search ? (
           <div className="flex w-screen justify-center">
             <span className="my-20 text-[16px] font-semibold">
@@ -20,15 +27,15 @@ export default function SearchPage() {
           </div>
         ) : (
           <div>
-            <ListUser
-              user={{
-                username: user?.username || "",
-                first_name: user?.first_name || "",
-                last_name: user?.last_name || "",
-                profile_img: user?.profile_img || "",
-                follow: null,
-              }}
-            />
+            {isLoading ? (
+              <div className="flex w-full justify-center py-3">LOADING...</div>
+            ) : listUser && listUser.length > 0 ? (
+              listUser.map((value, index) => (
+                <ListUser user={value} key={index} />
+              ))
+            ) : (
+              <div className="flex w-full justify-center py-3">Not Found</div>
+            )}
           </div>
         )}
       </div>
@@ -37,12 +44,37 @@ export default function SearchPage() {
 }
 
 function SearchInput({
+  setListUser,
   search,
   setSearch,
+  setIsLoading,
 }: {
+  setListUser: Dispatch<SetStateAction<User[]>>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }) {
+  const GetData = async (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setIsLoading(true);
+    await fetch(
+      `${process.env.HOST_API_PUBLIC}/users/${e.target.value.toLocaleLowerCase()}`,
+      {
+        method: "GET",
+      },
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          setListUser(data.data);
+        } else {
+          setListUser([]);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  };
+
   return (
     <div
       onMouseDown={(e) => console.log("apa")}
@@ -62,7 +94,7 @@ function SearchInput({
         type="text"
         value={search}
         placeholder="Search for"
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={GetData}
         className="w-full border-none bg-transparent outline-none placeholder:text-nowrap placeholder:text-[16px] placeholder:text-[#767676]"
       />
     </div>
