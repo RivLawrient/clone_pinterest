@@ -23,6 +23,7 @@ export default function PagePost() {
   const { user } = useUser();
   const [post, setPost] = useState<Post>();
   const [loadingPost, setLoadingPost] = useState<boolean>(true);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
   const refImg = useRef<HTMLImageElement>(null);
   const [size, setSize] = useState<Sizes>({
@@ -42,10 +43,15 @@ export default function PagePost() {
         const data = await response.json();
         if (response.ok) {
           setPost(data.data);
+        } else {
+          setIsNotFound(true);
         }
       })
       .finally(() => {
         setLoadingPost(false);
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
       });
 
     const handleResize = () => {
@@ -198,7 +204,7 @@ export default function PagePost() {
             {/* <div className={`h-[2000px]`}>aku</div> */}
           </div>
         ) : (
-          <div>SOMETHING ERROR WHEN GETTING DATA</div>
+          isNotFound && <div>SOMETHING ERROR WHEN GETTING DATA</div>
         )}
       </div>
     </>
