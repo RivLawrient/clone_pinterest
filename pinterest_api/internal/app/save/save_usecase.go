@@ -102,29 +102,6 @@ func (s *SaveUsecase) UnSavePost(ctx context.Context, token string, postId strin
 	}, nil
 }
 
-// tanpa handle/constroller
-// func (s *SaveUsecase) StatusSave(ctx context.Context, token string, postId string) bool {
-// 	tx := s.DB.WithContext(ctx).Begin()
-// 	defer tx.Rollback()
-
-// 	me, err := s.UserUsecase.VerifyToken(ctx, token)
-// 	if err != nil {
-// 		return false
-// 	}
-
-// 	save := new(Save)
-// 	if err := s.SaveRepository.FindByUserIdAndPostId(tx, save, me.ID, postId); err != nil {
-// 		return false
-// 	}
-
-// 	if err := tx.Commit().Error; err != nil {
-// 		return false
-// 	}
-
-// 	return true
-// }
-
-// tanpa handle/constroller
 func (s *SaveUsecase) ShowSaveByUser(ctx context.Context, userId string) *[]SaveResponse {
 	tx := s.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()

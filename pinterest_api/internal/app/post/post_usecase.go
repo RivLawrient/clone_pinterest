@@ -23,6 +23,7 @@ type PostUsecase struct {
 	UserUsecase     *user.UserUsecase
 	UserRepository  *user.UserRepository
 	SaveUsecase     *save.SaveUsecase
+	SaveRepository  *save.SaveRepository
 	LikePostUsecase *likePost.LikePostUsecase
 	CommentUsecase  *comment.CommentUsecase
 	Viper           *viper.Viper
@@ -30,7 +31,7 @@ type PostUsecase struct {
 
 func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *PostRepository,
 	userUsecase *user.UserUsecase, userRepository *user.UserRepository, viper *viper.Viper,
-	saveUsecase *save.SaveUsecase, likePostUsecase *likePost.LikePostUsecase, commentUsecase *comment.CommentUsecase) *PostUsecase {
+	saveUsecase *save.SaveUsecase, saveRepository *save.SaveRepository, likePostUsecase *likePost.LikePostUsecase, commentUsecase *comment.CommentUsecase) *PostUsecase {
 	return &PostUsecase{
 		DB:              db,
 		Validate:        validate,
@@ -38,6 +39,7 @@ func NewPostUsecase(db *gorm.DB, validate *config.Validator, postRepository *Pos
 		UserUsecase:     userUsecase,
 		UserRepository:  userRepository,
 		SaveUsecase:     saveUsecase,
+		SaveRepository:  saveRepository,
 		LikePostUsecase: likePostUsecase,
 		CommentUsecase:  commentUsecase,
 		Viper:           viper,
@@ -190,8 +192,7 @@ func (p *PostUsecase) ShowListPostByUsername(ctx context.Context, username strin
 	listPost := []ListPost{}
 	query := p.PostRepository.FindListByUser(tx, &listPost, user.ID, me.Id)
 	if query.RowsAffected == 0 {
-		log.Println(err)
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something error when getting data")
+		return &[]ListPost{}, nil
 	}
 
 	if err := tx.Commit().Error; err != nil {
@@ -205,42 +206,29 @@ func (p *PostUsecase) ShowListSavedByUsername(ctx context.Context, username stri
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	me, err := p.UserUsecase.VerifyToken(ctx, token)
+	_, err := p.UserUsecase.VerifyToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
 
-	user := new(user.User)
-	if err := p.UserRepository.FindByUsername(tx, user, username); err != nil {
-		return nil, fiber.NewError(fiber.ErrBadRequest.Code, "user is not found")
+	listSaved := []save.ListPostSavedResult{}
+	if qSaved := p.SaveRepository.ListPostByUsername(tx, &listSaved, username); qSaved.RowsAffected == 0 {
+		return &[]ListPost{}, nil
 	}
 
-	listPost := []ListPost{}
-	query := p.PostRepository.FindListSavedByUser(tx, &listPost, user.ID, me.Id)
-	if query.RowsAffected == 0 {
-		log.Println(query.RowsAffected)
-		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something error when getting data")
+	responses := []ListPost{}
+	for _, data := range listSaved {
+		response := ListPost{
+			Id:         data.Id,
+			Image:      data.Image,
+			SaveStatus: data.SaveStatus,
+		}
+		responses = append(responses, response)
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
 	}
 
-	return &listPost, nil
+	return &responses, nil
 }
-
-// func (p *PostUsecase) PList(ctx context.Context) []PostResult {
-// 	tx := p.DB.WithContext(ctx).Begin()
-// 	defer tx.Rollback()
-
-// 	list := &[]PostResult{}
-// 	if err := p.PostRepository.FindList(tx, list); err != nil {
-// 		return []PostResult{}
-// 	}
-
-// 	if err := tx.Commit().Error; err != nil {
-// 		return []PostResult{}
-// 	}
-
-// 	return *list
-// }
