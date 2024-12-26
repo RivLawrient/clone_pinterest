@@ -8,12 +8,12 @@ export default function SearchPage() {
   const { user } = useUser();
 
   return (
-    <div className="flex h-screen w-screen justify-center md:items-center">
+    <div className="flex w-screen justify-center md:items-center">
       <span className="hidden md:block">there isn't any yet</span>
       <div className="block w-full pt-2 md:hidden">
         <SearchInput search={search} setSearch={setSearch} />
         {!search ? (
-          <div className="flex h-screen w-screen justify-center">
+          <div className="flex w-screen justify-center">
             <span className="my-20 text-[16px] font-semibold">
               Can only search for other users
             </span>
