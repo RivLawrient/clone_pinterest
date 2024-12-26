@@ -252,7 +252,7 @@ function Msg({
         >
           Comment
         </div>
-        <div className={`w-full overflow-x-hidden px-4`}>
+        <div className={`mb-[50px] w-full overflow-x-hidden px-4`}>
           {post.comment?.length != 0 ? (
             post.comment?.map((value, index) => (
               <div
