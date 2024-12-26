@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Post } from "../../(postContext)/Post";
+import { ListPost, Post } from "../../(postContext)/Post";
 import { usePathname } from "next/navigation";
 import { BackBtn } from "./backBtn";
 import { useUser } from "@/app/(userContext)/User";
@@ -13,6 +13,7 @@ import { MoreBtn } from "../../(Component)/moreBtn";
 import Link from "next/link";
 import ProfileImage from "../../(Component)/profileImage";
 import { Mobile } from "./(mobile)/mobile";
+import Masonry from "../../(Component)/(Masonry)/masonry";
 
 export interface Sizes {
   height: number;
@@ -24,6 +25,7 @@ export default function PagePost() {
   const [post, setPost] = useState<Post>();
   const [loadingPost, setLoadingPost] = useState<boolean>(true);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
+  const [listPost, setListPost] = useState<ListPost[]>([]);
 
   const refImg = useRef<HTMLImageElement>(null);
   const [size, setSize] = useState<Sizes>({
@@ -52,6 +54,17 @@ export default function PagePost() {
       })
       .finally(() => {
         setLoadingPost(false);
+        fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
+          method: "GET",
+          credentials: "include",
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            if (response.ok) {
+              setListPost(data.data);
+            }
+          })
+          .catch(() => {});
       });
 
     const handleResize = () => {
@@ -160,11 +173,11 @@ export default function PagePost() {
         {loadingPost ? (
           <div>LOADING ...</div>
         ) : post ? (
-          <div className={`flex flex-col`}>
+          <div className={`flex flex-col items-center`}>
             <BackBtn />
 
             <div
-              className={`flex flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:flex-row md:overflow-hidden md:rounded-[32px]`}
+              className={`flex flex-col shadow-[rgba(0,0,0,0.1)_0px_0px_8px_0px] md:w-fit md:flex-row md:overflow-hidden md:rounded-[32px]`}
             >
               <div className={`relative`}>
                 <div
@@ -201,7 +214,9 @@ export default function PagePost() {
               <Mobile post={post} setPost={setPost} />
             </div>
 
-            {/* <div className={`h-[2000px]`}>aku</div> */}
+            <div className="mt-8">
+              <Masonry post={listPost} setPost={setListPost} />
+            </div>
           </div>
         ) : (
           isNotFound && <div>SOMETHING ERROR WHEN GETTING DATA</div>
