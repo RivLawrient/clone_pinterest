@@ -10,7 +10,7 @@ export default function SearchPage() {
   const [listUser, setListUser] = useState<User[]>([]);
 
   return (
-    <div className="flex w-screen justify-center md:items-center">
+    <div className="flex w-screen justify-center md:h-screen md:items-center">
       <span className="hidden md:block">there isn't any yet</span>
       <div className="block w-full pt-2 md:hidden">
         <SearchInput
