@@ -143,25 +143,25 @@ export default function CommentDetail({
           </div>
         </div>
       </div>
-      <div className="mx-4 flex flex-col overflow-y-scroll">
-        <div
-          onClick={() => setHiddenComment(!hiddenComment)}
-          className="flex cursor-pointer select-none items-center justify-between text-[16px] font-semibold"
+      <div
+        onClick={() => setHiddenComment(!hiddenComment)}
+        className="flex cursor-pointer select-none items-center justify-between px-4 py-2 text-[16px] font-semibold"
+      >
+        {post.comment?.length} Comments{" "}
+        <svg
+          aria-label="Perluas ikon"
+          height="16"
+          role="img"
+          viewBox="0 0 24 24"
+          width="16"
+          className={`duration-200 ${hiddenComment ? "rotate-180" : null}`}
         >
-          {post.comment?.length} Comments{" "}
-          <svg
-            aria-label="Perluas ikon"
-            height="16"
-            role="img"
-            viewBox="0 0 24 24"
-            width="16"
-            className={`duration-200 ${hiddenComment ? "rotate-180" : null}`}
-          >
-            <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
-          </svg>
-        </div>
+          <path d="M20.16 6.65 12 14.71 3.84 6.65a2.27 2.27 0 0 0-3.18 0 2.2 2.2 0 0 0 0 3.15L12 21 23.34 9.8a2.2 2.2 0 0 0 0-3.15 2.26 2.26 0 0 0-3.18 0"></path>
+        </svg>
+      </div>
+      <div className="mx-4 flex flex-col overflow-y-scroll">
         {!hiddenComment && (
-          <div className="">
+          <div className="mb-[20px]">
             {post.comment?.length != 0 ? (
               post.comment?.map((value, index) => (
                 <div
