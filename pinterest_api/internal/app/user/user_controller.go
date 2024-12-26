@@ -226,3 +226,21 @@ func (c *UserController) HandleUpdateUser(ctx *fiber.Ctx) error {
 		Data:       *response,
 	})
 }
+
+func (c *UserController) HandleGetListByName(ctx *fiber.Ctx) error {
+	name := ctx.Params("name")
+
+	response, error := c.UserUsecase.GetListByName(ctx.UserContext(), name)
+	if error != nil {
+		return ctx.Status(error.Code).JSON(model.WebResponse[any]{
+			StatusCode: error.Code,
+			Data:       nil,
+			Errors:     error.Message,
+		})
+	}
+
+	return ctx.JSON(model.WebResponse[[]UserOtherResponse]{
+		StatusCode: ctx.Response().StatusCode(),
+		Data:       *response,
+	})
+}

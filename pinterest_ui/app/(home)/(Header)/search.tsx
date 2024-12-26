@@ -27,6 +27,23 @@ export function Search() {
     };
   }, [setFocus, focus]);
 
+  const [listUser, setListUser] = useState<User[]>([]);
+
+  const GetData = async (e) => {
+    setSearch(e.target.value);
+    await fetch(`${process.env.HOST_API_PUBLIC}/users/${e.target.value}`, {
+      method: "GET",
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          setListUser(data.data);
+        } else {
+        }
+      })
+      .catch(() => {});
+  };
+
   return (
     <>
       <div
@@ -48,11 +65,12 @@ export function Search() {
           type="text"
           value={search}
           placeholder="Search for"
-          onFocus={() => setFocus(true)}
-          onChange={(e) => setSearch(e.target.value)}
+          onFocus={(e) => setFocus(true)}
+          onChange={GetData}
           className="w-full border-none bg-transparent outline-none placeholder:text-nowrap placeholder:text-[16px] placeholder:text-[#767676]"
         />
         <ContentSearch
+          list={listUser}
           focus={focus}
           setFocus={setFocus}
           search={search}
@@ -67,18 +85,18 @@ export function Search() {
 }
 
 function ContentSearch({
+  list,
   focus,
   setFocus,
   search,
   setSearch,
 }: {
+  list: User[];
   focus: boolean;
   setFocus: React.Dispatch<React.SetStateAction<boolean>>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const { setUser, user } = useUser();
-
   return (
     <>
       {focus && (
@@ -95,24 +113,9 @@ function ContentSearch({
               }}
               className="flex w-full flex-col justify-start py-8"
             >
-              <ListUser
-                user={{
-                  username: user?.username || "",
-                  first_name: user?.first_name || "",
-                  last_name: user?.last_name || "",
-                  profile_img: user?.profile_img || "",
-                  follow: null,
-                }}
-              />
-              <ListUser
-                user={{
-                  username: user?.username || "",
-                  first_name: user?.first_name || "",
-                  last_name: user?.last_name || "",
-                  profile_img: user?.profile_img || "",
-                  follow: null,
-                }}
-              />
+              {list.map((value, index) => (
+                <ListUser user={value} key={index} />
+              ))}
             </div>
           )}
         </div>

@@ -323,3 +323,30 @@ func (u *UserUsecase) UpdateUser(ctx context.Context, token string, request Upda
 		LastName:  request.LastName,
 	}, nil
 }
+
+func (u *UserUsecase) GetListByName(ctx context.Context, name string) (*[]UserOtherResponse, *fiber.Error) {
+	tx := u.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	list := []UserOtherResult{}
+	if querUsername := u.UserRepository.FindListUserByName(tx, &list, name); querUsername.RowsAffected == 0 {
+		return &[]UserOtherResponse{}, nil
+	}
+
+	results := []UserOtherResponse{}
+	for _, res := range list {
+		result := UserOtherResponse{
+			Username:   res.Username,
+			FirstName:  res.FirstName,
+			LastName:   res.LastName,
+			ProfileImg: res.ProfileImg,
+		}
+		results = append(results, result)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fiber.NewError(fiber.ErrInternalServerError.Code, "something wrong")
+	}
+
+	return &results, nil
+}

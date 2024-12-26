@@ -122,3 +122,22 @@ WHERE id = ?;
 
 	`, request.Username, request.FirstName, request.LastName, request.ProfileImg, userId)
 }
+
+func (r *UserRepository) FindListUserByName(db *gorm.DB, list *[]UserOtherResult, name string) *gorm.DB {
+	return db.Raw(`
+	SELECT
+	id as id,
+    username,
+    first_name,
+    last_name,
+    profile_img
+FROM
+    users
+WHERE
+    username LIKE '%' || ? || '%'
+		OR first_name LIKE '%' || ? || '%'
+		OR last_name LIKE '%' || ? || '%'
+ORDER BY
+    created_at DESC;
+	`, name, name, name).Scan(list)
+}
