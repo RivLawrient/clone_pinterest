@@ -7,7 +7,7 @@ export default function Home() {
     usePost();
 
   useEffect(() => {
-    if (post.length == 0) {
+    if (post && post.length == 0) {
       loadMorePosts();
     }
     const handleScroll = () => {

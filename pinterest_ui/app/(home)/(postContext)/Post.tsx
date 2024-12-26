@@ -68,7 +68,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
         .then(async (response) => {
           const data = await response.json();
           if (response.ok) {
-            if (data.data.length == 0) {
+            if (data.data && data.data.length == 0) {
               setIsEmpty(true);
               setPostLoading(false);
             } else {
@@ -101,7 +101,6 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
           setMoreLoading(false);
         }
       });
-      // .finally(() => setMoreLoading(false));
     }
   };
 
