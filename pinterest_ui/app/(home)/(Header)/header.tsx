@@ -8,6 +8,7 @@ import DropdownDetail from "./dropdownDetail";
 import DropdownNotif from "./dropdownNotif";
 import ProfileImage from "../(Component)/profileImage";
 import DropDownMsg from "./dropdownMsg";
+import { Search } from "./search";
 
 function PageButton({
   destination,
@@ -67,21 +68,7 @@ export default function HeaderHome() {
         <PageButton destination="" name="Home" />
         <PageButton destination="today" name="Explore" />
         <PageButton destination="pin-creation-tool" name="Create" />
-        <div className="mx-2 flex h-[48px] grow cursor-text items-center rounded-full bg-[#f1f1f1] px-4 hover:bg-[#e1e1e1]">
-          <svg
-            aria-label="Search icon"
-            height="16"
-            role="img"
-            viewBox="0 0 24 24"
-            width="16"
-            className="mr-2 fill-[#767676]"
-          >
-            <path d="M10 16a6 6 0 1 1 .01-12.01A6 6 0 0 1 10 16m13.12 2.88-4.26-4.26a10 10 0 1 0-4.24 4.24l4.26 4.26a3 3 0 1 0 4.24-4.24"></path>
-          </svg>
-          <span className="text-nowrap text-[16px] text-[#767676]">
-            Search for{" "}
-          </span>
-        </div>
+        <Search />
 
         <div
           onClick={() => {
