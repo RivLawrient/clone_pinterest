@@ -45,13 +45,13 @@ export default function PagePost() {
           setPost(data.data);
         } else {
           setIsNotFound(true);
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1500);
         }
       })
       .finally(() => {
         setLoadingPost(false);
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1500);
       });
 
     const handleResize = () => {
