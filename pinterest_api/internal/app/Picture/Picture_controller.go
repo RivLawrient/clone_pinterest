@@ -49,9 +49,8 @@ func (p *PictureController) UploadPicture(ctx *fiber.Ctx) error {
 	// 	})
 	// }
 
-	file.Filename = uuid.New().String()
-	savePath := "./external/img/" + file.Filename + ext
-
+	file.Filename = uuid.New().String() + ext
+	savePath := "./external/img/" + file.Filename
 	// Simpan file
 	if err := ctx.SaveFile(file, savePath); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
