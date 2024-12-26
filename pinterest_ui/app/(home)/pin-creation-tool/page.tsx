@@ -235,7 +235,7 @@ function Image({
         >
           <input
             type="file"
-            accept="image/jpg"
+            accept="image/*"
             onChange={async (e) => {
               const file = new FormData();
               file.append("image", e.target.files ? e.target.files[0] : "");
