@@ -71,7 +71,6 @@ export default function PagePost() {
           height: refImg.current.clientHeight,
           width: refImg.current.clientWidth,
         });
-      // console.log(refImg.current?.clientHeight);
     };
 
     window.addEventListener("resize", handleResize);
@@ -83,37 +82,36 @@ export default function PagePost() {
   }, []);
 
   function FullImage() {
+    if (!isFullscreen) return null;
     return (
       <>
-        {isFullscreen && (
+        <div
+          onClick={() => setIsFullscreen(false)}
+          className="fixed bottom-0 left-0 right-0 top-0 z-50 flex items-center justify-center bg-black/90"
+        >
           <div
-            className="fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-90 md:p-2"
             onClick={() => setIsFullscreen(false)}
+            className="absolute left-0 top-0 m-2 flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-white p-4"
           >
-            <div
-              onClick={() => setIsFullscreen(false)}
-              className="absolute top-0 m-2 flex size-[48px] cursor-pointer items-center justify-center rounded-full bg-white p-4"
+            <svg
+              aria-hidden="true"
+              aria-label=""
+              className={`fill-black`}
+              height="20"
+              role="img"
+              viewBox="0 0 24 24"
+              width="20"
             >
-              <svg
-                aria-hidden="true"
-                aria-label=""
-                className={`fill-black`}
-                height="20"
-                role="img"
-                viewBox="0 0 24 24"
-                width="20"
-              >
-                <path d="m15.18 12 7.16-7.16a2.25 2.25 0 1 0-3.18-3.18L12 8.82 4.84 1.66a2.25 2.25 0 1 0-3.18 3.18L8.82 12l-7.16 7.16a2.25 2.25 0 1 0 3.18 3.18L12 15.18l7.16 7.16a2.24 2.24 0 0 0 3.18 0c.88-.88.88-2.3 0-3.18z"></path>
-              </svg>
-            </div>
-
-            <img
-              src={post?.image}
-              alt=""
-              className="size-full max-h-full max-w-full cursor-zoom-out object-contain"
-            />
+              <path d="m15.18 12 7.16-7.16a2.25 2.25 0 1 0-3.18-3.18L12 8.82 4.84 1.66a2.25 2.25 0 1 0-3.18 3.18L8.82 12l-7.16 7.16a2.25 2.25 0 1 0 3.18 3.18L12 15.18l7.16 7.16a2.24 2.24 0 0 0 3.18 0c.88-.88.88-2.3 0-3.18z"></path>
+            </svg>
           </div>
-        )}
+
+          <div className="max-w-screen flex max-h-screen">
+            <div className="flex justify-center">
+              <img src={post?.image} alt="" className="m-5 rounded-[32px]" />
+            </div>
+          </div>
+        </div>
       </>
     );
   }
