@@ -1,7 +1,13 @@
+import { Metadata } from "next";
 import { NotifProvider } from "./(notifContext)/Notif";
 import { ModalProvider } from "./@landing/(modalContext)/Modal";
 import "./globals.css";
 import { cookies } from "next/headers";
+
+export const metadata: Metadata = {
+  title: "Clone Pinterest",
+  description: "Project clone Pinterest.com",
+};
 
 export default async function RootLayout({
   landing,
