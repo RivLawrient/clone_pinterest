@@ -73,7 +73,6 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
               setPostLoading(false);
             } else {
               setPost(data.data);
-              console.log(data.data);
               setPostLoading(false);
             }
           }
@@ -81,7 +80,6 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
         .finally(() => setPostLoading(false));
     } else {
       setMoreLoading(true);
-      console.log("terpanggil");
       await fetch(`${process.env.HOST_API_PUBLIC}/posts`, {
         method: "GET",
         credentials: "include",

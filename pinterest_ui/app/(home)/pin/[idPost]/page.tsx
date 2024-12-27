@@ -71,7 +71,7 @@ export default function PagePost() {
           height: refImg.current.clientHeight,
           width: refImg.current.clientWidth,
         });
-      console.log(refImg.current?.clientHeight);
+      // console.log(refImg.current?.clientHeight);
     };
 
     window.addEventListener("resize", handleResize);

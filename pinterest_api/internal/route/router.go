@@ -82,8 +82,6 @@ func (c *RouteConfig) SetupGuestRoute() {
 	c.App.Post("/like_post/:postid", c.LikePostController.HandleLikeaPost)
 	c.App.Delete("/unlike_post/:postid", c.LikePostController.HandleUnLikeaPost)
 
-	// c.App.Post("/comment/:postid", c.CommentController.HandleAddComment)
-
 	c.App.Post("/", c.PersonController.Insert)
 }
 

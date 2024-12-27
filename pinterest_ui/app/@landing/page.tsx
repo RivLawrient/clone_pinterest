@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import BottomLanding from "./bottom_landing";
 import HeaderLanding from "./header_landing";
 import HomeLanding from "./home_landing";

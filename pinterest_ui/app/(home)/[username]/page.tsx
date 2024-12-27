@@ -49,7 +49,7 @@ export default function UsernamePage() {
         }
       })
       .finally(() => setIsLoadingPost(false))
-      .catch(() => console.log())
+      .catch(() => {})
       .finally(() => {
         setIsloading(false);
       });

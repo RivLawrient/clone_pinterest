@@ -55,7 +55,6 @@ export function Search() {
     <>
       <div
         ref={ref}
-        onMouseDown={(e) => console.log("apa")}
         className="relative mx-2 flex h-[48px] grow items-center rounded-full bg-[#f1f1f1] px-4 hover:bg-[#e1e1e1]"
       >
         <svg
