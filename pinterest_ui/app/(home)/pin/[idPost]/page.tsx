@@ -167,7 +167,7 @@ export default function PagePost() {
   return (
     <>
       <FullImage />
-      <div className={`flex w-full justify-center md:pt-24`}>
+      <div className={`flex w-full select-none justify-center md:pt-24`}>
         {loadingPost ? (
           <div>LOADING ...</div>
         ) : post ? (

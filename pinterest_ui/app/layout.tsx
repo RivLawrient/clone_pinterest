@@ -20,7 +20,12 @@ export default async function RootLayout({
   const token = cookieStore.get("auth-token");
 
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      style={{
+        scrollbarWidth: "none",
+      }}
+    >
       <body>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <ModalProvider>
