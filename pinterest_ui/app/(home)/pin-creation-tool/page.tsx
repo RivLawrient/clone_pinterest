@@ -295,10 +295,10 @@ function Mobile({
       )}
 
       <div
-        className={`fixed flex h-screen w-screen flex-col items-center bg-white pb-16 md:hidden`}
+        className={`fixed flex h-screen w-screen flex-col items-center overflow-y-scroll bg-white pb-16 md:hidden`}
       >
         <BackBtn />
-        <div className={`flex h-[60px] items-center font-semibold`}>
+        <div className={`flex min-h-[60px] items-center font-semibold`}>
           Create Pin
         </div>
         <Image
@@ -307,7 +307,7 @@ function Mobile({
           setIsLoading={setIsLoading}
           isLoading={isLoading}
         />
-        <div className="relative mt-[20px] flex w-[400px] flex-col">
+        <div className="relative mt-[20px] flex w-full min-w-[250px] max-w-[450px] flex-col px-3">
           <div
             hidden={image != ""}
             className="absolute size-full bg-white opacity-70"
@@ -320,7 +320,7 @@ function Mobile({
               onChange={(e) => setTitle(e.target.value)}
               maxLength={100}
               placeholder="Add a title"
-              className="truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
+              className="w-full truncate rounded-2xl border border-[#cdcdcd] px-4 py-3"
             />
           </div>
           <div className="flex flex-col">
@@ -330,7 +330,7 @@ function Mobile({
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Add a detailed description"
               maxLength={100}
-              className="h-[130px] resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3 md:h-[164px]"
+              className="h-[100px] w-full resize-none rounded-2xl border border-[#cdcdcd] px-4 py-3 md:h-[164px]"
             />
           </div>
         </div>
