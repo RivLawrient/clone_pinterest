@@ -40,7 +40,7 @@ func (r *PostRepository) FindListRandom(db *gorm.DB, list *[]ListPost, userId st
 		ELSE FALSE 
 		END AS save_status`).
 		Joins("LEFT JOIN save ON post.id = save.post_id AND save.user_id = ?", userId).
-		Limit(25).
+		Limit(30).
 		Order("RANDOM()").
 		Scan(&list).Error
 }

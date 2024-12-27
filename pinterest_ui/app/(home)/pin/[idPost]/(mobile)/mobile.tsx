@@ -233,9 +233,11 @@ function Msg({
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (seconds < 60) return `${seconds} second ago`;
-    if (minutes < 60) return `${minutes} minutes ago`;
-    if (hours < 24) return `${hours} hours ago`;
+    setInterval(() => {
+      if (seconds < 60) return `${seconds} second ago`;
+      if (minutes < 60) return `${minutes} minutes ago`;
+      if (hours < 24) return `${hours} hours ago`;
+    }, 500);
     return `${days} days ago`;
   }
   return (

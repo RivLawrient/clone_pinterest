@@ -88,17 +88,14 @@ func (c *RouteConfig) SetupGuestRoute() {
 }
 
 func (c *RouteConfig) SetupWebSocketRoutes() {
-	// Middleware untuk memastikan permintaan WebSocket
 	c.App.Use("/ws", func(ctx *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(ctx) {
 			return ctx.Next()
 		}
 		return fiber.ErrUpgradeRequired
 	})
-	// c.App.Use("/ws/comment_post", comment.WebSocketMiddleware)
-	// Rute WebSocket untuk setiap kebutuhan
-	// c.App.Get("/ws/comment_post/:postid", websocket.New(c.CommentController.HandleAddComment))
 	c.App.Get("/ws/comment/:postid", websocket.New(c.CommentController.Handle))
 }
+
 func (c *RouteConfig) SetupAuthRoute() {
 }

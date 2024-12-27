@@ -10,8 +10,6 @@ import { LikeBtn } from "./likeBtn";
 import CommentDetail from "./commentList";
 import { ShareBtn } from "../../(Component)/shareBtn";
 import { MoreBtn } from "../../(Component)/moreBtn";
-import Link from "next/link";
-import ProfileImage from "../../(Component)/profileImage";
 import { Mobile } from "./(mobile)/mobile";
 import Masonry from "../../(Component)/(Masonry)/masonry";
 
