@@ -153,7 +153,7 @@ export default function PagePost() {
         </div>
         {/* detail */}
         {/* <p className="break-words">{post?.description}</p> */}
-        <div className={`mx-4 flex w-fit break-all`}>
+        <div className={`mx-4 flex w-fit flex-col break-all`}>
           <div className={`text-wrap text-[28px] font-semibold`}>
             {post?.title}
           </div>

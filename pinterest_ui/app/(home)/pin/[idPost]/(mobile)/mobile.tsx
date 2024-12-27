@@ -201,6 +201,12 @@ export function Mobile({
             </svg>
           </div>
         </div>
+        <div className="mx-4 flex w-fit flex-col break-all">
+          <div className="text-wrap text-[20px] font-semibold">
+            {post?.title}
+          </div>
+          <div className="text-wrap text-[16px]">{post?.description}</div>
+        </div>
       </div>
     </>
   );
@@ -233,11 +239,9 @@ function Msg({
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    setInterval(() => {
-      if (seconds < 60) return `${seconds} second ago`;
-      if (minutes < 60) return `${minutes} minutes ago`;
-      if (hours < 24) return `${hours} hours ago`;
-    }, 500);
+    if (seconds < 60) return `${seconds} second ago`;
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
     return `${days} days ago`;
   }
   return (
