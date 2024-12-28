@@ -1,25 +1,24 @@
 "use client";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { ListUser, Search } from "../(Header)/search";
-import { useUser } from "@/app/(userContext)/User";
-import { User } from "../(postContext)/Post";
+import { ChangeEvent } from "react";
+import { ListUser } from "../(Header)/search";
+import useSearch, { SProps } from "./useSearch";
 
 export default function SearchPage() {
-  const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [listUser, setListUser] = useState<User[]>([]);
+  const uSearch = useSearch();
 
   return (
     <div className="flex w-screen justify-center md:h-screen md:items-center">
       <span className="hidden md:block">there isn't any yet</span>
       <div className="block w-full pt-2 md:hidden">
         <SearchInput
-          setListUser={setListUser}
-          search={search}
-          setSearch={setSearch}
-          setIsLoading={setIsLoading}
+          search={uSearch.search}
+          setSearch={uSearch.setSearch}
+          setIsLoading={uSearch.setIsLoading}
+          setListUser={uSearch.setListUser}
+          isLoading={uSearch.isLoading}
+          listUset={uSearch.listUser}
         />
-        {!search ? (
+        {!uSearch.search ? (
           <div className="flex w-screen justify-center">
             <span className="my-20 text-[16px] font-semibold">
               Can only search for other users
@@ -27,10 +26,10 @@ export default function SearchPage() {
           </div>
         ) : (
           <div>
-            {isLoading ? (
+            {uSearch.isLoading ? (
               <div className="flex w-full justify-center py-3">LOADING...</div>
-            ) : listUser && listUser.length > 0 ? (
-              listUser.map((value, index) => (
+            ) : uSearch.listUser && uSearch.listUser.length > 0 ? (
+              uSearch.listUser.map((value, index) => (
                 <ListUser user={value} key={index} />
               ))
             ) : (
@@ -43,20 +42,10 @@ export default function SearchPage() {
   );
 }
 
-function SearchInput({
-  setListUser,
-  search,
-  setSearch,
-  setIsLoading,
-}: {
-  setListUser: Dispatch<SetStateAction<User[]>>;
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-}) {
+function SearchInput(props: SProps) {
   const GetData = async (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setIsLoading(true);
+    props.setSearch(e.target.value);
+    props.setIsLoading(true);
     await fetch(
       `${process.env.HOST_API_PUBLIC}/users/${e.target.value.toLocaleLowerCase()}`,
       {
@@ -66,13 +55,13 @@ function SearchInput({
       .then(async (response) => {
         const data = await response.json();
         if (response.ok) {
-          setListUser(data.data);
+          props.setListUser(data.data);
         } else {
-          setListUser([]);
+          props.setListUser([]);
         }
       })
       .catch(() => {})
-      .finally(() => setIsLoading(false));
+      .finally(() => props.setIsLoading(false));
   };
 
   return (
@@ -89,7 +78,7 @@ function SearchInput({
       </svg>
       <input
         type="text"
-        value={search}
+        value={props.search}
         placeholder="Search for"
         onChange={GetData}
         className="w-full border-none bg-transparent outline-none placeholder:text-nowrap placeholder:text-[16px] placeholder:text-[#767676]"

@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { User } from "../(postContext)/Post";
 import Link from "next/link";
-import { useUser } from "@/app/(userContext)/User";
 import ProfileImage from "../(Component)/profileImage";
 
 export function Search() {
