@@ -167,7 +167,9 @@ export default function PagePost() {
       <FullImage />
       <div className={`flex w-full select-none justify-center md:pt-24`}>
         {loadingPost ? (
-          <div>LOADING ...</div>
+          <div className="flex h-screen items-center md:mt-[-96px]">
+            LOADING ...
+          </div>
         ) : post ? (
           <div className={`flex flex-col items-center`}>
             <BackBtn />

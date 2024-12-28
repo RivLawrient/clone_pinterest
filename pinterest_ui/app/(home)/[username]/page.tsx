@@ -117,6 +117,7 @@ export default function UsernamePage() {
   };
   return (
     <>
+      {path.slice(1) === user?.username && <HeaderMbl />}
       <div className="flex w-screen select-none flex-col items-center justify-center overflow-clip pt-3 md:pt-20">
         {isloading ? (
           <>
@@ -126,7 +127,6 @@ export default function UsernamePage() {
           </>
         ) : (
           <>
-            {path.slice(1) === user?.username && <HeaderMbl />}
             {users && user && (
               <>
                 <ProfileImage user={users} width={120} />
@@ -215,7 +215,7 @@ export default function UsernamePage() {
                   </div>
                 </div>
                 {isLoadingPost ? (
-                  <div className="flex justify-center">LOADING...</div>
+                  <div className="my-6 flex justify-center">LOADING...</div>
                 ) : tab == "created" ? (
                   <div className="mt-5 flex w-screen justify-center">
                     {post && post.length > 0 ? (

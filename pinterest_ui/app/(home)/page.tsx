@@ -29,7 +29,9 @@ export default function Home() {
   return (
     <>
       {postLoading ? (
-        <div className="flex w-screen justify-center md:pt-20">LOADING....</div>
+        <div className="flex h-screen w-screen items-center justify-center">
+          LOADING....
+        </div>
       ) : isEmpty ? (
         <div className="mt-20 flex w-screen justify-center">
           Post is not found

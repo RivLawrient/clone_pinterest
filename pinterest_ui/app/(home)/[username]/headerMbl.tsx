@@ -3,13 +3,10 @@
 import React, { useState } from "react";
 import Logout from "../(Header)/logout";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "@/app/(userContext)/User";
+import { useRouter } from "next/navigation";
 
 export default function HeaderMbl() {
   const [showSetting, setShowSetting] = useState<boolean>(false);
-  const { user } = useUser();
-  const path = usePathname();
 
   return (
     <>
@@ -32,7 +29,6 @@ export default function HeaderMbl() {
             <path d="M22 10h-8V2a2 2 0 0 0-4 0v8H2a2 2 0 0 0 0 4h8v8a2 2 0 0 0 4 0v-8h8a2 2 0 0 0 0-4"></path>
           </svg>
         </Link>
-
         <div
           onClick={() => setShowSetting(true)}
           className={`flex size-[36px] items-center justify-center rounded-full`}
