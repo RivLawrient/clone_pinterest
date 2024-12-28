@@ -158,15 +158,19 @@ function Image({
               const file = new FormData();
               file.append("image", e.target.files ? e.target.files[0] : "");
               setLoading(true);
-              const api = await fetch(`${process.env.HOST_API_PUBLIC}/img`, {
+              await fetch(`${process.env.HOST_API_PUBLIC}/img`, {
                 method: "post",
                 body: file,
               })
                 .then(async (response) => {
                   const data = await response.json();
-
                   if (response.ok) {
                     setImage(data.link);
+                  }
+                  if (response.status == 413) {
+                    setMsg("Image size to large. Try another.");
+                    setIsError(true);
+                    triggerNotif();
                   } else {
                     setMsg("Failed to publish. Please try again.");
                     setIsError(true);
