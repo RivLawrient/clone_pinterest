@@ -3,6 +3,7 @@ import { NotifProvider } from "./(notifContext)/Notif";
 import { ModalProvider } from "./@landing/(modalContext)/Modal";
 import "./globals.css";
 import { cookies } from "next/headers";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Clone Pinterest",
@@ -13,8 +14,8 @@ export default async function RootLayout({
   landing,
   children,
 }: Readonly<{
-  landing: React.ReactNode;
-  children: React.ReactNode;
+  landing: ReactNode;
+  children: ReactNode;
 }>) {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth-token");

@@ -71,7 +71,7 @@ export default function HomeLanding() {
   return (
     <>
       <div className="home-section relative flex h-screen w-screen snap-center flex-col items-center scroll-smooth align-baseline">
-        <div className="md:h-[250px]"></div>
+        <div className="md:h-[200px]"></div>
         <span className="hidden font-roboto2 text-[60px] md:block">
           Get your next
         </span>
