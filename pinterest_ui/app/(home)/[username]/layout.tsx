@@ -5,10 +5,5 @@ export default function LayoutUsername({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div>
-      <HeaderMbl />
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }

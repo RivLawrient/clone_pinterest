@@ -6,6 +6,7 @@ import { ListPost, Post, User } from "../(postContext)/Post";
 import { useUser } from "@/app/(userContext)/User";
 import ProfileImage from "../(Component)/profileImage";
 import Masonry from "../(Component)/(Masonry)/masonry";
+import HeaderMbl from "./headerMbl";
 
 export default function UsernamePage() {
   const [post, setPost] = useState<ListPost[]>([]);
@@ -125,6 +126,7 @@ export default function UsernamePage() {
           </>
         ) : (
           <>
+            {path.slice(1) === user?.username && <HeaderMbl />}
             {users && user && (
               <>
                 <ProfileImage user={users} width={120} />

@@ -3,10 +3,13 @@
 import React, { useState } from "react";
 import Logout from "../(Header)/logout";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useUser } from "@/app/(userContext)/User";
 
 export default function HeaderMbl() {
   const [showSetting, setShowSetting] = useState<boolean>(false);
+  const { user } = useUser();
+  const path = usePathname();
 
   return (
     <>
@@ -29,6 +32,7 @@ export default function HeaderMbl() {
             <path d="M22 10h-8V2a2 2 0 0 0-4 0v8H2a2 2 0 0 0 0 4h8v8a2 2 0 0 0 4 0v-8h8a2 2 0 0 0 0-4"></path>
           </svg>
         </Link>
+
         <div
           onClick={() => setShowSetting(true)}
           className={`flex size-[36px] items-center justify-center rounded-full`}
@@ -61,22 +65,6 @@ function SettingModal({
     <div
       className={`fixed z-[40] flex h-screen w-screen flex-col bg-white md:hidden`}
     >
-      {/* <div
-        onClick={() => setShowSetting(false)}
-        className={`flex size-[36px] items-center justify-center rounded-full`}
-      >
-        <svg
-          aria-hidden="true"
-          aria-label=""
-          height="16"
-          role="img"
-          viewBox="0 0 24 24"
-          width="16"
-        >
-          <path d="M15.78 24a2.2 2.2 0 0 1-1.58-.66L3 12 14.2.66a2.2 2.2 0 0 1 3.15 0c.87.88.87 2.3 0 3.18L9.29 12l8.06 8.16c.87.88.87 2.3 0 3.18-.44.44-1 .66-1.57.66"></path>
-        </svg>
-      </div> */}
-
       <div
         className={`flex w-full flex-row items-center justify-center px-2 py-2`}
       >
