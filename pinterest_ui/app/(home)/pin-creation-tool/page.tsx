@@ -164,10 +164,10 @@ function Image({
               })
                 .then(async (response) => {
                   const data = await response.json();
+                  console.log(response.status);
                   if (response.ok) {
                     setImage(data.link);
-                  }
-                  if (response.status == 413) {
+                  } else if (response.status === 413) {
                     setMsg("Image size to large. Try another.");
                     setIsError(true);
                     triggerNotif();
@@ -207,12 +207,13 @@ function Image({
                   : " Choose a file or drag and drop it here"}
               </span>
             </div>
-            {/* <div className="absolute bottom-0 flex justify-center px-6 py-8">
+            <div className="absolute bottom-0 flex justify-center px-6 py-8">
               <span className="text-center text-[14px] leading-tight">
-                We recommend using high quality .jpg files less than 20 MB or
-                .mp4 files less than 200 MB.
+                {/* We recommend using high quality .jpg files less than 20 MB or
+                .mp4 files less than 200 MB. */}
+                We recommend files less than 20 MB
               </span>
-            </div> */}
+            </div>
           </div>
         </div>
       )}
