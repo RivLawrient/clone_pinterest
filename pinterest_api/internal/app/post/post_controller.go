@@ -141,6 +141,7 @@ func (c *PostController) HandleDelete(ctx *fiber.Ctx) error {
 		Data:       *response,
 	})
 }
+
 func (c *PostController) HandleListByUsername(ctx *fiber.Ctx) error {
 	auth := ctx.Cookies("auth-token")
 	username := ctx.Params("username")
